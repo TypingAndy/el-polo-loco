@@ -13,49 +13,51 @@ function init() {
   console.log("My Enemie is", world.enemies);
 }
 
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'a') {
+document.addEventListener("keydown", (e) => {
+  if (e.key === "a") {
     keyboard.LEFT = true;
-    console.log('LEFT:', keyboard.LEFT);
+    console.log("LEFT:", keyboard.LEFT);
   }
-  if (e.key === 'd') {
+  if (e.key === "d") {
     keyboard.RIGHT = true;
-    console.log('RIGHT:', keyboard.RIGHT);
+    console.log("RIGHT:", keyboard.RIGHT);
   }
-  if (e.key === 'w') {
+  if (e.key === "w") {
     keyboard.UP = true;
-    console.log('UP:', keyboard.UP);
+    console.log("UP:", keyboard.UP);
   }
-  if (e.key === 's') {
+  if (e.key === "s") {
     keyboard.DOWN = true;
-    console.log('DOWN:', keyboard.DOWN);
+    console.log("DOWN:", keyboard.DOWN);
   }
-  if (e.key === ' ') {
+  if (e.key === " ") {
     keyboard.SPACE = true;
-    console.log('SPACE:', keyboard.SPACE);
+    console.log("SPACE:", keyboard.SPACE);
+  }
+  if (e.key === "f") {
+    keyboard.THROW = true;
+    console.log("THROW:", keyboard.THROW);
   }
 });
 
-document.addEventListener('keyup', (e) => {
-  if (e.key === 'a') {
+document.addEventListener("keyup", (e) => {
+  if (e.key === "a") {
     keyboard.LEFT = false;
-    console.log('LEFT:', keyboard.LEFT);
   }
-  if (e.key === 'd') {
+  if (e.key === "d") {
     keyboard.RIGHT = false;
-    console.log('RIGHT:', keyboard.RIGHT);
   }
-  if (e.key === 'w') {
+  if (e.key === "w") {
     keyboard.UP = false;
-    console.log('UP:', keyboard.UP);
   }
-  if (e.key === 's') {
+  if (e.key === "s") {
     keyboard.DOWN = false;
-    console.log('DOWN:', keyboard.DOWN);
   }
-  if (e.key === ' ') {
+  if (e.key === " ") {
     keyboard.SPACE = false;
-    console.log('SPACE:', keyboard.SPACE);
+  }
+  if (e.key === "f") {
+    keyboard.THROW = false;
+    console.log("THROW:", keyboard.THROW);
   }
 });
