@@ -3,9 +3,20 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: bisque;
+    background-image: url(img/10_background_screen/desert_dark.jpg);
+    background-size: cover; /* Wichtig: Passt das Bild an, sodass es den gesamten Bildschirm abdeckt */
+    background-position: center; /* Zentriert das Bild */
+    background-repeat: no-repeat; /* Verhindert, dass das Bild wiederholt wird */
+    height: 100vh; /* Setzt die Höhe des Bodys auf die volle Höhe des Bildschirms */
+    margin: 0; /* Entfernt Standardabstände */
+    overflow: hidden; /* Verhindert Scrollen, falls etwas überläuft */
 }
+
 
 canvas {
     background-color: black;
+}
+
+h1 {
+    color: wheat;
 }

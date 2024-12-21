@@ -1,0 +1,22 @@
+Aufgaben:
+
++ Start Screen
++ Musik + sounds
++ Coins Sammeln
++ Flaschen Sammeln
++ Flaschen nur werfen wenn gesammelt
++ Game over Screeen
++ Fullscreen
++ Help Funciton
++ Collision
++
+
++
++
++
+
+
+licence
+
+background picture
+Foto von Walid Ahmad: https://www.pexels.com/de-de/foto/wuste-wahrend-der-nacht-847402/
