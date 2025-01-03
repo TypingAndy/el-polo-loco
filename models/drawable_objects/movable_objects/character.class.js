@@ -1,9 +1,12 @@
 class Character extends MovableObject {
+  world;
+
   height = 250;
-  y = 80;
-  speed = 10;
+  width = 100;
+  y = 180;
 
-
+  walking_sound = new Audio("audio/run.wav");
+  jump_sound = new Audio("audio/jump.wav");
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -39,12 +42,8 @@ class Character extends MovableObject {
   IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
-    "img/2_character_pepe/4_hurt/H-43.png"
+    "img/2_character_pepe/4_hurt/H-43.png",
     ];
-
-  world;
-  walking_sound = new Audio("audio/run.wav");
-  jump_sound = new Audio("audio/jump.wav");
 
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
@@ -53,10 +52,10 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
-    this.animate();
+    this.animateCharacter();
   }
 
-  animate() {
+  animateCharacter() {
     setInterval(() => {
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
