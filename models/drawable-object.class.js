@@ -32,8 +32,8 @@ class DrawableObject {
     ) {
       ctx.beginPath();
       ctx.lineWidth = "2";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.strokeStyle = this.color;
+      ctx.rect(this.x + this.hitBoxX, this.y + this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
       ctx.stroke();
     }
   }

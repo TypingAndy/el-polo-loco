@@ -7,8 +7,6 @@ function init() {
   world = new World(canvas, keyboard);
 
   ctx = canvas.getContext("2d");
-  console.log("My Character is", world.character);
-  console.log("My Enemie is", world.enemies);
 }
 
 document.addEventListener("keydown", (e) => {

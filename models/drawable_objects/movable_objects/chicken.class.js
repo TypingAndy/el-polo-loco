@@ -1,6 +1,11 @@
 class Chicken extends MovableObject {
   width = 60;
   height = 60;
+  hitBoxWidth = 50;
+  hitBoxHeight = 50;
+  hitBoxX = 5;
+  hitBoxY = 5;
+  color = 'orange'
   y = 362;
 
   IMAGES_WALKING = [

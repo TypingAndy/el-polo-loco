@@ -4,13 +4,12 @@ class World {
   statusCoinbar = new StatusCoinbar();
   statusBottlebar = new StatusBottlebar();
   throwableObjects = [];
-  
+
   level = level1;
   canvas;
   ctx;
   keyboard;
   camera_x = 0;
- 
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -18,11 +17,31 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld();
-    this.run();
+    this.throwBottleInterval();
+    this.collisionDetectionSpeed();
+    this.respawnBottles();
+    this.startRespawnInterval();
+    this.startStatusUpdateInterval();
   }
 
   setWorld() {
     this.character.world = this;
+  }
+
+  startRespawnInterval() {
+    setInterval(() => {
+      this.respawnBottles();
+    }, 5000);
+  }
+
+  updateBottleBar() {
+    this.statusBottlebar.setBottleAmount(level1.collectedBottles.length);
+  }
+
+  startStatusUpdateInterval() {
+    setInterval(() => {
+      this.updateBottleBar();
+    }, 100); // Aktualisiert den Status alle 100ms
   }
 
   draw() {
@@ -30,6 +49,11 @@ class World {
 
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
+
+    this.level.clouds.forEach((cloud) => {
+      cloud.move();
+      this.addToMap(cloud);
+    });
 
     this.level.enemies.forEach((enemie) => {
       this.addToMap(enemie);
@@ -54,10 +78,6 @@ class World {
     this.addObjectsToMap(this.throwableObjects);
 
     this.addToMap(this.character);
-    this.level.clouds.forEach((cloud) => {
-      cloud.move();
-      this.addToMap(cloud);
-    });
 
     this.ctx.translate(-this.camera_x, 0);
 
@@ -95,11 +115,20 @@ class World {
     this.ctx.restore();
   }
 
-  run() {
+  throwBottleInterval() {
     setInterval(() => {
-      this.checkCollisions();
       this.checkThrowObjects();
-    }, 200);
+    }, 300);
+  }
+
+  respawnBottles() {
+    if (level1.bottles.length < 7) {
+      // Zufällige X-Position zwischen 200 und 1500 berechnen
+      const randomX = Math.floor(Math.random() * (1500 - 200 + 1)) + 200;
+
+      // Neue Flasche mit zufälliger Position hinzufügen
+      level1.bottles.push(new CollectableBottle(randomX));
+    }
   }
 
   checkThrowObjects() {
@@ -109,10 +138,49 @@ class World {
     }
   }
 
-  checkCollisions() {
+  collisionDetectionSpeed() {
+    setInterval(() => {
+      this.checkCollisionsWithEnemies();
+      this.checkCollisionsWithCoins();
+      this.checkCollisionsWithBottles();
+      this.checkCollisionBottleWithBoss();
+    }, 100);
+  }
+
+  checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        this.character.hit();
+        this.character.hit(enemy);
+        this.statusLifebar.setPercentage(this.character.energy);
+      }
+    });
+  }
+
+  checkCollisionsWithCoins() {
+    this.level.coins.forEach((coin) => {
+      if (this.character.isColliding(coin)) {
+        this.character.collectCoin(coin);
+        this.character.coinAmount += 1;
+        this.statusCoinbar.setCoinAmount(this.character.coinAmount);
+      }
+    });
+  }
+
+  checkCollisionsWithBottles() {
+    this.level.bottles.forEach((bottle) => {
+      if (this.character.isColliding(bottle)) {
+        this.character.collectBottle(bottle);
+
+        level1.collectedBottles.push("bottleToThrow");
+        this.statusBottlebar.setBottleAmount(level1.collectedBottles.length);
+      }
+    });
+  }
+
+  checkCollisionBottleWithBoss() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        this.character.hit(enemy);
         this.statusLifebar.setPercentage(this.character.energy);
       }
     });

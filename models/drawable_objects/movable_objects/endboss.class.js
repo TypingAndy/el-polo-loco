@@ -2,6 +2,11 @@ class Endboss extends MovableObject {
 
 width = 350;
 height = 350;
+hitBoxWidth = 330;
+hitBoxHeight = 310;
+hitBoxX = 17;
+hitBoxY = 40;
+color = 'black'
 y = 100;
 
 
@@ -16,10 +21,10 @@ y = 100;
     "img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
 
-  constructor() {
+  constructor(x) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 3000;
+    this.x = x;
     this.animateEndBoss();
   }
 

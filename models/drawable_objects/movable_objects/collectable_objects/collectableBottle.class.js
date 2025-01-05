@@ -1,6 +1,11 @@
 class CollectableBottle extends MovableObject {
   width = 60;
   height = 60;
+  hitBoxWidth = 26;
+  hitBoxHeight = 45;
+  hitBoxX = 20;
+  hitBoxY = 10;
+  color = 'red'
   bottleSide = Math.random() < 0.5 ? 1 : 2;
 
   constructor(x) {

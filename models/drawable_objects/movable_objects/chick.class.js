@@ -1,7 +1,13 @@
 class Chick extends MovableObject {
-  width = 60;
-  height = 60;
-  y = 362;
+  width = 43;
+  height = 43;
+  hitBoxWidth = 35;
+  hitBoxHeight = 35;
+  hitBoxX = 5;
+  hitBoxY = 5;
+  color = 'purple'
+  y = 373;
+
 
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_small/1_walk/1_w.png",

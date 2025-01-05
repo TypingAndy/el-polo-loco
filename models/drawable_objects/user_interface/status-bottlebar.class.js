@@ -8,7 +8,7 @@ class StatusBottlebar extends DrawableObject {
     "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png",
   ];
 
-  percentage = 100;
+  levelBottleAmount = level1.bottles.length;
 
   constructor() {
     super();
@@ -17,28 +17,32 @@ class StatusBottlebar extends DrawableObject {
     this.y = 72;
     this.width = 150;
     this.height = 45;
-    this.setPercentage(100);
+    this.setBottleAmount(0);
   }
 
-  setPercentage(percentage) {
-    this.percentage = percentage;
+  setBottleAmount(bottlesCollected) {
+    this.bottlesCollected = bottlesCollected; // Aktualisiere die Anzahl der eingesammelten Münzen
     let path = this.IMAGES_BOTTLEBAR[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
   resolveImageIndex() {
-    if (this.percentage >= 100) {
-      return 5;
-    } else if (this.percentage > 80) {
-      return 4;
-    } else if (this.percentage > 60) {
-      return 3;
-    } else if (this.percentage > 40) {
-      return 2;
-    } else if (this.percentage > 20) {
-      return 1;
+    // Berechne den Prozentsatz der eingesammelten Münzen
+    const percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
+
+    // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
+    if (percentageCollected >= 100) {
+      return 5; // Alle Münzen eingesammelt
+    } else if (percentageCollected >= 80) {
+      return 4; // Mehr als 80% gesammelt
+    } else if (percentageCollected >= 60) {
+      return 3; // Mehr als 60% gesammelt
+    } else if (percentageCollected >= 40) {
+      return 2; // Mehr als 40% gesammelt
+    } else if (percentageCollected >= 20) {
+      return 1; // Mehr als 20% gesammelt
     } else {
-      return 0;
+      return 0; // Weniger als 20% gesammelt
     }
   }
 }
