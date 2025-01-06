@@ -27,8 +27,11 @@ class ThrowableObject extends MovableObject {
       this.width = 40;
       this.throw(x, y);
       this.animateThrowableObject();
+      console.log(level1.collectedBottles);
+      console.log(level1.thrownBottles);
+      
     } else {
-      this.noBottle_sound.volume = 0.7;
+      this.noBottle_sound.volume = 0.6;
       this.noBottle_sound.play();
     }
   }

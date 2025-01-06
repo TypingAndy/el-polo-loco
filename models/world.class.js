@@ -115,6 +115,8 @@ class World {
     this.ctx.restore();
   }
 
+
+  //bottles
   throwBottleInterval() {
     setInterval(() => {
       this.checkThrowObjects();
@@ -124,7 +126,7 @@ class World {
   respawnBottles() {
     if (level1.bottles.length < 7) {
       // Zufällige X-Position zwischen 200 und 1500 berechnen
-      const randomX = Math.floor(Math.random() * (1500 - 200 + 1)) + 200;
+      const randomX = Math.floor(Math.random() * (2500 - 200 + 1)) + 200;
 
       // Neue Flasche mit zufälliger Position hinzufügen
       level1.bottles.push(new CollectableBottle(randomX));
@@ -133,9 +135,9 @@ class World {
 
   checkThrowObjects() {
     if (this.keyboard.THROW) {
-      let bottle = new ThrowableObject(this.character.x + 60, this.character.y + 60);
+      let bottle = new ThrowableObject(this.character.x + 65, this.character.y + 100);
       this.throwableObjects.push(bottle);
-    }
+     }
   }
 
   collisionDetectionSpeed() {
@@ -143,7 +145,7 @@ class World {
       this.checkCollisionsWithEnemies();
       this.checkCollisionsWithCoins();
       this.checkCollisionsWithBottles();
-      this.checkCollisionBottleWithBoss();
+      this.checkCollisionBottleWithEnemies();
     }, 100);
   }
 
@@ -177,12 +179,30 @@ class World {
     });
   }
 
-  checkCollisionBottleWithBoss() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        this.character.hit(enemy);
-        this.statusLifebar.setPercentage(this.character.energy);
-      }
+  checkCollisionBottleWithEnemies() {
+    this.throwableObjects.forEach((bottle, bottleIndex) => {
+      this.level.enemies.forEach((enemy, enemyIndex) => {
+        if (bottle.isColliding(enemy)) {
+          this.throwableObjects.splice(bottleIndex, 1); // Flasche entfernen
+  
+          if (enemy instanceof Endboss) {
+            enemy.health -= 1; // Gesundheit reduzieren
+            console.log(`Endboss getroffen! Verbleibende Gesundheit: ${enemy.health}`);
+  
+            if (enemy.health > 0) {
+              enemy.playHurtAnimation(); // Hurt-Animation abspielen
+            } else if (enemy.health <= 0) {
+              enemy.animateDefeat(); // Besiegt-Animation abspielen
+            }
+          } else {
+            this.level.enemies.splice(enemyIndex, 1); // Entferne normalen Feind
+            console.log("Flasche hat einen Feind getroffen!");
+          }
+        }
+      });
     });
   }
+  
+  
+  
 }

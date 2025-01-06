@@ -17,5 +17,3 @@ class Level {
     this.collectedBottles = collectedBottles;
   }
 }
-
-

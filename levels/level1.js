@@ -1,5 +1,5 @@
 const level1 = new Level(
-  [new Chick(400), new Chick(800), new Chick(1200), new Chick(1450), new Chicken(), new Chicken(), new Chicken(), new Endboss(3000)],
+  [new Chick(400), new Chick(800), new Chick(1200), new Chick(1450), new Chicken(position = null , 1), new Chicken(position = null , 1), new Chicken(position = null , 1), new Endboss(3000, 5)],
 
   [new Clouds()],
 
@@ -46,6 +46,8 @@ const level1 = new Level(
 
   [new CollectableBottle(550), new CollectableBottle(500), new CollectableBottle(1000), new CollectableBottle(1250), new CollectableBottle(1500), new CollectableBottle(2000), new CollectableBottle(2250), new CollectableBottle(2350)],
 
-  //bottle Placeholder "thrownBottles"
+  //bottle Placeholder "collectedBottles"
+  [],
+ //bottle Placeholder "thrownBottles"
   []
 );

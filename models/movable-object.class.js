@@ -88,6 +88,7 @@ class MovableObject extends DrawableObject {
     if (index !== -1) {
       this.world.level.coins.splice(index, 1);
       this.collect_coin_sound.currentTime = 0;
+      this.collect_coin_sound.volume = 1;
       this.collect_coin_sound.play();
     }
   }
@@ -96,7 +97,7 @@ class MovableObject extends DrawableObject {
     const index = this.world.level.bottles.indexOf(bottle);
     if (index !== -1) {
       this.world.level.bottles.splice(index, 1);
-      this.collect_bottle_sound.currentTime = 0;
+      this.collect_bottle_sound.currentTime = 1;
       this.collect_bottle_sound.play();
     }
   }
