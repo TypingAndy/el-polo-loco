@@ -98,9 +98,9 @@ class MovableObject extends DrawableObject {
         this.loadImage(this.IMAGE_DEAD); // Zeichne das Bild des toten Chicks
 
         setTimeout(() => {
-          const index = this.level.enemies.indexOf(this); // Finde das Chick im Array
+          const index = level1.enemies.indexOf(this); // Finde das Chick im Array
           if (index > -1) {
-            this.level.enemies.splice(index, 1); // Entferne das Chick
+           level1.enemies.splice(index, 1); // Entferne das Chick
           }
         }, 3000); // Entferne nach 3 Sekunden
       }
