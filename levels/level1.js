@@ -1,5 +1,5 @@
 const level1 = new Level(
-  [new Chick(400), new Chick(800), new Chick(1200), new Chick(1450), new Chicken(position = null , 1), new Chicken(position = null , 1), new Chicken(position = null , 1), new Endboss(3000, 5)],
+  [new Chick(x = null , 1), new Chick(x = null , 1), new Chick(x = null , 1), new Chick(x = null , 1), new Chicken(x = null , 1), new Chicken(x = null , 1), new Chicken(x = null , 1)],
 
   [new Clouds()],
 

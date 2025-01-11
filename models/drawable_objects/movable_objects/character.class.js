@@ -90,7 +90,12 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
     this.animateCharacter();
-  }
+
+    // Korrektur der Y-Position in einem separaten Intervall
+    setInterval(() => {
+        this.correctYPosition();
+    }, 1); // 60 FPS für flüssige Korrekturen
+}
 
   animateCharacter() {
     setInterval(() => {
@@ -120,9 +125,8 @@ class Character extends MovableObject {
       }
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-        this.jump_sound.volume = 0.55;
-        this.jump_sound.play();
+        this.jump(25);
+
       }
 
       this.world.camera_x = -this.x + 100;
@@ -191,4 +195,13 @@ class Character extends MovableObject {
       }
     }, 300);
   }
+
+
+correctYPosition() {
+  const groundY = 180; // Mindesthöhe über dem Boden
+  if (this.y > groundY) {
+      this.y = groundY; // Setze die Y-Position auf die Mindesthöhe
+  }
+}
+
 }

@@ -5,34 +5,43 @@ class Chicken extends MovableObject {
   hitBoxHeight = 50;
   hitBoxX = 5;
   hitBoxY = 5;
-  color = 'orange'
+  color = "orange";
   y = 362;
 
   health;
+  isDead = false; // Neue Eigenschaft, um den Zustand des Huhns zu speichern
 
-  IMAGES_WALKING = [
-    "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
-    "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
-    "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
-  ];
+  IMAGES_WALKING = ["img/3_enemies_chicken/chicken_normal/1_walk/1_w.png", "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png", "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png"];
+  IMAGE_DEAD = "img/3_enemies_chicken/chicken_normal/2_dead/dead.png";
 
-  constructor(position ,health) {
+  constructor(x, health, level) {
     super().loadImage("img/3_enemies_chicken/chicken_normal/1_walk/2_w.png");
     this.loadImages(this.IMAGES_WALKING);
 
-    this.x = 200 + Math.random() * 500;
-    this.speed = 0.15 + Math.random() * 0.5;
+    if (x) {
+      this.x = x;
+      this.speed = 0.15 + Math.random() * 5.5;
+    } else {
+      this.x = 200 + Math.random() * 2500;
+      this.speed = 0.15 + Math.random() * 1.5;
+    }
+
     this.health = health;
+    this.level = level; // Speichere die Referenz auf das Level
     this.animateChicken();
   }
 
   animateChicken() {
     setInterval(() => {
-      this.moveLeft();
+      if (!this.isDead) {
+        this.moveLeft(); // Bewegung nur, wenn das Huhn nicht tot ist
+      }
     }, 1000 / 60);
 
     setInterval(() => {
-      this.playAnimation(this.IMAGES_WALKING);
+      if (!this.isDead) {
+        this.playAnimation(this.IMAGES_WALKING); // Animation nur, wenn das Huhn nicht tot ist
+      }
     }, 150);
   }
 }

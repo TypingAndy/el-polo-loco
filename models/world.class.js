@@ -115,7 +115,6 @@ class World {
     this.ctx.restore();
   }
 
-
   //bottles
   throwBottleInterval() {
     setInterval(() => {
@@ -137,7 +136,7 @@ class World {
     if (this.keyboard.THROW) {
       let bottle = new ThrowableObject(this.character.x + 65, this.character.y + 100);
       this.throwableObjects.push(bottle);
-     }
+    }
   }
 
   collisionDetectionSpeed() {
@@ -146,17 +145,30 @@ class World {
       this.checkCollisionsWithCoins();
       this.checkCollisionsWithBottles();
       this.checkCollisionBottleWithEnemies();
-    }, 100);
+    }, 30);
   }
 
-  checkCollisionsWithEnemies() {
+checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        this.character.hit(enemy);
-        this.statusLifebar.setPercentage(this.character.energy);
-      }
+        if (enemy.isDead) return; // Überspringe tote Gegner
+
+        const collisionType = this.character.isColliding(enemy);
+        this.character.fallingDown = this.character.speedY < 0; // Prüfen, ob der Charakter fällt
+
+        if (collisionType === "top" && this.character.fallingDown) {
+            if (this.keyboard.SPACE) {
+                this.character.jump(30); // Höherer Sprung, wenn SPACE gedrückt ist
+            } else {
+                this.character.jump(10); // Normaler Sprung
+            }
+            enemy.healthMinusOne(); // Reduziere die Gesundheit des Gegners
+        } else if (collisionType) {
+            this.character.hit(enemy); // Charakter nimmt Schaden
+            this.statusLifebar.setPercentage(this.character.energy);
+        }
     });
-  }
+}
+
 
   checkCollisionsWithCoins() {
     this.level.coins.forEach((coin) => {
@@ -184,11 +196,11 @@ class World {
       this.level.enemies.forEach((enemy, enemyIndex) => {
         if (bottle.isColliding(enemy)) {
           this.throwableObjects.splice(bottleIndex, 1); // Flasche entfernen
-  
+
           if (enemy instanceof Endboss) {
             enemy.health -= 1; // Gesundheit reduzieren
             console.log(`Endboss getroffen! Verbleibende Gesundheit: ${enemy.health}`);
-  
+
             if (enemy.health > 0) {
               enemy.playHurtAnimation(); // Hurt-Animation abspielen
             } else if (enemy.health <= 0) {
@@ -202,7 +214,4 @@ class World {
       });
     });
   }
-  
-  
-  
 }

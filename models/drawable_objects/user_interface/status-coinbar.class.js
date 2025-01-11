@@ -32,14 +32,32 @@ class StatusCoinbar extends DrawableObject {
 
     // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
     if (percentageCollected >= 100) {
+      level1.enemies.push(new Endboss(3000, 5))
+      setInterval(() => {
+        level1.enemies.push(new Chicken(3000, 1))
+      }, 3000);
+      setInterval(() => {
+        level1.enemies.push(new Chick(3090, 1))
+      }, 2700);
+  
       return 5; // Alle Münzen eingesammelt
     } else if (percentageCollected >= 80) {
+      level1.enemies.push(new Chick(3800, 1))
+      level1.enemies.push(new Chicken(3900, 1))
+      level1.enemies.push(new Chick(4200, 1))
+      level1.enemies.push(new Chick(4500, 1))
       return 4; // Mehr als 80% gesammelt
     } else if (percentageCollected >= 60) {
+      level1.enemies.push(new Chick(3500, 1))
+      level1.enemies.push(new Chicken(3600, 1))
+      level1.enemies.push(new Chick(3700, 1))
       return 3; // Mehr als 60% gesammelt
     } else if (percentageCollected >= 40) {
+      level1.enemies.push(new Chick(3500, 1))
+      level1.enemies.push(new Chicken(3600, 1))
       return 2; // Mehr als 40% gesammelt
     } else if (percentageCollected >= 20) {
+      level1.enemies.push(new Chick(3500, 1))
       return 1; // Mehr als 20% gesammelt
     } else {
       return 0; // Weniger als 20% gesammelt
