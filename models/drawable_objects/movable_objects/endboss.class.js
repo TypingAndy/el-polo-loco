@@ -28,9 +28,7 @@ class Endboss extends MovableObject {
   ];
 
   IMAGES_DEFEATED = [
-    "img/4_enemie_boss_chicken/4_hurt/G21.png",
-    "img/4_enemie_boss_chicken/4_hurt/G22.png",
-    "img/4_enemie_boss_chicken/4_hurt/G23.png",
+
     "img/4_enemie_boss_chicken/5_dead/G24.png",
     "img/4_enemie_boss_chicken/5_dead/G25.png",
     "img/4_enemie_boss_chicken/5_dead/G26.png",
@@ -72,28 +70,40 @@ constructor(x, health) {
       setTimeout(() => {
         clearInterval(hurtInterval);
         this.isHurt = false; // Nach der Hurt-Animation wieder zurücksetzen
-      }, 600); // Hurt-Animation läuft 500 ms
+      }, 1000); // Hurt-Animation läuft 500 ms
     }
   }
 
   animateDefeat() {
     if (!this.isDefeated) {
-      this.isDefeated = true; // Verhindert mehrfachen Aufruf
-      this.stopWalkingAnimation(); // Stoppt vorherige Animationen
-  
-      let defeatedFrame = 0;
-      let defeatedInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_DEFEATED);
-        defeatedFrame++;
-  
-        if (defeatedFrame >= this.IMAGES_DEFEATED.length) {
-          clearInterval(defeatedInterval); // Beende das Intervall
-          console.log("Endboss besiegt und bleibt im letzten Bild der Animation!");
-          this.img = this.imageCache[this.IMAGES_DEFEATED[this.IMAGES_DEFEATED.length - 1]];
-          // Setzt das letzte Bild der Besiegt-Animation dauerhaft
-        }
-      }, 250); // Besiegt-Animation mit 200 ms Intervall
+      this.startDefeatAnimation();
     }
   }
+  
+  startDefeatAnimation() {
+    this.isDefeated = true;
+    this.stopWalkingAnimation();
+  
+    let defeatedFrame = 0;
+    let defeatedInterval = setInterval(() => {
+      this.playDefeatFrames(defeatedFrame, defeatedInterval);
+      defeatedFrame++;
+    }, 250);
+  }
+  
+  playDefeatFrames(defeatedFrame, defeatedInterval) {
+    this.playAnimation(this.IMAGES_DEFEATED);
+  
+    if (defeatedFrame >= this.IMAGES_DEFEATED.length) {
+      clearInterval(defeatedInterval);
+      this.finalizeDefeatAnimation();
+    }
+  }
+  
+  finalizeDefeatAnimation() {
+    console.log("Endboss besiegt und bleibt im letzten Bild der Animation!");
+    this.img = this.imageCache[this.IMAGES_DEFEATED[this.IMAGES_DEFEATED.length - 1]];
+  }
+  
   
 }

@@ -85,120 +85,162 @@ class Character extends MovableObject {
     }, 10); // 60 FPS für flüssige Korrekturen
   }
 
+  moveCharacter() {
+    if (this.ableMovingRight()) {
+      this.moveRight();
+    } else if (this.ableMovingLeft()) {
+      this.moveLeft();
+    } else this.stopWalkingSound();
+
+    if (this.isAboveGround()) this.stopWalkingSound();
+    if (this.ableToJump()) this.jump(25, 1);
+
+    this.world.camera_x = -this.x + 100;
+  }
+
+  moveRight() {
+    super.moveRight();
+    this.otherDirection = false;
+
+    this.playWalkingSound();
+  }
+
+  moveLeft() {
+    super.moveLeft();
+    this.otherDirection = true;
+    this.playWalkingSound();
+  }
+
+  ableMovingLeft() {
+    return this.world.keyboard.LEFT && this.x > 0;
+  }
+
+  ableMovingRight() {
+    return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+  }
+
+  ableToJump() {
+    return this.world.keyboard.SPACE && !this.isAboveGround();
+  }
+
+  walkingAnimation() {
+    if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  jumpCharacter() {
+    // Überprüfen, ob der Charakter springt
+    if ((this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead())) {
+      if (this.currentAnimation !== "jump") {
+        // Zurücksetzen der Animation, wenn ein neuer Sprung beginnt
+        this.currentImage = 0;
+        this.currentAnimation = "jump"; // Aktuelle Animation setzen
+      }
+      this.playAnimation(this.IMAGES_JUMPING);
+    } else {
+      // Setze die aktuelle Animation zurück, wenn der Charakter nicht springt
+      if (this.currentAnimation === "jump") {
+        this.currentAnimation = null; // Keine spezielle Animation aktiv
+      }
+    }
+  }
+
+  hurtCharacter() {
+    // Lokale Variable innerhalb des Intervalls
+    let isPlayingHurtSound = this.isPlayingHurtSound || false;
+
+    if (this.isHurt() && !this.isDead()) {
+      this.playAnimation(this.IMAGES_HURT);
+
+      if (!isPlayingHurtSound) {
+        // Erstelle ein Array mit den Hurt-Sounds
+        let hurtSounds = [soundManager.sounds.hurt1, soundManager.sounds.hurt2, soundManager.sounds.hurt3, soundManager.sounds.hurt4, soundManager.sounds.hurt5];
+
+        // Wähle einen zufälligen Sound aus
+        let randomSound = hurtSounds[Math.floor(Math.random() * hurtSounds.length)];
+
+        randomSound.volume = 0.3; // Setze die Lautstärke 
+        randomSound.play(); // Spiele den Sound ab
+
+        isPlayingHurtSound = true; // Verhindere mehrfaches Abspielen
+        this.isPlayingHurtSound = isPlayingHurtSound; // Speichere den Zustand
+      }
+    } else {
+      isPlayingHurtSound = false;
+      this.isPlayingHurtSound = isPlayingHurtSound; // Aktualisiere den Zustand
+    }
+  }
+
+  dieCharacter() {
+    // Definiere time innerhalb des Intervalls mit einem Default-Wert
+    let time = this.time || 0;
+
+    if (this.isDead() && time < 7) {
+      this.playAnimation(this.IMAGES_DEAD);
+      this.time = time + 1; // Aktualisiere die time-Variable
+    } else {
+      clearInterval(this.intervalId); // Beende das Intervall, falls nötig
+    }
+  }
+
+  idleCharacter() {
+    if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead()) {
+      this.playAnimation(this.IMAGES_IDLE);
+      time++;
+    }
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.isAboveGround()) {
+      time = 0;
+    }
+  }
+
+  longIdleCharacter() {
+    if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && time > 20) {
+      this.playAnimation(this.IMAGES_LONGIDLE);
+      soundManager.playSound("snoring", 0.5, true);
+    } else {
+      soundManager.stopSound("snoring");
+    }
+  }
+
   animateCharacter() {
-    setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-
-        if (!soundManager.isSoundPlaying("walking")) {
-          soundManager.playSound("walking", 1, true);
-        }
-      } else if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-
-        if (!soundManager.isSoundPlaying("walking")) {
-          soundManager.playSound("walking", 1, true);
-        }
-      } else {
-        if (soundManager.isSoundPlaying("walking")) {
-          soundManager.stopSound("walking");
-        }
-      }
-
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump(25, 1);
-      }
-
-      this.world.camera_x = -this.x + 100;
-    }, 50);
+    setInterval(() => this.moveCharacter(), 50);
 
     //interval for Walking
-    setInterval(() => {
-      if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
-    }, 50);
-
-    //interval for Hurt
-    let isPlayingHurtSound = false; // Zustand für den Sound
+    setInterval(() => this.walkingAnimation(), 50);
 
     // Interval for Hurt
-    setInterval(() => {
-      if (this.isHurt() && !this.isDead()) {
-        this.playAnimation(this.IMAGES_HURT);
-
-        if (!isPlayingHurtSound) {
-          // Erstelle ein Array mit den Hurt-Sounds
-          let hurtSounds = [soundManager.sounds.hurt1, soundManager.sounds.hurt2, soundManager.sounds.hurt3, soundManager.sounds.hurt4, soundManager.sounds.hurt5];
-
-          // Wähle einen zufälligen Sound aus
-          let randomSound = hurtSounds[Math.floor(Math.random() * hurtSounds.length)];
-
-          randomSound.volume = 0.3; // Setze die Lautstärke
-          randomSound.play(); // Spiele den Sound ab
-
-          isPlayingHurtSound = true; // Verhindere mehrfaches Abspielen
-        }
-      } else {
-        isPlayingHurtSound = false; // Setze den Zustand zurück, wenn der Charakter nicht mehr verletzt ist
-      }
-    }, 30);
+    setInterval(() => this.hurtCharacter(), 30);
 
     //interval for Jumping
-    setInterval(() => {
-      // Überprüfen, ob der Charakter springt
-      if ((this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead())) {
-        if (this.currentAnimation !== "jump") {
-          // Zurücksetzen der Animation, wenn ein neuer Sprung beginnt
-          this.currentImage = 0;
-          this.currentAnimation = "jump"; // Aktuelle Animation setzen
-        }
-        this.playAnimation(this.IMAGES_JUMPING);
-      } else {
-        // Setze die aktuelle Animation zurück, wenn der Charakter nicht springt
-        if (this.currentAnimation === "jump") {
-          this.currentAnimation = null; // Keine spezielle Animation aktiv
-        }
-      }
-    }, 110);
+    setInterval(() => this.jumpCharacter(), 110);
 
     //interval for Die
-    let time = 0;
-    setInterval(() => {
-      if (this.isDead() && time < 7) {
-        this.playAnimation(this.IMAGES_DEAD);
-        time++;
-      }
-    }, 250);
+    setInterval(() => this.dieCharacter(), 210);
 
     //interval for Idle
-    setInterval(() => {
-      if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead()) {
-        this.playAnimation(this.IMAGES_IDLE);
-        time++;
-      }
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.isAboveGround()) {
-        time = 0;
-      }
-    }, 300);
+    setInterval(() => this.idleCharacter(), 300);
 
     //interval for LongIdle
-    setInterval(() => {
-      if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && time > 20) {
-        this.playAnimation(this.IMAGES_LONGIDLE);
-        soundManager.playSound("snoring", 0.5, true);
-      } else {
-        soundManager.stopSound("snoring");
-      }
-    }, 300);
+    setInterval(() => this.longIdleCharacter(), 300);
   }
 
   correctYPosition() {
     let groundY = 180; // Mindesthöhe über dem Boden
     if (this.y > groundY) {
       this.y = groundY; // Setze die Y-Position auf die Mindesthöhe
+    }
+  }
+
+  playWalkingSound() {
+    if (!soundManager.isSoundPlaying("walking")) {
+      soundManager.playSound("walking", 1, true);
+    }
+  }
+
+  stopWalkingSound() {
+    if (soundManager.isSoundPlaying("walking")) {
+      soundManager.stopSound("walking");
     }
   }
 }

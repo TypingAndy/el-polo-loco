@@ -29,25 +29,39 @@ class Clouds extends MovableObject {
   }
 
   adjustSpeed() {
+    this.checkSpeedChange();
+    this.calculateTransitionSpeed();
+    this.finalizeTransition();
+  }
+  
+  checkSpeedChange() {
     let now = Date.now();
-
-    // Check if it's time to change the target speed
+  
     if (now - this.lastSpeedChange >= this.speedChangeInterval) {
       this.lastSpeedChange = now;
-      this.targetSpeed = 0.1 + Math.random() * 0.25; // New target speed (0.05 to 0.3)
+      this.targetSpeed = 0.1 + Math.random() * 0.25;
       this.transitionStartTime = now;
       this.initialTransitionSpeed = this.speed;
     }
-
-    // If we are in the transition phase
+  }
+  
+  calculateTransitionSpeed() {
+    let now = Date.now();
+  
     if (this.transitionStartTime && now - this.transitionStartTime <= this.transitionDuration) {
       let elapsed = now - this.transitionStartTime;
-      let t = elapsed / this.transitionDuration; // Normalized time (0 to 1)
+      let t = elapsed / this.transitionDuration;
       this.speed = this.initialTransitionSpeed + t * (this.targetSpeed - this.initialTransitionSpeed);
-    } else if (this.transitionStartTime) {
-      // Transition complete
+    }
+  }
+  
+  finalizeTransition() {
+    let now = Date.now();
+  
+    if (this.transitionStartTime && now - this.transitionStartTime > this.transitionDuration) {
       this.speed = this.targetSpeed;
       this.transitionStartTime = null;
     }
   }
+  
 }
