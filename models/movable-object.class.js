@@ -6,7 +6,6 @@ class MovableObject extends DrawableObject {
   fallingDown = false;
   lastHit = 0;
   currentImage = 0;
-
   energy = 100;
   bottleAmount = 0;
   coinAmount = 0;
@@ -95,27 +94,26 @@ class MovableObject extends DrawableObject {
   enemieHealthMinusOne() {
     if (this.health > 0) {
       this.health -= 1;
-  
+
       if (this.health === 0) {
         this.isDead = true;
-        this.speed = 0; 
-        this.loadImage(this.IMAGE_DEAD); 
-  
+        this.speed = 0;
+        this.loadImage(this.IMAGE_DEAD);
+
         // Wähle Sound basierend auf dem Gegnertyp
         let soundName = this instanceof Chicken ? "squeezeChicken" : "squeezeChick";
         soundManager.stopSound(soundName);
         soundManager.playSound(soundName);
-  
+
         setTimeout(() => {
-          let index = level1.enemies.indexOf(this); 
+          let index = level1.enemies.indexOf(this);
           if (index > -1) {
-            level1.enemies.splice(index, 1); 
+            level1.enemies.splice(index, 1);
           }
-        }, 3000); 
+        }, 3000);
       }
     }
   }
-  
 
   hit() {
     let timepassed = new Date().getTime() - this.lastHit;

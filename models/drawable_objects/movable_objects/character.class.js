@@ -9,15 +9,6 @@ class Character extends MovableObject {
 
   y = 180;
 
- 
-  hurt_sound1 = new Audio("audio/doh1.wav");
-  hurt_sound2 = new Audio("audio/doh2.wav");
-  hurt_sound3 = new Audio("audio/doh3.wav");
-  hurt_sound4 = new Audio("audio/doh4.wav");
-  hurt_sound5 = new Audio("audio/doh5.wav");
-
-
-
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
     "img/2_character_pepe/1_idle/idle/I-2.png",
@@ -139,11 +130,16 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_HURT);
 
         if (!isPlayingHurtSound) {
-          let hurtSounds = [this.hurt_sound1, this.hurt_sound2, this.hurt_sound3, this.hurt_sound4, this.hurt_sound5];
+          // Erstelle ein Array mit den Hurt-Sounds
+          let hurtSounds = [soundManager.sounds.hurt1, soundManager.sounds.hurt2, soundManager.sounds.hurt3, soundManager.sounds.hurt4, soundManager.sounds.hurt5];
+
+          // Wähle einen zufälligen Sound aus
           let randomSound = hurtSounds[Math.floor(Math.random() * hurtSounds.length)];
-          randomSound.play(); // Spiele einen zufälligen Sound ab
-          randomSound.volume = 0.4;
-          isPlayingHurtSound = true; // Setze den Zustand, um mehrfaches Abspielen zu verhindern
+
+          randomSound.volume = 0.3; // Setze die Lautstärke
+          randomSound.play(); // Spiele den Sound ab
+
+          isPlayingHurtSound = true; // Verhindere mehrfaches Abspielen
         }
       } else {
         isPlayingHurtSound = false; // Setze den Zustand zurück, wenn der Charakter nicht mehr verletzt ist

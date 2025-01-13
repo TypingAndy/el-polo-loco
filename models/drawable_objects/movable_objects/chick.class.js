@@ -11,15 +11,9 @@ class Chick extends MovableObject {
   health;
   isDead = false; // Eigenschaft, um den Zustand des Chicks zu speichern
 
-  IMAGES_WALKING = [
-    "img/3_enemies_chicken/chicken_small/1_walk/1_w.png",
-    "img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
-    "img/3_enemies_chicken/chicken_small/1_walk/3_w.png"
-  ];
+  IMAGES_WALKING = ["img/3_enemies_chicken/chicken_small/1_walk/1_w.png", "img/3_enemies_chicken/chicken_small/1_walk/2_w.png", "img/3_enemies_chicken/chicken_small/1_walk/3_w.png"];
 
   IMAGE_DEAD = "img/3_enemies_chicken/chicken_small/2_dead/dead.png";
-
-
 
   constructor(x, health, level) {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/2_w.png");
@@ -37,8 +31,6 @@ class Chick extends MovableObject {
     this.level = level; // Speichere die Referenz auf das Level
     this.animateChick();
   }
-
-
 
   animateChick() {
     setInterval(() => {
