@@ -9,17 +9,14 @@ class Character extends MovableObject {
 
   y = 180;
 
-  walking_sound = new Audio("audio/run.wav");
-  jump_sound = new Audio("audio/jump1.wav");
+ 
   hurt_sound1 = new Audio("audio/doh1.wav");
   hurt_sound2 = new Audio("audio/doh2.wav");
   hurt_sound3 = new Audio("audio/doh3.wav");
   hurt_sound4 = new Audio("audio/doh4.wav");
   hurt_sound5 = new Audio("audio/doh5.wav");
-  hurt_sound6 = new Audio("audio/doh6.wav");
-  hurt_sound7 = new Audio("audio/doh7.wav");
-  snoring_sound = new Audio("audio/snoring.wav");
-  shooting_sound = new Audio("audio/shoot.wav");
+
+
 
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
@@ -93,9 +90,9 @@ class Character extends MovableObject {
 
     // Korrektur der Y-Position in einem separaten Intervall
     setInterval(() => {
-        this.correctYPosition();
-    }, 1); // 60 FPS für flüssige Korrekturen
-}
+      this.correctYPosition();
+    }, 10); // 60 FPS für flüssige Korrekturen
+  }
 
   animateCharacter() {
     setInterval(() => {
@@ -103,30 +100,24 @@ class Character extends MovableObject {
         this.moveRight();
         this.otherDirection = false;
 
-        if (!this.walking_sound.isPlaying) {
-          this.walking_sound.loop = true;
-          this.walking_sound.play();
-          this.walking_sound.isPlaying = true;
+        if (!soundManager.isSoundPlaying("walking")) {
+          soundManager.playSound("walking", 1, true);
         }
       } else if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
         this.otherDirection = true;
 
-        if (!this.walking_sound.isPlaying) {
-          this.walking_sound.loop = true;
-          this.walking_sound.play();
-          this.walking_sound.isPlaying = true;
+        if (!soundManager.isSoundPlaying("walking")) {
+          soundManager.playSound("walking", 1, true);
         }
       } else {
-        if (this.walking_sound.isPlaying) {
-          this.walking_sound.pause();
-          this.walking_sound.isPlaying = false;
+        if (soundManager.isSoundPlaying("walking")) {
+          soundManager.stopSound("walking");
         }
       }
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump(25);
-
+        this.jump(25, 1);
       }
 
       this.world.camera_x = -this.x + 100;
@@ -134,21 +125,35 @@ class Character extends MovableObject {
 
     //interval for Walking
     setInterval(() => {
-      if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt()) && !this.isDead()|| (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
+      if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50);
 
     //interval for Hurt
+    let isPlayingHurtSound = false; // Zustand für den Sound
+
+    // Interval for Hurt
     setInterval(() => {
       if (this.isHurt() && !this.isDead()) {
         this.playAnimation(this.IMAGES_HURT);
+
+        if (!isPlayingHurtSound) {
+          let hurtSounds = [this.hurt_sound1, this.hurt_sound2, this.hurt_sound3, this.hurt_sound4, this.hurt_sound5];
+          let randomSound = hurtSounds[Math.floor(Math.random() * hurtSounds.length)];
+          randomSound.play(); // Spiele einen zufälligen Sound ab
+          randomSound.volume = 0.4;
+          isPlayingHurtSound = true; // Setze den Zustand, um mehrfaches Abspielen zu verhindern
+        }
+      } else {
+        isPlayingHurtSound = false; // Setze den Zustand zurück, wenn der Charakter nicht mehr verletzt ist
       }
     }, 30);
 
     //interval for Jumping
     setInterval(() => {
-      if ((this.isAboveGround() && !this.isHurt()) && !this.isDead() || (this.speedY > 0 && !this.isHurt() && !this.isDead())) {
+      // Überprüfen, ob der Charakter springt
+      if ((this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead())) {
         if (this.currentAnimation !== "jump") {
           // Zurücksetzen der Animation, wenn ein neuer Sprung beginnt
           this.currentImage = 0;
@@ -187,21 +192,17 @@ class Character extends MovableObject {
     setInterval(() => {
       if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && time > 20) {
         this.playAnimation(this.IMAGES_LONGIDLE);
-        this.snoring_sound.volume = 0;
-        this.snoring_sound.play();
+        soundManager.playSound("snoring", 0.5, true);
       } else {
-        this.snoring_sound.pause();
-        this.snoring_sound.currentTime = 0;
+        soundManager.stopSound("snoring");
       }
     }, 300);
   }
 
-
-correctYPosition() {
-  const groundY = 180; // Mindesthöhe über dem Boden
-  if (this.y > groundY) {
+  correctYPosition() {
+    let groundY = 180; // Mindesthöhe über dem Boden
+    if (this.y > groundY) {
       this.y = groundY; // Setze die Y-Position auf die Mindesthöhe
+    }
   }
-}
-
 }

@@ -28,7 +28,7 @@ class StatusCoinbar extends DrawableObject {
 
   resolveImageIndex() {
     // Berechne den Prozentsatz der eingesammelten Münzen
-    const percentageCollected = (this.coinsCollected / this.levelCoinAmount) * 100;
+    let percentageCollected = (this.coinsCollected / this.levelCoinAmount) * 100;
 
     // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
     if (percentageCollected >= 100) {

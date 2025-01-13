@@ -37,7 +37,9 @@ class Endboss extends MovableObject {
      "img/4_enemie_boss_chicken/5_dead/G26.png"
   ];
 
-  constructor(x, health) {
+
+
+constructor(x, health) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_HURT);
@@ -60,9 +62,10 @@ class Endboss extends MovableObject {
   }
 
   playHurtAnimation() {
+  
     if (!this.isHurt && !this.isDefeated) {
       this.isHurt = true; // Verhindert mehrfaches Abspielen
-      const hurtInterval = setInterval(() => {
+      let hurtInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_HURT);
       }, 200);
 
@@ -79,7 +82,7 @@ class Endboss extends MovableObject {
       this.stopWalkingAnimation(); // Stoppt vorherige Animationen
   
       let defeatedFrame = 0;
-      const defeatedInterval = setInterval(() => {
+      let defeatedInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_DEFEATED);
         defeatedFrame++;
   

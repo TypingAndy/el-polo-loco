@@ -12,27 +12,32 @@ class ThrowableObject extends MovableObject {
     "img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png",
   ];
 
-  shooting_sound = new Audio("audio/shoot.wav");
-  noBottle_sound = new Audio("audio/doh1.wav");
+  IMAGES_SPLASH = [
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png",
+    "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
+  ];
 
-  constructor(x, y) {
+  constructor(x, y, world) {
     super().loadImage("img/6_salsa_bottle/salsa_bottle.png");
 
+    this.world = world; // Referenz zur Welt speichern
     this.loadImages(this.IMAGES_THROWING);
+
     if (level1.collectedBottles.length > 0) {
       level1.collectedBottles.splice(0, 1);
-      this.x = 100;
-      this.y = 100;
+      this.x = x;
+      this.y = y;
       this.height = 50;
       this.width = 40;
       this.throw(x, y);
       this.animateThrowableObject();
-      console.log(level1.collectedBottles);
-      console.log(level1.thrownBottles);
-      
     } else {
-      this.noBottle_sound.volume = 0.6;
-      this.noBottle_sound.play();
+      soundManager.stopSound("noBottle")
+      soundManager.playSound("noBottle", 0.3);
     }
   }
 
@@ -45,12 +50,21 @@ class ThrowableObject extends MovableObject {
   throw(x, y) {
     this.x = x;
     this.y = y;
-    this.speedY = 30;
-    this.applyGravity();
-    this.shooting_sound.play();
+    this.speedY = 25; // Initiale Wurfhöhe
+    this.speedX = 10; // Horizontale Bewegung
+    this.applyGravity(); // Bewegung durch Schwerkraft und X-Steuerung
+  
+    soundManager.playSound("shooting", 0.8);
+  }
 
-    setInterval(() => {
-      this.x += 6;
-    }, 20);
+  triggerSplashAnimation() {
+    this.speedX = 0; // Stoppe die horizontale Bewegung
+    this.speedY = 0; // Stoppe die vertikale Bewegung
+    this.loadImages(this.IMAGES_SPLASH); // Lade Splash-Bilder
+    this.currentImage = 0; // Setze Animation zurück
+
+    let splashInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_SPLASH);
+    }, 100);
   }
 }

@@ -11,9 +11,6 @@ class MovableObject extends DrawableObject {
   bottleAmount = 0;
   coinAmount = 0;
 
-  collect_coin_sound = new Audio("audio/pickupCoin.wav");
-  collect_bottle_sound = new Audio("audio/pickupBottle.wav");
-
   playAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
@@ -29,19 +26,27 @@ class MovableObject extends DrawableObject {
     this.x -= this.speed;
   }
 
-  jump(height) {
+  jump(height, jumpVolume) {
     this.speedY = height;
+    soundManager.stopSound("jump");
+    soundManager.playSound("jump", jumpVolume); // Nur dann abspielen, wenn der Sprung neu beginnt
   }
 
   applyGravity() {
     setInterval(() => {
+      // Vertikale Bewegung
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       } else {
-        this.speedY = 0; // Stop vertical movement when landed
+        this.speedY = 0; // Stoppe vertikale Bewegung beim Landen
       }
-    }, 1000 / 25);
+
+      // Horizontale Bewegung
+      if (typeof this.speedX !== "undefined" && this.speedX !== 0) {
+        this.x += this.speedX; // Aktualisiere die X-Position
+      }
+    }, 1000 / 25); // Beibehaltung der ursprünglichen Geschwindigkeit
   }
 
   isAboveGround() {
@@ -53,29 +58,29 @@ class MovableObject extends DrawableObject {
   }
 
   isFallingDown() {
-    const falling = this.speedY < 0;
+    let falling = this.speedY < 0;
     console.log("Is falling down:", falling);
     return falling;
   }
 
   //hier wird eine überlappung der beiden hitboxen geprüft, alle abfragen müssen eintreffen um eine true wert zurückzugben
   isColliding(object) {
-    const isColliding =
+    let isColliding =
       this.x + this.hitBoxX + this.hitBoxWidth > object.x + object.hitBoxX &&
       this.y + this.hitBoxY + this.hitBoxHeight > object.y + object.hitBoxY &&
       this.x + this.hitBoxX < object.x + object.hitBoxX + object.hitBoxWidth &&
       this.y + this.hitBoxY < object.y + object.hitBoxY + object.hitBoxHeight;
-  
+
     if (!isColliding) return false; // Keine Kollision
-  
+
     // Berechnung der Überlappung
-    const overlapLeft = this.x + this.hitBoxX + this.hitBoxWidth - (object.x + object.hitBoxX);
-    const overlapRight = object.x + object.hitBoxX + object.hitBoxWidth - (this.x + this.hitBoxX);
-    const overlapTop = this.y + this.hitBoxY + this.hitBoxHeight - (object.y + object.hitBoxY);
-    const overlapBottom = object.y + object.hitBoxY + object.hitBoxHeight - (this.y + this.hitBoxY);
-  
-    const smallestOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
-  
+    let overlapLeft = this.x + this.hitBoxX + this.hitBoxWidth - (object.x + object.hitBoxX);
+    let overlapRight = object.x + object.hitBoxX + object.hitBoxWidth - (this.x + this.hitBoxX);
+    let overlapTop = this.y + this.hitBoxY + this.hitBoxHeight - (object.y + object.hitBoxY);
+    let overlapBottom = object.y + object.hitBoxY + object.hitBoxHeight - (this.y + this.hitBoxY);
+
+    let smallestOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
     if (smallestOverlap === overlapTop && this.speedY < 0) {
       return "top";
     } else if (smallestOverlap === overlapBottom) {
@@ -86,26 +91,31 @@ class MovableObject extends DrawableObject {
       return "right";
     }
   }
-  
 
-  healthMinusOne() {
+  enemieHealthMinusOne() {
     if (this.health > 0) {
-      this.health -= 1; // Reduziere die Health des Chicks um 1
-
+      this.health -= 1;
+  
       if (this.health === 0) {
-        this.isDead = true; // Markiere das Chick als tot
-        this.speed = 0; // Stoppe die Bewegung
-        this.loadImage(this.IMAGE_DEAD); // Zeichne das Bild des toten Chicks
-
+        this.isDead = true;
+        this.speed = 0; 
+        this.loadImage(this.IMAGE_DEAD); 
+  
+        // Wähle Sound basierend auf dem Gegnertyp
+        let soundName = this instanceof Chicken ? "squeezeChicken" : "squeezeChick";
+        soundManager.stopSound(soundName);
+        soundManager.playSound(soundName);
+  
         setTimeout(() => {
-          const index = level1.enemies.indexOf(this); // Finde das Chick im Array
+          let index = level1.enemies.indexOf(this); 
           if (index > -1) {
-           level1.enemies.splice(index, 1); // Entferne das Chick
+            level1.enemies.splice(index, 1); 
           }
-        }, 3000); // Entferne nach 3 Sekunden
+        }, 3000); 
       }
     }
   }
+  
 
   hit() {
     let timepassed = new Date().getTime() - this.lastHit;
@@ -132,21 +142,20 @@ class MovableObject extends DrawableObject {
   }
 
   collectCoin(coin) {
-    const index = this.world.level.coins.indexOf(coin);
+    let index = this.world.level.coins.indexOf(coin);
     if (index !== -1) {
       this.world.level.coins.splice(index, 1);
-      this.collect_coin_sound.currentTime = 0;
-      this.collect_coin_sound.volume = 1;
-      this.collect_coin_sound.play();
+      soundManager.stopSound("collectCoin");
+      soundManager.playSound("collectCoin", 1); // Lautstärke auf 1 setzen
     }
   }
 
   collectBottle(bottle) {
-    const index = this.world.level.bottles.indexOf(bottle);
+    let index = this.world.level.bottles.indexOf(bottle);
     if (index !== -1) {
       this.world.level.bottles.splice(index, 1);
-      this.collect_bottle_sound.currentTime = 1;
-      this.collect_bottle_sound.play();
+      soundManager.stopSound("collectBottle", 1);
+      soundManager.playSound("collectBottle", 1);
     }
   }
 }

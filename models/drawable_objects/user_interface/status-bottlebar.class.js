@@ -28,7 +28,7 @@ class StatusBottlebar extends DrawableObject {
 
   resolveImageIndex() {
     // Berechne den Prozentsatz der eingesammelten Münzen
-    const percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
+    let percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
 
     // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
     if (percentageCollected >= 100) {

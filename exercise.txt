@@ -2,18 +2,11 @@ Aufgaben:
 
 + Start Screen
 + Musik + sounds
-+ Coins Sammeln
-+ Flaschen Sammeln
-+ Flaschen nur werfen wenn gesammelt
++ bottle splash
 + Game over Screeen
 + Fullscreen
 + Help Funciton
-+ Collision
-+
 
-+
-+
-+
 
 
 licence
