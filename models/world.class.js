@@ -153,19 +153,30 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (enemy.isDead) return; // Überspringe tote Gegner
       let collisionType = this.character.isColliding(enemy);
-      this.character.fallingDown = this.character.speedY < 0; // Prüfen, ob der Charakter fällt
-      if (collisionType === "top" && this.character.fallingDown) {
-        if (this.keyboard.SPACE) {
-          this.character.jump(30, 0); // Höherer Sprung, wenn SPACE gedrückt ist
-        } else {
-          this.character.jump(10, 0); // Normaler Sprung
-        }
-        enemy.enemieHealthMinusOne(); // Reduziere die Gesundheit des Gegners
+      if (collisionType === "top" && this.checkCharacterFallingDown()) {
+        this.jumpOnEnemyTop(enemy);
       } else if (collisionType) {
-        this.character.hit(enemy); // Charakter nimmt Schaden
-        this.statusLifebar.setPercentage(this.character.energy);
+        this.characterGetHitByEnemy(enemy);
       }
     });
+  }
+
+  checkCharacterFallingDown() {
+    return (this.character.fallingDown = this.character.speedY < 0); // Prüfen, ob der Charakter fällt
+  }
+
+  jumpOnEnemyTop(enemy) {
+    if (this.keyboard.SPACE) {
+      this.character.jump(30, 0); // Höherer Sprung, wenn SPACE gedrückt ist
+    } else {
+      this.character.jump(10, 0); // Normaler Sprung
+    }
+    enemy.enemieHealthMinusOne(); // Reduziere die Gesundheit des Gegners
+  }
+
+  characterGetHitByEnemy(enemy) {
+    this.character.hit(enemy); // Charakter nimmt Schaden
+    this.statusLifebar.setPercentage(this.character.energy);
   }
 
   checkCollisionsWithCoins() {
@@ -193,32 +204,37 @@ class World {
     this.throwableObjects.forEach((bottle, bottleIndex) => {
       this.level.enemies.forEach((enemy) => {
         if (bottle.isColliding(enemy)) {
-          // Splash-Animation auslösen und Sound abspielen
           soundManager.stopSound("bottleSmash");
           soundManager.playSound("bottleSmash");
 
           if (enemy instanceof Endboss) {
-            enemy.health -= 1; // Gesundheit reduzieren
+            enemy.health -= 1;
 
             if (enemy.health > 0) {
-              enemy.playHurtAnimation(); // Hurt-Animation
-              console.log("Playing endbossHurt sound");
-              soundManager.stopSound("endbossHurt");
-              soundManager.playSound("endbossHurt");
+              this.hurtEndbossAnimation(enemy);
             } else {
-              enemy.animateDefeat(); // Besiegt-Animation
+              enemy.animateDefeat();
             }
           } else {
-            enemy.enemieHealthMinusOne(); // Schaden für normalen Gegner
+            enemy.enemieHealthMinusOne();
           }
 
-          // Ersetze die geworfene Flasche durch eine zerbrochene Flasche
-          let brokenBottle = new BrokenBottle(bottle.x, bottle.y);
-          this.throwableObjects.splice(bottleIndex, 1); // Entferne die geworfene Flasche
-          this.throwableObjects.push(brokenBottle); // Füge die zerbrochene Flasche hinzu
+          this.changeThrownToBrokenBottle(bottle, bottleIndex);
         }
       });
     });
+  }
+
+  hurtEndbossAnimation(enemy) {
+    enemy.playHurtAnimation(); // Hurt-Animation
+    soundManager.stopSound("endbossHurt");
+    soundManager.playSound("endbossHurt");
+  }
+
+  changeThrownToBrokenBottle(bottle, bottleIndex) {
+    let brokenBottle = new BrokenBottle(bottle.x, bottle.y);
+    this.throwableObjects.splice(bottleIndex, 1); // Entferne die geworfene Flasche
+    this.throwableObjects.push(brokenBottle); // Füge die zerbrochene Flasche hinzu
   }
 
   // Methode zur Initialisierung der Musik
