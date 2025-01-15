@@ -117,9 +117,9 @@ class MovableObject extends DrawableObject {
 
   spliceEnemyOnHit() {
     setTimeout(() => {
-      let index = level1.enemies.indexOf(this);
+      let index = this.world.level.enemies.indexOf(this);
       if (index > -1) {
-        level1.enemies.splice(index, 1);
+        this.world.level.enemies.splice(index, 1);
       }
     }, 3000);
   }

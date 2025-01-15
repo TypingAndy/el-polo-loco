@@ -21,14 +21,14 @@ class ThrowableObject extends MovableObject {
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ];
 
-  constructor(x, y, world) {
+  constructor(x, y) {
     super().loadImage("img/6_salsa_bottle/salsa_bottle.png");
 
-    this.world = world; // Referenz zur Welt speichern
+  
     this.loadImages(this.IMAGES_THROWING);
 
-    if (level1.collectedBottles.length > 0) {
-      level1.collectedBottles.splice(0, 1);
+    if (world.level.collectedBottles.length > 0) {
+      world.level.collectedBottles.splice(0, 1);
       this.x = x;
       this.y = y;
       this.height = 50;

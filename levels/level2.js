@@ -44,7 +44,7 @@ const level2 = new Level(
 
   [new Coin(200, 110), new Coin(250, 110), new Coin(650, 110), new Coin(700, 70), new Coin(750, 70), new Coin(1200, 110), new Coin(1250, 110), new Coin(1300, 110), new Coin(1700, 110), new Coin(1750, 110), new Coin(1800, 110), new Coin(2100, 70), new Coin(2150, 70)],
 
-  [new CollectableBottle(550), new CollectableBottle(500), new CollectableBottle(1000), new CollectableBottle(1250), new CollectableBottle(1500), new CollectableBottle(2000), new CollectableBottle(2250), new CollectableBottle(2350)],
+  [new CollectableBottle(250), new CollectableBottle(400), new CollectableBottle(800), new CollectableBottle(1050), new CollectableBottle(1400), new CollectableBottle(2000), new CollectableBottle(2250), new CollectableBottle(2350)],
 
   //bottle Placeholder "collectedBottles"
   [],

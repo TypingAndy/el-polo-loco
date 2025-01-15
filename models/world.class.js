@@ -36,7 +36,7 @@ class World {
   }
 
   updateBottleBar() {
-    this.statusBottlebar.setBottleAmount(level1.collectedBottles.length);
+    this.statusBottlebar.setBottleAmount(world.level.collectedBottles.length);
   }
 
   startStatusUpdateInterval() {
@@ -124,9 +124,9 @@ class World {
   }
 
   respawnBottles() {
-    if (level1.bottles.length < 7) {
+    if (this.level.bottles.length < 7) {
       let randomX = Math.floor(Math.random() * (2500 - 200 + 1)) + 200;
-      level1.bottles.push(new CollectableBottle(randomX));
+      this.level.bottles.push(new CollectableBottle(randomX));
     }
   }
 
@@ -191,8 +191,8 @@ class World {
       if (this.character.isColliding(bottle)) {
         this.character.collectBottle(bottle);
 
-        level1.collectedBottles.push("bottleToThrow");
-        this.statusBottlebar.setBottleAmount(level1.collectedBottles.length);
+        this.level.collectedBottles.push("bottleToThrow");
+        this.statusBottlebar.setBottleAmount(this.level.collectedBottles.length);
       }
     });
   }
