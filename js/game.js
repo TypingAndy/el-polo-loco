@@ -9,6 +9,31 @@ function init() {
   ctx = canvas.getContext("2d");
 }
 
+function selectLevel(level) {
+  resetGame();
+  console.log(`Level ${level} ausgewählt`);
+  switch (level) {
+      case 0:
+          world.level = level0;
+          break;
+      case 1:
+          world.level = level1;
+          break;
+      case 2:
+          world.level = level2;
+          break;
+      default:
+          console.error("Ungültiges Level ausgewählt");
+  }
+}
+
+
+function resetGame() {
+  console.log("Das Spiel wird zurückgesetzt...");
+  // Hier sollte die Logik zum Neustart des Spiels implementiert werden
+  // z. B. Spiel-Loop anhalten, Objekte neu initialisieren, etc.
+}
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "a") {
     keyboard.LEFT = true;

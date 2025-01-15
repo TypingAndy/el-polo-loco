@@ -5,7 +5,7 @@ class World {
   statusBottlebar = new StatusBottlebar();
   throwableObjects = [];
 
-  level = level1;
+  level = level0;
   canvas;
   ctx;
   keyboard;
@@ -125,10 +125,7 @@ class World {
 
   respawnBottles() {
     if (level1.bottles.length < 7) {
-      // Zufällige X-Position zwischen 200 und 1500 berechnen
       let randomX = Math.floor(Math.random() * (2500 - 200 + 1)) + 200;
-
-      // Neue Flasche mit zufälliger Position hinzufügen
       level1.bottles.push(new CollectableBottle(randomX));
     }
   }
@@ -151,7 +148,7 @@ class World {
 
   checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
-      if (enemy.isDead) return; // Überspringe tote Gegner
+      if (enemy.isDead) return;
       let collisionType = this.character.isColliding(enemy);
       if (collisionType === "top" && this.checkCharacterFallingDown()) {
         this.jumpOnEnemyTop(enemy);
@@ -162,20 +159,20 @@ class World {
   }
 
   checkCharacterFallingDown() {
-    return (this.character.fallingDown = this.character.speedY < 0); // Prüfen, ob der Charakter fällt
+    return (this.character.fallingDown = this.character.speedY < 0);
   }
 
   jumpOnEnemyTop(enemy) {
     if (this.keyboard.SPACE) {
-      this.character.jump(30, 0); // Höherer Sprung, wenn SPACE gedrückt ist
+      this.character.jump(30, 0);
     } else {
-      this.character.jump(10, 0); // Normaler Sprung
+      this.character.jump(10, 0);
     }
-    enemy.enemieHealthMinusOne(); // Reduziere die Gesundheit des Gegners
+    enemy.enemieHealthMinusOne();
   }
 
   characterGetHitByEnemy(enemy) {
-    this.character.hit(enemy); // Charakter nimmt Schaden
+    this.character.hit(enemy);
     this.statusLifebar.setPercentage(this.character.energy);
   }
 
@@ -224,6 +221,9 @@ class World {
       });
     });
   }
+
+
+  
 
   hurtEndbossAnimation(enemy) {
     enemy.playHurtAnimation(); // Hurt-Animation

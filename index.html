@@ -27,7 +27,9 @@
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
   
+    <script src="levels/level0.js"></script>
     <script src="levels/level1.js"></script>
+    <script src="levels/level2.js"></script>
   
     <script src="js/game.js"></script>
 
@@ -39,6 +41,12 @@
   </head>
   <body onload="init()">
     <h1 >El Polo Loco</h1>
+
+    <div class="button-container">
+      <button class="level-button" onclick="selectLevel(0)">Level 0</button>
+      <button class="level-button" onclick="selectLevel(1)">Level 1</button>
+      <button class="level-button" onclick="selectLevel(2)">Level 2</button>
+  </div>
 
     <canvas id="canvas" width="720" height="480"></canvas>
 

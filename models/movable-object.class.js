@@ -28,24 +28,22 @@ class MovableObject extends DrawableObject {
   jump(height, jumpVolume) {
     this.speedY = height;
     soundManager.stopSound("jump");
-    soundManager.playSound("jump", jumpVolume); // Nur dann abspielen, wenn der Sprung neu beginnt
+    soundManager.playSound("jump", jumpVolume);
   }
 
   applyGravity() {
     setInterval(() => {
-      // Vertikale Bewegung
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       } else {
-        this.speedY = 0; // Stoppe vertikale Bewegung beim Landen
+        this.speedY = 0;
       }
 
-      // Horizontale Bewegung
       if (typeof this.speedX !== "undefined" && this.speedX !== 0) {
-        this.x += this.speedX; // Aktualisiere die X-Position
+        this.x += this.speedX;
       }
-    }, 1000 / 25); // Beibehaltung der ursprünglichen Geschwindigkeit
+    }, 1000 / 25);
   }
 
   isAboveGround() {
@@ -62,7 +60,6 @@ class MovableObject extends DrawableObject {
     return falling;
   }
 
-  //hier wird eine überlappung der beiden hitboxen geprüft, alle abfragen müssen eintreffen um eine true wert zurückzugben
   isColliding(object) {
     let isColliding =
       this.x + this.hitBoxX + this.hitBoxWidth > object.x + object.hitBoxX &&
@@ -70,14 +67,21 @@ class MovableObject extends DrawableObject {
       this.x + this.hitBoxX < object.x + object.hitBoxX + object.hitBoxWidth &&
       this.y + this.hitBoxY < object.y + object.hitBoxY + object.hitBoxHeight;
 
-    if (!isColliding) return false; // Keine Kollision
+    if (!isColliding) return false;
+    let overlaps = this.calculateOverlap(object);
+    return this.getCollisionDirection(overlaps);
+  }
 
-    // Berechnung der Überlappung
+  calculateOverlap(object) {
     let overlapLeft = this.x + this.hitBoxX + this.hitBoxWidth - (object.x + object.hitBoxX);
     let overlapRight = object.x + object.hitBoxX + object.hitBoxWidth - (this.x + this.hitBoxX);
     let overlapTop = this.y + this.hitBoxY + this.hitBoxHeight - (object.y + object.hitBoxY);
     let overlapBottom = object.y + object.hitBoxY + object.hitBoxHeight - (this.y + this.hitBoxY);
 
+    return { overlapLeft, overlapRight, overlapTop, overlapBottom };
+  }
+
+  getCollisionDirection({ overlapLeft, overlapRight, overlapTop, overlapBottom }) {
     let smallestOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
 
     if (smallestOverlap === overlapTop && this.speedY < 0) {
@@ -94,25 +98,30 @@ class MovableObject extends DrawableObject {
   enemieHealthMinusOne() {
     if (this.health > 0) {
       this.health -= 1;
-
       if (this.health === 0) {
-        this.isDead = true;
-        this.speed = 0;
-        this.loadImage(this.IMAGE_DEAD);
-
-        // Wähle Sound basierend auf dem Gegnertyp
-        let soundName = this instanceof Chicken ? "squeezeChicken" : "squeezeChick";
-        soundManager.stopSound(soundName);
-        soundManager.playSound(soundName);
-
-        setTimeout(() => {
-          let index = level1.enemies.indexOf(this);
-          if (index > -1) {
-            level1.enemies.splice(index, 1);
-          }
-        }, 3000);
+        this.playSqeezwAnimation();
+        this.spliceEnemyOnHit();
       }
     }
+  }
+
+  playSqeezwAnimation() {
+    this.isDead = true;
+    this.speed = 0;
+    this.loadImage(this.IMAGE_DEAD);
+
+    let soundName = this instanceof Chicken ? "squeezeChicken" : "squeezeChick";
+    soundManager.stopSound(soundName);
+    soundManager.playSound(soundName);
+  }
+
+  spliceEnemyOnHit() {
+    setTimeout(() => {
+      let index = level1.enemies.indexOf(this);
+      if (index > -1) {
+        level1.enemies.splice(index, 1);
+      }
+    }, 3000);
   }
 
   hit() {
@@ -144,7 +153,7 @@ class MovableObject extends DrawableObject {
     if (index !== -1) {
       this.world.level.coins.splice(index, 1);
       soundManager.stopSound("collectCoin");
-      soundManager.playSound("collectCoin", 1); // Lautstärke auf 1 setzen
+      soundManager.playSound("collectCoin", 1);
     }
   }
 
