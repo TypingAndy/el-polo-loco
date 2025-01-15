@@ -160,6 +160,10 @@ class Character extends MovableObject {
     return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead();
   }
 
+  checkIfCharMoving() {
+    return this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.isAboveGround();
+  }
+
   checkIfCharLongIdle(idleTime) {
     idleTime;
     return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && idleTime > 20;
@@ -188,6 +192,8 @@ class Character extends MovableObject {
     setInterval(() => this.moveCharacter(), 50);
     setInterval(() => this.walkingAnimation(), 50);
     setInterval(() => this.playJumpAnimation(), 110);
+    setInterval(() => this.playDieAnimation(), 250);
+    setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
 
     setInterval(() => {
       if (this.isHurt() && !this.isDead()) {
@@ -204,19 +210,15 @@ class Character extends MovableObject {
       }
     }, 30);
 
-    setInterval(() => this.playDieAnimation(), 250);
-
     setInterval(() => {
       if (this.checkIfCharIdle()) {
         this.playAnimation(this.IMAGES_IDLE);
         idleTime++;
       }
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.isAboveGround()) {
+      if (this.checkIfCharMoving()) {
         idleTime = 0;
       }
     }, 300);
-
-    setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
   }
 
   correctYPosition() {
