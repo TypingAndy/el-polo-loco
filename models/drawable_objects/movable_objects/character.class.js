@@ -156,12 +156,39 @@ class Character extends MovableObject {
     return (this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead());
   }
 
+  checkIfCharIdle() {
+    return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead();
+  }
+
+  checkIfCharLongIdle(idleTime) {
+    idleTime;
+    return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && idleTime > 20;
+  }
+
+  checkIfShouldPlayIdleAnimation(idleTime) {
+    if (this.checkIfCharLongIdle(idleTime)) {
+      this.playLongIdleAnimation();
+    } else {
+      this.stopLongIdleAnimation();
+    }
+  }
+
+  playLongIdleAnimation() {
+    this.playAnimation(this.IMAGES_LONGIDLE);
+    soundManager.playSound("snoring", 0.5, true);
+  }
+
+  stopLongIdleAnimation() {
+    soundManager.stopSound("snoring");
+  }
+
   animateCharacter() {
+    let isPlayingHurtSound = false;
+    let idleTime = 0;
     setInterval(() => this.moveCharacter(), 50);
     setInterval(() => this.walkingAnimation(), 50);
     setInterval(() => this.playJumpAnimation(), 110);
 
-    let isPlayingHurtSound = false;
     setInterval(() => {
       if (this.isHurt() && !this.isDead()) {
         this.playAnimation(this.IMAGES_HURT);
@@ -179,10 +206,8 @@ class Character extends MovableObject {
 
     setInterval(() => this.playDieAnimation(), 250);
 
-    let idleTime = 0;
-
     setInterval(() => {
-      if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead()) {
+      if (this.checkIfCharIdle()) {
         this.playAnimation(this.IMAGES_IDLE);
         idleTime++;
       }
@@ -191,14 +216,7 @@ class Character extends MovableObject {
       }
     }, 300);
 
-    setInterval(() => {
-      if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && idleTime > 20) {
-        this.playAnimation(this.IMAGES_LONGIDLE);
-        soundManager.playSound("snoring", 0.5, true);
-      } else {
-        soundManager.stopSound("snoring");
-      }
-    }, 300);
+    setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
   }
 
   correctYPosition() {
