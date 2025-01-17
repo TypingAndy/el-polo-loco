@@ -29,20 +29,26 @@ class Chick extends MovableObject {
 
     this.health = health;
     this.level = level; // Speichere die Referenz auf das Level
-    this.animateChick();
+    this.startIntervals();
   }
 
-  animateChick() {
-    setInterval(() => {
+  startIntervals() {
+    this.moveInterval = setInterval(() => {
       if (!this.isDead) {
         this.moveLeft(); // Bewegung nur, wenn das Chick nicht tot ist
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.animationInterval = setInterval(() => {
       if (!this.isDead) {
         this.playAnimation(this.IMAGES_WALKING); // Animation nur, wenn das Chick nicht tot ist
       }
     }, 100);
+  }
+
+  stopAllAnimations() {
+    clearInterval(this.moveInterval);
+    clearInterval(this.animationInterval);
+    console.log("Alle Intervalle für Chick gestoppt");
   }
 }

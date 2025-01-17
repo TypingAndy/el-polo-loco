@@ -28,16 +28,13 @@ class Endboss extends MovableObject {
   ];
 
   IMAGES_DEFEATED = [
-
     "img/4_enemie_boss_chicken/5_dead/G24.png",
     "img/4_enemie_boss_chicken/5_dead/G25.png",
     "img/4_enemie_boss_chicken/5_dead/G26.png",
-     "img/4_enemie_boss_chicken/5_dead/G26.png"
+    "img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
 
-
-
-constructor(x, health) {
+  constructor(x, health) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_HURT);
@@ -57,21 +54,26 @@ constructor(x, health) {
 
   stopWalkingAnimation() {
     clearInterval(this.walkingInterval);
+    console.log("Walking-Animation des Endbosses gestoppt");
   }
 
   playHurtAnimation() {
-  
     if (!this.isHurt && !this.isDefeated) {
       this.isHurt = true; // Verhindert mehrfaches Abspielen
-      let hurtInterval = setInterval(() => {
+      this.hurtInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_HURT);
       }, 200);
 
       setTimeout(() => {
-        clearInterval(hurtInterval);
-        this.isHurt = false; // Nach der Hurt-Animation wieder zurücksetzen
-      }, 1000); // Hurt-Animation läuft 500 ms
+        this.stopHurtAnimation();
+      }, 1000); // Hurt-Animation läuft 1 Sekunde
     }
+  }
+
+  stopHurtAnimation() {
+    clearInterval(this.hurtInterval);
+    this.isHurt = false;
+    console.log("Hurt-Animation des Endbosses gestoppt");
   }
 
   animateDefeat() {
@@ -79,31 +81,44 @@ constructor(x, health) {
       this.startDefeatAnimation();
     }
   }
-  
+
   startDefeatAnimation() {
     this.isDefeated = true;
     this.stopWalkingAnimation();
-  
+
     let defeatedFrame = 0;
-    let defeatedInterval = setInterval(() => {
-      this.playDefeatFrames(defeatedFrame, defeatedInterval);
+    this.defeatedInterval = setInterval(() => {
+      this.playDefeatFrames(defeatedFrame);
       defeatedFrame++;
+      if (defeatedFrame >= this.IMAGES_DEFEATED.length) {
+        this.stopDefeatAnimation();
+      }
     }, 250);
   }
-  
-  playDefeatFrames(defeatedFrame, defeatedInterval) {
+
+  playDefeatFrames(defeatedFrame) {
     this.playAnimation(this.IMAGES_DEFEATED);
-  
-    if (defeatedFrame >= this.IMAGES_DEFEATED.length) {
-      clearInterval(defeatedInterval);
-      this.finalizeDefeatAnimation();
-    }
   }
-  
+
+  stopDefeatAnimation() {
+    clearInterval(this.defeatedInterval);
+    this.finalizeDefeatAnimation();
+    console.log("Defeat-Animation des Endbosses gestoppt");
+  }
+
   finalizeDefeatAnimation() {
     console.log("Endboss besiegt und bleibt im letzten Bild der Animation!");
     this.img = this.imageCache[this.IMAGES_DEFEATED[this.IMAGES_DEFEATED.length - 1]];
   }
-  
-  
+
+  stopAllAnimations() {
+    this.stopWalkingAnimation();
+    if (this.hurtInterval) {
+      this.stopHurtAnimation();
+    }
+    if (this.defeatedInterval) {
+      this.stopDefeatAnimation();
+    }
+    console.log("Alle Animationen des Endbosses gestoppt");
+  }
 }

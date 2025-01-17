@@ -185,11 +185,12 @@ class Character extends MovableObject {
   animateCharacter() {
     let isPlayingHurtSound = false;
     let idleTime = 0;
-    setInterval(() => this.moveCharacter(), 50);
-    setInterval(() => this.walkingAnimation(), 50);
-    setInterval(() => this.playJumpAnimation(), 110);
-
-    setInterval(() => {
+  
+    this.moveCharacterInterval = setInterval(() => this.moveCharacter(), 50);
+    this.walkingAnimationInterval = setInterval(() => this.walkingAnimation(), 50);
+    this.playJumpAnimationInterval = setInterval(() => this.playJumpAnimation(), 110);
+  
+    this.playHurtAnimationInterval = setInterval(() => {
       if (this.isHurt() && !this.isDead()) {
         this.playAnimation(this.IMAGES_HURT);
         if (!isPlayingHurtSound) {
@@ -203,10 +204,10 @@ class Character extends MovableObject {
         isPlayingHurtSound = false;
       }
     }, 30);
-
-    setInterval(() => this.playDieAnimation(), 250);
-
-    setInterval(() => {
+  
+    this.playDieAnimationInterval = setInterval(() => this.playDieAnimation(), 250);
+  
+    this.playIdleAnimationInterval = setInterval(() => {
       if (this.checkIfCharIdle()) {
         this.playAnimation(this.IMAGES_IDLE);
         idleTime++;
@@ -215,14 +216,22 @@ class Character extends MovableObject {
         idleTime = 0;
       }
     }, 300);
-
-    setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
+  
+    this.playLongIdleAnimationInterval = setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
   }
+  
 
   correctYPosition() {
     let groundY = 180;
     if (this.y > groundY) {
       this.y = groundY;
+    }
+  }
+
+  positionXBackToStart() {
+    let startPoint = 40;
+    if (this.x > startPoint) {
+      this.x = startPoint;
     }
   }
 }

@@ -23,8 +23,6 @@ class ThrowableObject extends MovableObject {
 
   constructor(x, y) {
     super().loadImage("img/6_salsa_bottle/salsa_bottle.png");
-
-  
     this.loadImages(this.IMAGES_THROWING);
 
     if (world.level.collectedBottles.length > 0) {
@@ -34,17 +32,22 @@ class ThrowableObject extends MovableObject {
       this.height = 50;
       this.width = 40;
       this.throw(x, y);
-      this.animateThrowableObject();
+      this.startAnimation();
     } else {
-      soundManager.stopSound("noBottle")
+      soundManager.stopSound("noBottle");
       soundManager.playSound("noBottle", 0.3);
     }
   }
 
-  animateThrowableObject() {
-    setInterval(() => {
+  startAnimation() {
+    this.throwingAnimationInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_THROWING);
     }, 90);
+  }
+
+  stopAnimation() {
+    clearInterval(this.throwingAnimationInterval);
+    console.log("Wurf-Animation gestoppt");
   }
 
   throw(x, y) {
@@ -53,7 +56,7 @@ class ThrowableObject extends MovableObject {
     this.speedY = 25; // Initiale Wurfhöhe
     this.speedX = 10; // Horizontale Bewegung
     this.applyGravity(); // Bewegung durch Schwerkraft und X-Steuerung
-  
+
     soundManager.playSound("shooting", 0.8);
   }
 
@@ -62,9 +65,43 @@ class ThrowableObject extends MovableObject {
     this.speedY = 0; // Stoppe die vertikale Bewegung
     this.loadImages(this.IMAGES_SPLASH); // Lade Splash-Bilder
     this.currentImage = 0; // Setze Animation zurück
-
-    let splashInterval = setInterval(() => {
+  
+    this.splashAnimationInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
     }, 100);
+  
+    setTimeout(() => {
+      if (this.splashAnimationInterval) {
+        clearInterval(this.splashAnimationInterval);
+        console.log("Splash-Animation automatisch gestoppt");
+      }
+    }, 600); // Stoppe nach 600 ms automatisch
   }
+  
+
+  stopSplashAnimation() {
+    clearInterval(this.splashAnimationInterval);
+    console.log("Splash-Animation gestoppt");
+  }
+
+  stopAllAnimations() {
+    // Stoppe Wurfanimation
+    if (this.throwingAnimationInterval) {
+      clearInterval(this.throwingAnimationInterval);
+      console.log("Wurf-Animation gestoppt");
+    }
+  
+    // Stoppe Splash-Animation
+    if (this.splashAnimationInterval) {
+      clearInterval(this.splashAnimationInterval);
+      console.log("Splash-Animation gestoppt");
+    }
+  
+    // Stoppe Gravitation
+    if (this.applyGravityInterval) {
+      clearInterval(this.applyGravityInterval);
+      console.log("Gravitation gestoppt");
+    }
+  }
+  
 }

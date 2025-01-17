@@ -28,20 +28,28 @@ class Chicken extends MovableObject {
 
     this.health = health;
     this.level = level; // Speichere die Referenz auf das Level
-    this.animateChicken();
+    this.startIntervals();
   }
 
-  animateChicken() {
-    setInterval(() => {
+  startIntervals() {
+    // Bewegung
+    this.moveInterval = setInterval(() => {
       if (!this.isDead) {
         this.moveLeft(); // Bewegung nur, wenn das Huhn nicht tot ist
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    // Animation
+    this.animationInterval = setInterval(() => {
       if (!this.isDead) {
         this.playAnimation(this.IMAGES_WALKING); // Animation nur, wenn das Huhn nicht tot ist
       }
     }, 150);
+  }
+
+  stopAllAnimations() {
+    clearInterval(this.moveInterval);
+    clearInterval(this.animationInterval);
+    console.log("Alle Intervalle für Chicken gestoppt");
   }
 }

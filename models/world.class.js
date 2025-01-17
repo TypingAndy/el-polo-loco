@@ -222,9 +222,6 @@ class World {
     });
   }
 
-
-  
-
   hurtEndbossAnimation(enemy) {
     enemy.playHurtAnimation(); // Hurt-Animation
     soundManager.stopSound("endbossHurt");

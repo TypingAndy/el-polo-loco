@@ -32,7 +32,7 @@ class MovableObject extends DrawableObject {
   }
 
   applyGravity() {
-    setInterval(() => {
+    this.applyGravityInterval = setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -117,9 +117,9 @@ class MovableObject extends DrawableObject {
 
   spliceEnemyOnHit() {
     setTimeout(() => {
-      let index = this.world.level.enemies.indexOf(this);
+      let index = world.level.enemies.indexOf(this);
       if (index > -1) {
-        this.world.level.enemies.splice(index, 1);
+        world.level.enemies.splice(index, 1);
       }
     }, 3000);
   }

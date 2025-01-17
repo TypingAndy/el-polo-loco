@@ -10,28 +10,64 @@ function init() {
 }
 
 function selectLevel(level) {
-  resetGame();
+  // resetGame();
   console.log(`Level ${level} ausgewählt`);
   switch (level) {
-      case 0:
-          world.level = level0;
-          break;
-      case 1:
-          world.level = level1;
-          break;
-      case 2:
-          world.level = level2;
-          break;
-      default:
-          console.error("Ungültiges Level ausgewählt");
+    case 0:
+      world.level = level0;
+      break;
+    case 1:
+      world.level = level1;
+      break;
+    case 2:
+      world.level = level2;
+      break;
+    default:
+      console.error("Ungültiges Level ausgewählt");
   }
 }
 
+function startGame() {
+  world.level.enemies.forEach((enemy) => {
+    enemy.startIntervals();
+  });
+}
+
+function stopGame() {
+  stopThrownBottle();
+  stopCharacter();
+  stopEnemies();
+  console.log("Alle Charakter-Intervalle gestoppt");
+}
+
+function stopEnemies() {
+  world.level.enemies.forEach((enemy) => {
+    enemy.stopAllAnimations();
+  });
+}
+
+function stopThrownBottle() {
+  world.throwableObjects.forEach((throwable) => {
+    throwable.stopAllAnimations();
+  });
+}
+
+function stopCharacter() {
+  const character = world.character;
+
+  clearInterval(character.moveCharacterInterval);
+  clearInterval(character.walkingAnimationInterval);
+  clearInterval(character.playJumpAnimationInterval);
+  clearInterval(character.playHurtAnimationInterval);
+  clearInterval(character.playDieAnimationInterval);
+  clearInterval(character.playIdleAnimationInterval);
+  clearInterval(character.playLongIdleAnimationInterval);
+  clearInterval(character.applyGravityInterval);
+}
 
 function resetGame() {
   console.log("Das Spiel wird zurückgesetzt...");
-  // Hier sollte die Logik zum Neustart des Spiels implementiert werden
-  // z. B. Spiel-Loop anhalten, Objekte neu initialisieren, etc.
+  world.character.positionXBackToStart();
 }
 
 document.addEventListener("keydown", (e) => {
