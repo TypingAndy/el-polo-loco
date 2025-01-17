@@ -28,41 +28,51 @@ function selectLevel(level) {
 }
 
 function startGame() {
+  // Alle laufenden Animationen und Intervalle stoppen, um Duplikate zu vermeiden
+  world.character.stopIntervals();
   world.level.enemies.forEach((enemy) => {
-    enemy.startIntervals();
+    if (enemy.stopAllAnimations) {
+      enemy.stopAllAnimations();
+    }
   });
+  world.throwableObjects.forEach((throwable) => {
+    if (throwable.stopAllAnimations) {
+      throwable.stopAllAnimations();
+    }
+  });
+
+  // Animationen und Bewegungen neu starten
+  world.character.startIntervals();
+  world.level.enemies.forEach((enemy) => {
+    if (enemy.startIntervals) {
+      enemy.startIntervals();
+    }
+  });
+  world.throwableObjects.forEach((throwable) => {
+    if (throwable.startAllAnimations) {
+      throwable.startAllAnimations();
+    }
+  });
+
+  console.log("Spiel gestartet");
 }
+
 
 function stopGame() {
-  stopThrownBottle();
-  stopCharacter();
-  stopEnemies();
-  console.log("Alle Charakter-Intervalle gestoppt");
-}
-
-function stopEnemies() {
   world.level.enemies.forEach((enemy) => {
-    enemy.stopAllAnimations();
+    if (enemy.stopAllAnimations) {
+      enemy.stopAllAnimations();
+    }
   });
-}
 
-function stopThrownBottle() {
   world.throwableObjects.forEach((throwable) => {
-    throwable.stopAllAnimations();
+    if (throwable.stopAllAnimations) {
+      throwable.stopAllAnimations();
+    }
   });
-}
 
-function stopCharacter() {
-  const character = world.character;
-
-  clearInterval(character.moveCharacterInterval);
-  clearInterval(character.walkingAnimationInterval);
-  clearInterval(character.playJumpAnimationInterval);
-  clearInterval(character.playHurtAnimationInterval);
-  clearInterval(character.playDieAnimationInterval);
-  clearInterval(character.playIdleAnimationInterval);
-  clearInterval(character.playLongIdleAnimationInterval);
-  clearInterval(character.applyGravityInterval);
+  world.character.stopIntervals();
+  console.log("Spiel pausiert");
 }
 
 function resetGame() {

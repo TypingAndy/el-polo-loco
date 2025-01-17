@@ -6,7 +6,6 @@ class Character extends MovableObject {
   hitBoxX = 12;
   hitBoxY = 95;
   color = "green";
-
   y = 180;
 
   IMAGES_IDLE = [
@@ -66,7 +65,13 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-57.png",
   ];
 
-  IMAGES_HURT = ["img/2_character_pepe/4_hurt/H-41.png", "img/2_character_pepe/4_hurt/H-42.png", "img/2_character_pepe/4_hurt/H-43.png"];
+  IMAGES_HURT = [
+    "img/2_character_pepe/4_hurt/H-41.png",
+    "img/2_character_pepe/4_hurt/H-42.png",
+    "img/2_character_pepe/4_hurt/H-43.png",
+  ];
+
+  idleTime = 0;
 
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
@@ -76,12 +81,51 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
-    this.applyGravity();
-    this.animateCharacter();
+
+    this.intervals = {}; // Objekt zur Verwaltung aller Intervalle
+
+    this.startIntervals(); // Startet alle Animationen und Bewegung
 
     setInterval(() => {
       this.correctYPosition();
     }, 10);
+  }
+
+  startIntervals() {
+    this.stopIntervals(); // Sicherstellen, dass keine doppelten Intervalle laufen
+
+    this.intervals.moveCharacter = setInterval(() => this.moveCharacter(), 50);
+    this.intervals.walkingAnimation = setInterval(() => this.walkingAnimation(), 50);
+    this.intervals.playJumpAnimation = setInterval(() => this.playJumpAnimation(), 110);
+    this.intervals.playHurtAnimation = setInterval(() => {
+      if (this.isHurt() && !this.isDead()) {
+        this.playAnimation(this.IMAGES_HURT);
+      }
+    }, 30);
+    this.intervals.playDieAnimation = setInterval(() => this.playDieAnimation(), 250);
+    this.intervals.playIdleAnimation = setInterval(() => this.playIdleAnimationLogic(), 300);
+    this.applyGravity(); // Schwerkraft anwenden
+
+    console.log("Alle Charakter-Intervalle wurden gestartet");
+  }
+
+  playIdleAnimationLogic() {
+    if (this.checkIfCharIdle()) {
+      this.idleTime++;
+      this.playAnimation(this.IMAGES_IDLE);
+    } else {
+      this.idleTime = 0; // Reset Idle-Time, wenn nicht im Leerlauf
+    }
+    this.checkIfShouldPlayIdleAnimation();
+  }
+
+  stopIntervals() {
+    // Alle laufenden Intervalle beenden
+    for (let key in this.intervals) {
+      clearInterval(this.intervals[key]);
+    }
+    this.intervals = {}; // Leert das Intervallobjekt
+    console.log("Alle Charakter-Intervalle wurden gestoppt");
   }
 
   moveCharacter() {
@@ -110,6 +154,12 @@ class Character extends MovableObject {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
+  walkingAnimation() {
+    if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
   playWalkingSound() {
     if (!soundManager.isSoundPlaying("walking")) {
       soundManager.playSound("walking", 1, true);
@@ -126,6 +176,43 @@ class Character extends MovableObject {
     return this.world.keyboard.SPACE && !this.isAboveGround();
   }
 
+  playLongIdleAnimation() {
+    this.playAnimation(this.IMAGES_LONGIDLE);
+    soundManager.playSound("snoring", 0.5, true);
+  }
+
+  playDieAnimation() {
+    if (this.isDead()) {
+      this.playAnimation(this.IMAGES_DEAD);
+    }
+  }
+
+  applyGravity() {
+    clearInterval(this.intervals.applyGravity); // Schwerkraft doppelt vermeiden
+    this.intervals.applyGravity = setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+      } else {
+        this.speedY = 0;
+      }
+    }, 1000 / 25);
+  }
+
+  correctYPosition() {
+    let groundY = 180;
+    if (this.y > groundY) {
+      this.y = groundY;
+    }
+  }
+
+  positionXBackToStart() {
+    let startPoint = 100;
+    if (this.x > startPoint) {
+      this.x = startPoint;
+    }
+  }
+
   playJumpAnimation() {
     if (this.shouldPlayJumpAnimation()) {
       if (this.currentAnimation !== "jump") {
@@ -140,30 +227,15 @@ class Character extends MovableObject {
     }
   }
 
-  playDieAnimation() {
-    if (this.isDead()) {
-      this.playAnimation(this.IMAGES_DEAD);
-    }
-  }
-
-  walkingAnimation() {
-    if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
-      this.playAnimation(this.IMAGES_WALKING);
-    }
-  }
-
   shouldPlayJumpAnimation() {
     return (this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead());
   }
+
 
   checkIfCharIdle() {
     return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead();
   }
 
-  checkIfCharLongIdle(idleTime) {
-    idleTime;
-    return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && idleTime > 20;
-  }
 
   checkIfShouldPlayIdleAnimation(idleTime) {
     if (this.checkIfCharLongIdle(idleTime)) {
@@ -173,65 +245,23 @@ class Character extends MovableObject {
     }
   }
 
-  playLongIdleAnimation() {
-    this.playAnimation(this.IMAGES_LONGIDLE);
-    soundManager.playSound("snoring", 0.5, true);
+  checkIfCharLongIdle() {
+    return (
+      !this.world.keyboard.RIGHT &&
+      !this.world.keyboard.LEFT &&
+      !this.isAboveGround() &&
+      !this.isDead() &&
+      this.idleTime > 20 // Bedingung für langes Leerlaufen
+    );
   }
 
   stopLongIdleAnimation() {
     soundManager.stopSound("snoring");
   }
 
-  animateCharacter() {
-    let isPlayingHurtSound = false;
-    let idleTime = 0;
-  
-    this.moveCharacterInterval = setInterval(() => this.moveCharacter(), 50);
-    this.walkingAnimationInterval = setInterval(() => this.walkingAnimation(), 50);
-    this.playJumpAnimationInterval = setInterval(() => this.playJumpAnimation(), 110);
-  
-    this.playHurtAnimationInterval = setInterval(() => {
-      if (this.isHurt() && !this.isDead()) {
-        this.playAnimation(this.IMAGES_HURT);
-        if (!isPlayingHurtSound) {
-          let hurtSounds = [soundManager.sounds.hurt1, soundManager.sounds.hurt2, soundManager.sounds.hurt3, soundManager.sounds.hurt4, soundManager.sounds.hurt5];
-          let randomSound = hurtSounds[Math.floor(Math.random() * hurtSounds.length)];
-          randomSound.volume = 0.3;
-          randomSound.play();
-          isPlayingHurtSound = true;
-        }
-      } else {
-        isPlayingHurtSound = false;
-      }
-    }, 30);
-  
-    this.playDieAnimationInterval = setInterval(() => this.playDieAnimation(), 250);
-  
-    this.playIdleAnimationInterval = setInterval(() => {
-      if (this.checkIfCharIdle()) {
-        this.playAnimation(this.IMAGES_IDLE);
-        idleTime++;
-      }
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.isAboveGround()) {
-        idleTime = 0;
-      }
-    }, 300);
-  
-    this.playLongIdleAnimationInterval = setInterval(() => this.checkIfShouldPlayIdleAnimation(idleTime), 300);
-  }
-  
-
-  correctYPosition() {
-    let groundY = 180;
-    if (this.y > groundY) {
-      this.y = groundY;
-    }
-  }
-
-  positionXBackToStart() {
-    let startPoint = 40;
-    if (this.x > startPoint) {
-      this.x = startPoint;
-    }
-  }
 }
+
+
+
+
+

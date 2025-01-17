@@ -50,6 +50,17 @@ class ThrowableObject extends MovableObject {
     console.log("Wurf-Animation gestoppt");
   }
 
+  startSplashAnimation() {
+    this.splashAnimationInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_SPLASH);
+    }, 100);
+  }
+
+  stopSplashAnimation() {
+    clearInterval(this.splashAnimationInterval);
+    console.log("Splash-Animation gestoppt");
+  }
+
   throw(x, y) {
     this.x = x;
     this.y = y;
@@ -60,48 +71,30 @@ class ThrowableObject extends MovableObject {
     soundManager.playSound("shooting", 0.8);
   }
 
-  triggerSplashAnimation() {
-    this.speedX = 0; // Stoppe die horizontale Bewegung
-    this.speedY = 0; // Stoppe die vertikale Bewegung
-    this.loadImages(this.IMAGES_SPLASH); // Lade Splash-Bilder
-    this.currentImage = 0; // Setze Animation zurück
-  
-    this.splashAnimationInterval = setInterval(() => {
-      this.playAnimation(this.IMAGES_SPLASH);
-    }, 100);
-  
-    setTimeout(() => {
-      if (this.splashAnimationInterval) {
-        clearInterval(this.splashAnimationInterval);
-        console.log("Splash-Animation automatisch gestoppt");
-      }
-    }, 600); // Stoppe nach 600 ms automatisch
-  }
-  
-
-  stopSplashAnimation() {
-    clearInterval(this.splashAnimationInterval);
-    console.log("Splash-Animation gestoppt");
-  }
-
   stopAllAnimations() {
-    // Stoppe Wurfanimation
     if (this.throwingAnimationInterval) {
       clearInterval(this.throwingAnimationInterval);
-      console.log("Wurf-Animation gestoppt");
     }
-  
-    // Stoppe Splash-Animation
     if (this.splashAnimationInterval) {
       clearInterval(this.splashAnimationInterval);
-      console.log("Splash-Animation gestoppt");
     }
-  
-    // Stoppe Gravitation
     if (this.applyGravityInterval) {
       clearInterval(this.applyGravityInterval);
-      console.log("Gravitation gestoppt");
     }
+    console.log("Alle Animationen des ThrowableObject gestoppt");
   }
-  
+
+  startAllAnimations() {
+    // Starte Wurfanimation erneut
+    this.startAnimation();
+
+    // Starte Splash-Animation erneut, falls aktiv
+    if (this.splashAnimationInterval) {
+      this.startSplashAnimation();
+    }
+
+    // Starte Gravitation erneut
+    this.applyGravity();
+    console.log("Alle Animationen des ThrowableObject erneut gestartet");
+  }
 }
