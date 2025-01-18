@@ -65,11 +65,7 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-57.png",
   ];
 
-  IMAGES_HURT = [
-    "img/2_character_pepe/4_hurt/H-41.png",
-    "img/2_character_pepe/4_hurt/H-42.png",
-    "img/2_character_pepe/4_hurt/H-43.png",
-  ];
+  IMAGES_HURT = ["img/2_character_pepe/4_hurt/H-41.png", "img/2_character_pepe/4_hurt/H-42.png", "img/2_character_pepe/4_hurt/H-43.png"];
 
   idleTime = 0;
 
@@ -95,7 +91,7 @@ class Character extends MovableObject {
     this.stopIntervals(); // Sicherstellen, dass keine doppelten Intervalle laufen
 
     this.intervals.moveCharacter = setInterval(() => this.moveCharacter(), 50);
-    this.intervals.walkingAnimation = setInterval(() => this.walkingAnimation(), 50);
+    this.intervals.walkingAnimation = setInterval(() => this.playWalkingAnimation(), 50);
     this.intervals.playJumpAnimation = setInterval(() => this.playJumpAnimation(), 110);
     this.intervals.playHurtAnimation = setInterval(() => {
       if (this.isHurt() && !this.isDead()) {
@@ -132,17 +128,31 @@ class Character extends MovableObject {
     if (this.ableMoveRight()) {
       this.moveRight();
       this.otherDirection = false;
-      this.playWalkingSound();
+      this.playWalkingSoundIfOnGround();
     } else if (this.ableMoveLeft()) {
       this.moveLeft();
       this.otherDirection = true;
-      this.playWalkingSound();
+      this.playWalkingSoundIfOnGround();
     } else {
-      this.stopWalkingSound();
+      this.stopWalkingSound(); // Schrittgeräusche stoppen, wenn keine Bewegung stattfindet
     }
     if (this.ableToJump()) {
       this.jump(25, 1);
     }
+    this.setLevelStartingPoint();
+  }
+
+  playWalkingSoundIfOnGround() {
+    if (!this.isAboveGround()) {
+      if (!soundManager.isSoundPlaying("walking")) {
+        this.playWalkingSound(); // Sound nur starten, wenn er nicht bereits läuft
+      }
+    } else {
+      this.stopWalkingSound(); // Sicherstellen, dass der Sound gestoppt wird, wenn der Charakter in der Luft ist
+    }
+  }
+
+  setLevelStartingPoint() {
     this.world.camera_x = -this.x + 100;
   }
 
@@ -154,7 +164,7 @@ class Character extends MovableObject {
     return this.world.keyboard.LEFT && this.x > 0;
   }
 
-  walkingAnimation() {
+  playWalkingAnimation() {
     if ((this.world.keyboard.RIGHT && !this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.world.keyboard.LEFT && !this.isAboveGround() && !this.isHurt() && !this.isDead())) {
       this.playAnimation(this.IMAGES_WALKING);
     }
@@ -231,11 +241,9 @@ class Character extends MovableObject {
     return (this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead());
   }
 
-
   checkIfCharIdle() {
     return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead();
   }
-
 
   checkIfShouldPlayIdleAnimation(idleTime) {
     if (this.checkIfCharLongIdle(idleTime)) {
@@ -246,22 +254,10 @@ class Character extends MovableObject {
   }
 
   checkIfCharLongIdle() {
-    return (
-      !this.world.keyboard.RIGHT &&
-      !this.world.keyboard.LEFT &&
-      !this.isAboveGround() &&
-      !this.isDead() &&
-      this.idleTime > 20 // Bedingung für langes Leerlaufen
-    );
+    return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAboveGround() && !this.isDead() && this.idleTime > 20;
   }
 
   stopLongIdleAnimation() {
     soundManager.stopSound("snoring");
   }
-
 }
-
-
-
-
-

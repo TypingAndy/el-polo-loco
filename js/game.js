@@ -1,78 +1,81 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let isPaused = false; // Status des Spiels (gestartet oder pausiert)
+let isMuted = false;
 
 function init() {
   canvas = document.getElementById("canvas");
+  initLevel1();
   world = new World(canvas, keyboard);
 
-  ctx = canvas.getContext("2d");
+  context = canvas.getContext("2d");
 }
 
 function selectLevel(level) {
-  // resetGame();
   console.log(`Level ${level} ausgewählt`);
   switch (level) {
     case 0:
+    
+      initLevel0();
+      world.character.x = 0;
       world.level = level0;
       break;
     case 1:
+    
+      initLevel1();
+      world.character.x = 0;
       world.level = level1;
       break;
     case 2:
+     
+      initLevel2();
+      world.character.x = 0;
       world.level = level2;
       break;
-    default:
-      console.error("Ungültiges Level ausgewählt");
   }
 }
 
 function startGame() {
-  // Alle laufenden Animationen und Intervalle stoppen, um Duplikate zu vermeiden
-  world.character.stopIntervals();
-  world.level.enemies.forEach((enemy) => {
-    if (enemy.stopAllAnimations) {
-      enemy.stopAllAnimations();
-    }
-  });
-  world.throwableObjects.forEach((throwable) => {
-    if (throwable.stopAllAnimations) {
-      throwable.stopAllAnimations();
-    }
-  });
+  if (isPaused) {
+    // Animationen und Bewegungen neu starten
+    world.character.startIntervals();
+    world.level.enemies.forEach((enemy) => {
+      if (enemy.startIntervals) {
+        enemy.startIntervals();
+      }
+    });
+    world.throwableObjects.forEach((throwable) => {
+      if (throwable.startAllAnimations) {
+        throwable.startAllAnimations();
+      }
+    });
 
-  // Animationen und Bewegungen neu starten
-  world.character.startIntervals();
-  world.level.enemies.forEach((enemy) => {
-    if (enemy.startIntervals) {
-      enemy.startIntervals();
-    }
-  });
-  world.throwableObjects.forEach((throwable) => {
-    if (throwable.startAllAnimations) {
-      throwable.startAllAnimations();
-    }
-  });
-
-  console.log("Spiel gestartet");
+    isPaused = false; // Spiel fortsetzen
+    console.log("Spiel gestartet");
+  }
 }
 
-
 function stopGame() {
-  world.level.enemies.forEach((enemy) => {
-    if (enemy.stopAllAnimations) {
-      enemy.stopAllAnimations();
-    }
-  });
+  if (!isPaused) {
+    // Animationen und Bewegungen pausieren
+    world.level.enemies.forEach((enemy) => {
+      if (enemy.stopAllAnimations) {
+        enemy.stopAllAnimations();
+      }
+    });
 
-  world.throwableObjects.forEach((throwable) => {
-    if (throwable.stopAllAnimations) {
-      throwable.stopAllAnimations();
-    }
-  });
+    world.throwableObjects.forEach((throwable) => {
+      if (throwable.stopAllAnimations) {
+        throwable.stopAllAnimations();
+      }
+    });
 
-  world.character.stopIntervals();
-  console.log("Spiel pausiert");
+    world.character.stopIntervals();
+
+    isPaused = true; // Spiel pausieren
+    console.log("Spiel pausiert");
+  }
 }
 
 function resetGame() {
@@ -80,7 +83,19 @@ function resetGame() {
   world.character.positionXBackToStart();
 }
 
+function muteSound() {
+  isMuted = !isMuted; // Mute-Zustand umkehren
+
+  if (isMuted) {
+    soundManager.muteAllSounds(); // Alle Sounds muten
+  } else {
+    soundManager.unmuteAllSounds(); // Alle Sounds entmuten
+  }}
+
+// Tastenereignisse mit Pause-Check
 document.addEventListener("keydown", (e) => {
+  if (isPaused) return; // Im Pausenmodus keine Tasteneingaben akzeptieren
+
   if (e.key === "a") {
     keyboard.LEFT = true;
     console.log("LEFT:", keyboard.LEFT);

@@ -5,17 +5,18 @@ class World {
   statusBottlebar = new StatusBottlebar();
   throwableObjects = [];
 
-  level = level0;
+  level = level1;
   canvas;
-  ctx;
+  context;
   keyboard;
   camera_x = 0;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.context = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.initializeGameMusic(); // Initialisiere die Musik
+
     this.draw();
     this.setWorld();
     this.throwBottleInterval();
@@ -23,7 +24,21 @@ class World {
     this.respawnBottles();
     this.startRespawnInterval();
     this.startStatusUpdateInterval();
+
+    // this.startScreen = new StartScreen(this.canvas, this.context);
+    // this.isStartScreenActive = true; // Zustand für den Startbildschirm
   }
+
+  handleInput(event) {
+    if (this.isStartScreenActive) {
+        if (event.key === 'Enter') {
+            this.isStartScreenActive = false; // Wechsle ins Spiel
+        }
+    } else {
+        // Weiterleitung an die Spiellogik
+        console.log('Spiel Eingabe:', event.key);
+    }
+}
 
   setWorld() {
     this.character.world = this;
@@ -46,46 +61,55 @@ class World {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.isStartScreenActive) {
+        this.startScreen.drawBackground(); // Startbildschirm zeichnen
+    } else {
+        this.drawGameWorld(); // Spielwelt zeichnen
+    }
+}
 
-    this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.backgroundObjects);
+drawGameWorld() {
+  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.level.clouds.forEach((cloud) => {
+  this.context.translate(this.camera_x, 0);
+  this.addObjectsToMap(this.level.backgroundObjects);
+
+  this.level.clouds.forEach((cloud) => {
       cloud.move();
       this.addToMap(cloud);
-    });
+  });
 
-    this.level.enemies.forEach((enemie) => {
+  this.level.enemies.forEach((enemie) => {
       this.addToMap(enemie);
-    });
+  });
 
-    this.level.coins.forEach((coins) => {
+  this.level.coins.forEach((coins) => {
       this.addToMap(coins);
-    });
+  });
 
-    this.level.bottles.forEach((collectableBottle) => {
+  this.level.bottles.forEach((collectableBottle) => {
       this.addToMap(collectableBottle);
-    });
+  });
 
-    // Space for fixed UI Objects
-    this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusLifebar);
-    this.addToMap(this.statusCoinbar);
-    this.addToMap(this.statusBottlebar);
-    this.ctx.translate(this.camera_x, 0);
-    // Space for fixed UI Objects
+  // Space for fixed UI Objects
+  this.context.translate(-this.camera_x, 0);
+  this.addToMap(this.statusLifebar);
+  this.addToMap(this.statusCoinbar);
+  this.addToMap(this.statusBottlebar);
+  this.context.translate(this.camera_x, 0);
+  // Space for fixed UI Objects
 
-    this.addObjectsToMap(this.throwableObjects);
+  this.addObjectsToMap(this.throwableObjects);
 
-    this.addToMap(this.character);
+  this.addToMap(this.character);
 
-    this.ctx.translate(-this.camera_x, 0);
+  this.context.translate(-this.camera_x, 0);
 
-    requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
       this.draw();
-    });
-  }
+  });
+}
+
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {
@@ -97,23 +121,23 @@ class World {
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-    mo.draw(this.ctx);
-    // mo.drawFrame(this.ctx);
+    mo.draw(this.context);
+    // mo.drawFrame(this.context);
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
   }
 
   flipImage(mo) {
-    this.ctx.save();
-    this.ctx.translate(mo.width, 0);
-    this.ctx.scale(-1, 1);
+    this.context.save();
+    this.context.translate(mo.width, 0);
+    this.context.scale(-1, 1);
     mo.x = mo.x * -1;
   }
 
   flipImageBack(mo) {
     mo.x = mo.x * -1;
-    this.ctx.restore();
+    this.context.restore();
   }
 
   //bottles

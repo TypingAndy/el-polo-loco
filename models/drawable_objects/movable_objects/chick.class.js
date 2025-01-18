@@ -15,7 +15,7 @@ class Chick extends MovableObject {
 
   IMAGE_DEAD = "img/3_enemies_chicken/chicken_small/2_dead/dead.png";
 
-  constructor(x, health, level) {
+  constructor(x, health) {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/2_w.png");
     this.loadImages(this.IMAGES_WALKING);
 
@@ -28,7 +28,7 @@ class Chick extends MovableObject {
     }
 
     this.health = health;
-    this.level = level; // Speichere die Referenz auf das Level
+ 
     this.startIntervals();
   }
 

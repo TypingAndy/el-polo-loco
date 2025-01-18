@@ -16,11 +16,11 @@ class DrawableObject {
     });
   }
 
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  draw(context) {
+    context.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
-//   drawFrame(ctx) {
+//   drawFrame(context) {
 //     if (
 //       this instanceof Character ||
 //       this instanceof Chicken ||
@@ -30,11 +30,11 @@ class DrawableObject {
 //       this instanceof ThrowableObject ||
 //       this instanceof CollectableBottle
 //     ) {
-//       ctx.beginPath();
-//       ctx.lineWidth = "2";
-//       ctx.strokeStyle = this.color;
-//       ctx.rect(this.x + this.hitBoxX, this.y + this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
-//       ctx.stroke();
+//       context.beginPath();
+//       context.lineWidth = "2";
+//       context.strokeStyle = this.color;
+//       context.rect(this.x + this.hitBoxX, this.y + this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
+//       context.stroke();
 //     }
 //   }
 }
