@@ -3,9 +3,9 @@ let world;
 let keyboard = new Keyboard();
 let isPaused = false;
 
-
 function init() {
   canvas = document.getElementById("canvas");
+  startscreen = new Startscreen(canvas, keyboard);
   initLevel1();
   world = new World(canvas, keyboard);
   context = canvas.getContext("2d");

@@ -31,65 +31,6 @@ class MovableObject extends DrawableObject {
     soundManager.playSound("jump", jumpVolume);
   }
 
-  applyGravityForBottles() {
-    this.applyGravityInterval = setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
-        this.y -= this.speedY;
-        this.speedY -= this.acceleration;
-      } else {
-        this.speedY = 0;
-      }
-
-      if (typeof this.speedX !== "undefined" && this.speedX !== 0) {
-        this.x += this.speedX;
-      }
-    }, 1000 / 25);
-  }
-
-  isAboveGround() {
-    if (this instanceof ThrowableObject) {
-      return true;
-    } else {
-      return this.y < 180;
-    }
-  }
-
-
-  isColliding(object) {
-    let isColliding =
-      this.x + this.hitBoxX + this.hitBoxWidth > object.x + object.hitBoxX &&
-      this.y + this.hitBoxY + this.hitBoxHeight > object.y + object.hitBoxY &&
-      this.x + this.hitBoxX < object.x + object.hitBoxX + object.hitBoxWidth &&
-      this.y + this.hitBoxY < object.y + object.hitBoxY + object.hitBoxHeight;
-
-    if (!isColliding) return false;
-    let overlaps = this.calculateOverlap(object);
-    return this.getCollisionDirection(overlaps);
-  }
-
-  calculateOverlap(object) {
-    let overlapLeft = this.x + this.hitBoxX + this.hitBoxWidth - (object.x + object.hitBoxX);
-    let overlapRight = object.x + object.hitBoxX + object.hitBoxWidth - (this.x + this.hitBoxX);
-    let overlapTop = this.y + this.hitBoxY + this.hitBoxHeight - (object.y + object.hitBoxY);
-    let overlapBottom = object.y + object.hitBoxY + object.hitBoxHeight - (this.y + this.hitBoxY);
-
-    return { overlapLeft, overlapRight, overlapTop, overlapBottom };
-  }
-
-  getCollisionDirection({ overlapLeft, overlapRight, overlapTop, overlapBottom }) {
-    let smallestOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
-
-    if (smallestOverlap === overlapTop && this.speedY < 0) {
-      return "top";
-    } else if (smallestOverlap === overlapBottom) {
-      return "bottom";
-    } else if (smallestOverlap === overlapLeft) {
-      return "left";
-    } else if (smallestOverlap === overlapRight) {
-      return "right";
-    }
-  }
-
   enemieHealthMinusOne() {
     if (this.health > 0) {
       this.health -= 1;
@@ -158,6 +99,64 @@ class MovableObject extends DrawableObject {
       this.world.level.bottles.splice(index, 1);
       soundManager.stopSound("collectBottle", 1);
       soundManager.playSound("collectBottle", 1);
+    }
+  }
+
+  applyGravityForBottles() {
+    this.applyGravityInterval = setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+      } else {
+        this.speedY = 0;
+      }
+
+      if (typeof this.speedX !== "undefined" && this.speedX !== 0) {
+        this.x += this.speedX;
+      }
+    }, 1000 / 25);
+  }
+
+  isAboveGround() {
+    if (this instanceof ThrowableObject) {
+      return true;
+    } else {
+      return this.y < 180;
+    }
+  }
+
+  isColliding(object) {
+    let isColliding =
+      this.x + this.hitBoxX + this.hitBoxWidth > object.x + object.hitBoxX &&
+      this.y + this.hitBoxY + this.hitBoxHeight > object.y + object.hitBoxY &&
+      this.x + this.hitBoxX < object.x + object.hitBoxX + object.hitBoxWidth &&
+      this.y + this.hitBoxY < object.y + object.hitBoxY + object.hitBoxHeight;
+
+    if (!isColliding) return false;
+    let overlaps = this.calculateOverlap(object);
+    return this.getCollisionDirection(overlaps);
+  }
+
+  calculateOverlap(object) {
+    let overlapLeft = this.x + this.hitBoxX + this.hitBoxWidth - (object.x + object.hitBoxX);
+    let overlapRight = object.x + object.hitBoxX + object.hitBoxWidth - (this.x + this.hitBoxX);
+    let overlapTop = this.y + this.hitBoxY + this.hitBoxHeight - (object.y + object.hitBoxY);
+    let overlapBottom = object.y + object.hitBoxY + object.hitBoxHeight - (this.y + this.hitBoxY);
+
+    return { overlapLeft, overlapRight, overlapTop, overlapBottom };
+  }
+
+  getCollisionDirection({ overlapLeft, overlapRight, overlapTop, overlapBottom }) {
+    let smallestOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+    if (smallestOverlap === overlapTop && this.speedY < 0) {
+      return "top";
+    } else if (smallestOverlap === overlapBottom) {
+      return "bottom";
+    } else if (smallestOverlap === overlapLeft) {
+      return "left";
+    } else if (smallestOverlap === overlapRight) {
+      return "right";
     }
   }
 }

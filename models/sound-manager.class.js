@@ -45,6 +45,21 @@ class SoundManager {
   isSoundPlaying(name) {
     return !!this.activeSounds[name];
   }
+
+  initializeGameMusic() {
+    let startMusic = () => {
+      soundManager.playSound("gameMusic", 0.4, true); // Game-Musik mit Schleife
+      soundManager.playSound("ambient", 0.3, true); // Ambient-Sound mit Schleife
+
+      // Entferne den Event-Listener, nachdem die Musik gestartet wurde
+      document.removeEventListener("click", startMusic);
+      document.removeEventListener("keydown", startMusic);
+    };
+
+    // Füge Event-Listener hinzu, um auf Benutzerinteraktion zu warten
+    document.addEventListener("click", startMusic);
+    document.addEventListener("keydown", startMusic);
+  }
 }
 
 const soundManager = new SoundManager();

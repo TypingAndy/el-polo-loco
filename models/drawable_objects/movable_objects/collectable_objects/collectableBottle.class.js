@@ -14,4 +14,6 @@ class CollectableBottle extends MovableObject {
     this.x = x;
     this.y = 370;
   }
+
+  
 }

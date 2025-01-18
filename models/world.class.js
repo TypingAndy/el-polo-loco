@@ -19,7 +19,7 @@ class World {
     this.context = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.collisionChecker = new CollisionChecker(this, this.level, this.character, this.statusCoinbar, this.statusBottlebar, this.throwableObjects);
-    this.initializeGameMusic();
+    soundManager.initializeGameMusic();
     this.draw();
     this.setWorld();
     this.throwBottleInterval();
@@ -211,19 +211,5 @@ class World {
     this.throwableObjects.push(brokenBottle); // Füge die zerbrochene Flasche hinzu
   }
 
-  // Methode zur Initialisierung der Musik
-  initializeGameMusic() {
-    let startMusic = () => {
-      soundManager.playSound("gameMusic", 0.4, true); // Game-Musik mit Schleife
-      soundManager.playSound("ambient", 0.3, true); // Ambient-Sound mit Schleife
 
-      // Entferne den Event-Listener, nachdem die Musik gestartet wurde
-      document.removeEventListener("click", startMusic);
-      document.removeEventListener("keydown", startMusic);
-    };
-
-    // Füge Event-Listener hinzu, um auf Benutzerinteraktion zu warten
-    document.addEventListener("click", startMusic);
-    document.addEventListener("keydown", startMusic);
-  }
 }
