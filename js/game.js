@@ -16,22 +16,22 @@ function selectLevel(level) {
   console.log(`Level ${level} ausgewählt`);
   switch (level) {
     case 0:
-    
       initLevel0();
       world.character.x = 0;
       world.level = level0;
+      world.collision = new Collision(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
     case 1:
-    
       initLevel1();
       world.character.x = 0;
       world.level = level1;
+      world.collision = new Collision(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
     case 2:
-     
       initLevel2();
       world.character.x = 0;
       world.level = level2;
+      world.collision = new Collision(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
   }
 }
@@ -90,7 +90,8 @@ function muteSound() {
     soundManager.muteAllSounds(); // Alle Sounds muten
   } else {
     soundManager.unmuteAllSounds(); // Alle Sounds entmuten
-  }}
+  }
+}
 
 // Tastenereignisse mit Pause-Check
 document.addEventListener("keydown", (e) => {

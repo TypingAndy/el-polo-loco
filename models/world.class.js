@@ -3,11 +3,13 @@ class World {
   statusLifebar = new StatusLifebar();
   statusCoinbar = new StatusCoinbar();
   statusBottlebar = new StatusBottlebar();
+
   throwableObjects = [];
 
   level = level1;
   canvas;
   context;
+  collision;
   keyboard;
   camera_x = 0;
 
@@ -15,8 +17,8 @@ class World {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
     this.keyboard = keyboard;
+    this.collision = new Collision(this, this.level, this.character, this.statusCoinbar, this.statusBottlebar, this.throwableObjects);
     this.initializeGameMusic(); // Initialisiere die Musik
-
     this.draw();
     this.setWorld();
     this.throwBottleInterval();
@@ -24,21 +26,8 @@ class World {
     this.respawnBottles();
     this.startRespawnInterval();
     this.startStatusUpdateInterval();
-
-    // this.startScreen = new StartScreen(this.canvas, this.context);
-    // this.isStartScreenActive = true; // Zustand für den Startbildschirm
+   
   }
-
-  handleInput(event) {
-    if (this.isStartScreenActive) {
-        if (event.key === 'Enter') {
-            this.isStartScreenActive = false; // Wechsle ins Spiel
-        }
-    } else {
-        // Weiterleitung an die Spiellogik
-        console.log('Spiel Eingabe:', event.key);
-    }
-}
 
   setWorld() {
     this.character.world = this;
@@ -61,55 +50,46 @@ class World {
   }
 
   draw() {
-    if (this.isStartScreenActive) {
-        this.startScreen.drawBackground(); // Startbildschirm zeichnen
-    } else {
-        this.drawGameWorld(); // Spielwelt zeichnen
-    }
-}
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-drawGameWorld() {
-  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.translate(this.camera_x, 0);
+    this.addObjectsToMap(this.level.backgroundObjects);
 
-  this.context.translate(this.camera_x, 0);
-  this.addObjectsToMap(this.level.backgroundObjects);
-
-  this.level.clouds.forEach((cloud) => {
+    this.level.clouds.forEach((cloud) => {
       cloud.move();
       this.addToMap(cloud);
-  });
+    });
 
-  this.level.enemies.forEach((enemie) => {
+    this.level.enemies.forEach((enemie) => {
       this.addToMap(enemie);
-  });
+    });
 
-  this.level.coins.forEach((coins) => {
+    this.level.coins.forEach((coins) => {
       this.addToMap(coins);
-  });
+    });
 
-  this.level.bottles.forEach((collectableBottle) => {
+    this.level.bottles.forEach((collectableBottle) => {
       this.addToMap(collectableBottle);
-  });
+    });
 
-  // Space for fixed UI Objects
-  this.context.translate(-this.camera_x, 0);
-  this.addToMap(this.statusLifebar);
-  this.addToMap(this.statusCoinbar);
-  this.addToMap(this.statusBottlebar);
-  this.context.translate(this.camera_x, 0);
-  // Space for fixed UI Objects
+    // Space for fixed UI Objects
+    this.context.translate(-this.camera_x, 0);
+    this.addToMap(this.statusLifebar);
+    this.addToMap(this.statusCoinbar);
+    this.addToMap(this.statusBottlebar);
+    this.context.translate(this.camera_x, 0);
+    // Space for fixed UI Objects
 
-  this.addObjectsToMap(this.throwableObjects);
+    this.addObjectsToMap(this.throwableObjects);
 
-  this.addToMap(this.character);
+    this.addToMap(this.character);
 
-  this.context.translate(-this.camera_x, 0);
+    this.context.translate(-this.camera_x, 0);
 
-  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       this.draw();
-  });
-}
-
+    });
+  }
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {
@@ -163,23 +143,11 @@ drawGameWorld() {
 
   collisionDetectionSpeed() {
     setInterval(() => {
-      this.checkCollisionsWithEnemies();
-      this.checkCollisionsWithCoins();
-      this.checkCollisionsWithBottles();
-      this.checkCollisionBottleWithEnemies();
+      this.collision.checkCollisionsWithEnemies();
+      this.collision.checkCollisionsWithCoins();
+      this.collision.checkCollisionsWithBottles();
+      this.collision.checkCollisionBottleWithEnemies();
     }, 30);
-  }
-
-  checkCollisionsWithEnemies() {
-    this.level.enemies.forEach((enemy) => {
-      if (enemy.isDead) return;
-      let collisionType = this.character.isColliding(enemy);
-      if (collisionType === "top" && this.checkCharacterFallingDown()) {
-        this.jumpOnEnemyTop(enemy);
-      } else if (collisionType) {
-        this.characterGetHitByEnemy(enemy);
-      }
-    });
   }
 
   checkCharacterFallingDown() {
@@ -198,52 +166,6 @@ drawGameWorld() {
   characterGetHitByEnemy(enemy) {
     this.character.hit(enemy);
     this.statusLifebar.setPercentage(this.character.energy);
-  }
-
-  checkCollisionsWithCoins() {
-    this.level.coins.forEach((coin) => {
-      if (this.character.isColliding(coin)) {
-        this.character.collectCoin(coin);
-        this.character.coinAmount += 1;
-        this.statusCoinbar.setCoinAmount(this.character.coinAmount);
-      }
-    });
-  }
-
-  checkCollisionsWithBottles() {
-    this.level.bottles.forEach((bottle) => {
-      if (this.character.isColliding(bottle)) {
-        this.character.collectBottle(bottle);
-
-        this.level.collectedBottles.push("bottleToThrow");
-        this.statusBottlebar.setBottleAmount(this.level.collectedBottles.length);
-      }
-    });
-  }
-
-  checkCollisionBottleWithEnemies() {
-    this.throwableObjects.forEach((bottle, bottleIndex) => {
-      this.level.enemies.forEach((enemy) => {
-        if (bottle.isColliding(enemy)) {
-          soundManager.stopSound("bottleSmash");
-          soundManager.playSound("bottleSmash");
-
-          if (enemy instanceof Endboss) {
-            enemy.health -= 1;
-
-            if (enemy.health > 0) {
-              this.hurtEndbossAnimation(enemy);
-            } else {
-              enemy.animateDefeat();
-            }
-          } else {
-            enemy.enemieHealthMinusOne();
-          }
-
-          this.changeThrownToBrokenBottle(bottle, bottleIndex);
-        }
-      });
-    });
   }
 
   hurtEndbossAnimation(enemy) {
