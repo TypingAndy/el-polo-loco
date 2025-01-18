@@ -31,7 +31,7 @@ class MovableObject extends DrawableObject {
     soundManager.playSound("jump", jumpVolume);
   }
 
-  applyGravity() {
+  applyGravityForBottles() {
     this.applyGravityInterval = setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
@@ -54,11 +54,6 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  isFallingDown() {
-    let falling = this.speedY < 0;
-    console.log("Is falling down:", falling);
-    return falling;
-  }
 
   isColliding(object) {
     let isColliding =

@@ -100,7 +100,7 @@ class Character extends MovableObject {
     }, 30);
     this.intervals.playDieAnimation = setInterval(() => this.playDieAnimation(), 250);
     this.intervals.playIdleAnimation = setInterval(() => this.playIdleAnimationLogic(), 300);
-    this.applyGravity(); // Schwerkraft anwenden
+    this.applyGravityForCharacter(); // Schwerkraft anwenden
 
     console.log("Alle Charakter-Intervalle wurden gestartet");
   }
@@ -197,7 +197,7 @@ class Character extends MovableObject {
     }
   }
 
-  applyGravity() {
+  applyGravityForCharacter() {
     clearInterval(this.intervals.applyGravity); // Schwerkraft doppelt vermeiden
     this.intervals.applyGravity = setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {

@@ -9,7 +9,7 @@ class World {
   level = level1;
   canvas;
   context;
-  collision;
+  collisionChecker;
   keyboard;
   camera_x = 0;
 
@@ -17,78 +17,85 @@ class World {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
     this.keyboard = keyboard;
-    this.collision = new Collision(this, this.level, this.character, this.statusCoinbar, this.statusBottlebar, this.throwableObjects);
-    this.initializeGameMusic(); // Initialisiere die Musik
+    this.collisionChecker = new CollisionChecker(this, this.level, this.character, this.statusCoinbar, this.statusBottlebar, this.throwableObjects);
+    this.initializeGameMusic();
     this.draw();
     this.setWorld();
     this.throwBottleInterval();
     this.collisionDetectionSpeed();
     this.respawnBottles();
-    this.startRespawnInterval();
+    this.startBottleRespawnInterval();
     this.startStatusUpdateInterval();
-   
   }
 
   setWorld() {
     this.character.world = this;
   }
 
-  startRespawnInterval() {
-    setInterval(() => {
-      this.respawnBottles();
-    }, 5000);
-  }
-
-  updateBottleBar() {
-    this.statusBottlebar.setBottleAmount(world.level.collectedBottles.length);
-  }
-
-  startStatusUpdateInterval() {
-    setInterval(() => {
-      this.updateBottleBar();
-    }, 100); // Aktualisiert den Status alle 100ms
-  }
-
   draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.context.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.backgroundObjects);
 
-    this.level.clouds.forEach((cloud) => {
-      cloud.move();
-      this.addToMap(cloud);
-    });
-
-    this.level.enemies.forEach((enemie) => {
-      this.addToMap(enemie);
-    });
-
-    this.level.coins.forEach((coins) => {
-      this.addToMap(coins);
-    });
-
-    this.level.bottles.forEach((collectableBottle) => {
-      this.addToMap(collectableBottle);
-    });
-
-    // Space for fixed UI Objects
-    this.context.translate(-this.camera_x, 0);
-    this.addToMap(this.statusLifebar);
-    this.addToMap(this.statusCoinbar);
-    this.addToMap(this.statusBottlebar);
-    this.context.translate(this.camera_x, 0);
-    // Space for fixed UI Objects
-
-    this.addObjectsToMap(this.throwableObjects);
-
-    this.addToMap(this.character);
-
+    
+    this.drawBackground();
+    this.drawClouds();
+    this.drawEnemies();
+    this.drawCoins();
+    this.drawCollectableBottles();
+    this.drawThrownBottles();
+    this.drawUserInterface();
+    this.drawCharacter();
     this.context.translate(-this.camera_x, 0);
 
     requestAnimationFrame(() => {
       this.draw();
     });
+  }
+
+  drawCharacter() {
+    this.addToMap(this.character);
+  }
+
+  drawEnemies() {
+    this.level.enemies.forEach((enemie) => {
+      this.addToMap(enemie);
+    });
+  }
+
+  drawCoins() {
+    this.level.coins.forEach((coins) => {
+      this.addToMap(coins);
+    });
+  }
+
+  drawCollectableBottles() {
+    this.level.bottles.forEach((collectableBottle) => {
+      this.addToMap(collectableBottle);
+    });
+  }
+
+  drawThrownBottles() {
+    this.addObjectsToMap(this.throwableObjects);
+  }
+
+  drawClouds() {
+    this.level.clouds.forEach((cloud) => {
+      cloud.move();
+      this.addToMap(cloud);
+    });
+  }
+
+  drawBackground() {
+    this.addObjectsToMap(this.level.backgroundObjects);
+  }
+
+  drawUserInterface() {
+    this.context.translate(-this.camera_x, 0);
+    this.addToMap(this.statusLifebar);
+    this.addToMap(this.statusCoinbar);
+    this.addToMap(this.statusBottlebar);
+    this.context.translate(this.camera_x, 0);
   }
 
   addObjectsToMap(objects) {
@@ -141,12 +148,28 @@ class World {
     }
   }
 
+  startBottleRespawnInterval() {
+    setInterval(() => {
+      this.respawnBottles();
+    }, 5000);
+  }
+
+  updateBottleBar() {
+    this.statusBottlebar.setBottleAmount(world.level.collectedBottles.length);
+  }
+
+  startStatusUpdateInterval() {
+    setInterval(() => {
+      this.updateBottleBar();
+    }, 100); // Aktualisiert den Status alle 100ms
+  }
+
   collisionDetectionSpeed() {
     setInterval(() => {
-      this.collision.checkCollisionsWithEnemies();
-      this.collision.checkCollisionsWithCoins();
-      this.collision.checkCollisionsWithBottles();
-      this.collision.checkCollisionBottleWithEnemies();
+      this.collisionChecker.checkCollisionsWithEnemies();
+      this.collisionChecker.checkCollisionsWithCoins();
+      this.collisionChecker.checkCollisionsWithBottles();
+      this.collisionChecker.checkCollisionBottleWithEnemies();
     }, 30);
   }
 

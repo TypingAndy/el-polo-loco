@@ -21,28 +21,26 @@ class StatusBottlebar extends DrawableObject {
   }
 
   setBottleAmount(bottlesCollected) {
-    this.bottlesCollected = bottlesCollected; // Aktualisiere die Anzahl der eingesammelten Münzen
-    let path = this.IMAGES_BOTTLEBAR[this.resolveImageIndex()];
+    this.bottlesCollected = bottlesCollected;
+    let path = this.IMAGES_BOTTLEBAR[this.collectedBottleAmountIndex()];
     this.img = this.imageCache[path];
   }
 
-  resolveImageIndex() {
-    // Berechne den Prozentsatz der eingesammelten Münzen
+  collectedBottleAmountIndex() {
     let percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
 
-    // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
     if (percentageCollected >= 100) {
-      return 5; // Alle Münzen eingesammelt
+      return 5;
     } else if (percentageCollected >= 80) {
-      return 4; // Mehr als 80% gesammelt
+      return 4;
     } else if (percentageCollected >= 60) {
-      return 3; // Mehr als 60% gesammelt
+      return 3;
     } else if (percentageCollected >= 40) {
-      return 2; // Mehr als 40% gesammelt
+      return 2;
     } else if (percentageCollected >= 20) {
-      return 1; // Mehr als 20% gesammelt
+      return 1;
     } else {
-      return 0; // Weniger als 20% gesammelt
+      return 0;
     }
   }
 }

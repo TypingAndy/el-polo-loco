@@ -66,7 +66,7 @@ class ThrowableObject extends MovableObject {
     this.y = y;
     this.speedY = 25; // Initiale Wurfhöhe
     this.speedX = 10; // Horizontale Bewegung
-    this.applyGravity(); // Bewegung durch Schwerkraft und X-Steuerung
+    this.applyGravityForBottles(); // Bewegung durch Schwerkraft und X-Steuerung
 
     soundManager.playSound("shooting", 0.8);
   }
@@ -94,7 +94,7 @@ class ThrowableObject extends MovableObject {
     }
 
     // Starte Gravitation erneut
-    this.applyGravity();
+    this.applyGravityForBottles();
     console.log("Alle Animationen des ThrowableObject erneut gestartet");
   }
 }

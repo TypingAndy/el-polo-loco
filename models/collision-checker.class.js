@@ -1,4 +1,4 @@
-class Collision {
+class CollisionChecker {
   level;
   character;
   world;
