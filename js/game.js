@@ -2,7 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let isPaused = false;
-let isMuted = false;
+
 
 function init() {
   canvas = document.getElementById("canvas");

@@ -10,6 +10,7 @@ class World {
   canvas;
   context;
   collisionChecker;
+
   keyboard;
   camera_x = 0;
 
@@ -33,11 +34,9 @@ class World {
   }
 
   draw() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    this.clearCanvas();
     this.context.translate(this.camera_x, 0);
 
-    
     this.drawBackground();
     this.drawClouds();
     this.drawEnemies();
@@ -46,11 +45,13 @@ class World {
     this.drawThrownBottles();
     this.drawUserInterface();
     this.drawCharacter();
-    this.context.translate(-this.camera_x, 0);
 
-    requestAnimationFrame(() => {
-      this.draw();
-    });
+    this.context.translate(-this.camera_x, 0);
+    this.repeatDrawMethod();
+  }
+
+  clearCanvas() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   drawCharacter() {
@@ -98,6 +99,12 @@ class World {
     this.context.translate(this.camera_x, 0);
   }
 
+  repeatDrawMethod() {
+    requestAnimationFrame(() => {
+      this.draw();
+    });
+  }
+
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);
@@ -109,8 +116,7 @@ class World {
       this.flipImage(mo);
     }
     mo.draw(this.context);
-    // mo.drawFrame(this.context);
-    if (mo.otherDirection) {
+      if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
   }
@@ -128,17 +134,19 @@ class World {
   }
 
   //bottles
-  throwBottleInterval() {
-    setInterval(() => {
-      this.checkThrowObjects();
-    }, 300);
-  }
+
 
   respawnBottles() {
     if (this.level.bottles.length < 7) {
       let randomX = Math.floor(Math.random() * (2500 - 200 + 1)) + 200;
       this.level.bottles.push(new CollectableBottle(randomX));
     }
+  }
+
+  throwBottleInterval() {
+    setInterval(() => {
+      this.checkThrowObjects();
+    }, 300);
   }
 
   checkThrowObjects() {
