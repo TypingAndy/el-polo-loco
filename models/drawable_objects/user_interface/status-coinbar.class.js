@@ -8,6 +8,8 @@ class StatusCoinbar extends DrawableObject {
     "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png",
   ];
 
+  
+
   levelCoinAmount = level1.coins.length;
 
   constructor() {

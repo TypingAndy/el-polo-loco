@@ -1,14 +1,28 @@
-let canvas;
 let world;
 let keyboard = new Keyboard();
 let isPaused = false;
 
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+let startScreen = new StartScreen(canvas, context);
+
 function init() {
-  canvas = document.getElementById("canvas");
-  startscreen = new Startscreen(canvas, keyboard);
-  initLevel1();
-  world = new World(canvas, keyboard);
-  context = canvas.getContext("2d");
+  showStartScreen();
+}
+
+function showStartScreen() {
+  startScreen.draw("img/9_intro_outro_screens/start/startscreen_1.png");
+}
+
+
+function startLevel(level) {
+  if (level === 1) {
+    initLevel1();
+    world = new World(canvas, keyboard);
+  } else if (level === 2) {
+    initLevel2();
+  }
+  // Füge hier weitere Level hinzu
 }
 
 function selectLevel(level) {
@@ -35,7 +49,7 @@ function selectLevel(level) {
   }
 }
 
-function startGame() {
+function resumeGame() {
   if (isPaused) {
     // Animationen und Bewegungen neu starten
     world.character.startIntervals();
@@ -54,7 +68,7 @@ function startGame() {
   }
 }
 
-function stopGame() {
+function pauseGame() {
   if (!isPaused) {
     // Animationen und Bewegungen pausieren
     world.level.enemies.forEach((enemy) => {
