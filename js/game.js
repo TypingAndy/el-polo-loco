@@ -14,39 +14,66 @@ function showStartScreen() {
   startScreen.draw("img/9_intro_outro_screens/start/startscreen_1.png");
 }
 
-
-function startLevel(level) {
-  if (level === 1) {
-    initLevel1();
-    world = new World(canvas, keyboard);
-  } else if (level === 2) {
-    initLevel2();
-  }
-  // Füge hier weitere Level hinzu
+function startLevel() {
+  initLevel1();
+  world = new World(canvas, keyboard);
+  world.statusCoinbar.levelCoinAmount = level1.coins.length;
 }
 
 function selectLevel(level) {
   switch (level) {
     case 0:
-      initLevel0();
-      world.character.x = 0;
-      world.level = level0;
-      world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
-
+      selectLevel0()
       break;
     case 1:
       initLevel1();
-      world.character.x = 0;
+      resetCharacterStats()
       world.level = level1;
+      world.statusCoinbar.levelCoinAmount = level1.coins.length;
       world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
     case 2:
       initLevel2();
-      world.character.x = 0;
+      resetCharacterStats()
       world.level = level2;
+      world.statusCoinbar.levelCoinAmount = level2.coins.length;
       world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
   }
+}
+
+function selectLevel0() {
+  initLevel0();
+  resetCharacterStats()
+  world.level = level0;
+  world.statusCoinbar.levelCoinAmount = level0.coins.length;
+  world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
+}
+
+function selectLevel1() {
+  initLevel1();
+  resetCharacterStats()
+  world.level = level1;
+  world.statusCoinbar.levelCoinAmount = level1.coins.length;
+  world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
+}
+
+function selectLevel2() {
+  initLevel2();
+  resetCharacterStats()
+  world.level = level2;
+  world.statusCoinbar.levelCoinAmount = level2.coins.length;
+  world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
+}
+
+
+
+function resetCharacterStats() {
+  world.character.x = 0;
+  world.character.coinAmount = 0;
+  world.character.energy = 100;
+  world.statusLifebar.setPercentageOfLifeBar(100);
+  world.statusCoinbar.setCoinAmount(0);
 }
 
 function resumeGame() {

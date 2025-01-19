@@ -17,10 +17,10 @@ class StatusLifebar extends DrawableObject {
     this.y = 0;
     this.width = 150;
     this.height = 45;
-    this.setPercentage(100);
+    this.setPercentageOfLifeBar(100);
   }
 
-  setPercentage(percentage) {
+  setPercentageOfLifeBar(percentage) {
     this.percentage = percentage;
     let path = this.IMAGES_LIFEBAR[this.resolveImageIndex()];
     this.img = this.imageCache[path];

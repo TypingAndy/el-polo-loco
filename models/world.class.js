@@ -172,6 +172,8 @@ class World {
     }, 100); // Aktualisiert den Status alle 100ms
   }
 
+  //other methods
+
   collisionDetectionSpeed() {
     setInterval(() => {
       this.collisionChecker.checkCollisionsWithEnemies();
@@ -196,7 +198,7 @@ class World {
 
   characterGetHitByEnemy(enemy) {
     this.character.hit(enemy);
-    this.statusLifebar.setPercentage(this.character.energy);
+    this.statusLifebar.setPercentageOfLifeBar(this.character.energy);
   }
 
   hurtEndbossAnimation(enemy) {
