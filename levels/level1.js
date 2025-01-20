@@ -1,7 +1,7 @@
 let level1;
 function initLevel1() {
   level1 = new Level(
-    [new Chick((x = 400), 1)],
+    [new Chick((x = 400), 1), new ChickJumping((x=300),(health = 1), (jumpHeight = 16)), new ChickJumping((x=200),(health = 1), (jumpHeight = 10))],
 
     [new Clouds()],
 

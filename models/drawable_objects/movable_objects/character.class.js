@@ -100,7 +100,8 @@ class Character extends MovableObject {
     }, 30);
     this.intervals.playDieAnimation = setInterval(() => this.playDieAnimation(), 250);
     this.intervals.playIdleAnimation = setInterval(() => this.playIdleAnimationLogic(), 300);
-    this.applyGravityForCharacter(); // Schwerkraft anwenden
+    this.applyGravityForCharacter();
+    // Schwerkraft anwenden
 
     console.log("Alle Charakter-Intervalle wurden gestartet");
   }
