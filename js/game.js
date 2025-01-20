@@ -23,18 +23,18 @@ function startLevel() {
 function selectLevel(level) {
   switch (level) {
     case 0:
-      selectLevel0()
+      selectLevel0();
       break;
     case 1:
       initLevel1();
-      resetCharacterStats()
+      resetCharacterStats();
       world.level = level1;
       world.statusCoinbar.levelCoinAmount = level1.coins.length;
       world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
     case 2:
       initLevel2();
-      resetCharacterStats()
+      resetCharacterStats();
       world.level = level2;
       world.statusCoinbar.levelCoinAmount = level2.coins.length;
       world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
@@ -44,7 +44,7 @@ function selectLevel(level) {
 
 function selectLevel0() {
   initLevel0();
-  resetCharacterStats()
+  resetCharacterStats();
   world.level = level0;
   world.statusCoinbar.levelCoinAmount = level0.coins.length;
   world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
@@ -52,7 +52,7 @@ function selectLevel0() {
 
 function selectLevel1() {
   initLevel1();
-  resetCharacterStats()
+  resetCharacterStats();
   world.level = level1;
   world.statusCoinbar.levelCoinAmount = level1.coins.length;
   world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
@@ -60,13 +60,11 @@ function selectLevel1() {
 
 function selectLevel2() {
   initLevel2();
-  resetCharacterStats()
+  resetCharacterStats();
   world.level = level2;
   world.statusCoinbar.levelCoinAmount = level2.coins.length;
   world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
 }
-
-
 
 function resetCharacterStats() {
   world.character.x = 0;
@@ -118,7 +116,16 @@ function pauseGame() {
 
 // Tastenereignisse mit Pause-Check
 document.addEventListener("keydown", (e) => {
-  if (isPaused) return; // Im Pausenmodus keine Tasteneingaben akzeptieren
+  if (e.key === "p") {
+    // "P"-Taste soll immer funktionieren
+    if (world && world.pauseButton) {
+      world.pauseButton.toggleImageAndState();
+    }
+    return; // Keine weiteren Tasten verarbeiten
+  }
+
+  // Andere Tasten ignorieren, wenn das Spiel pausiert ist
+  if (isPaused) return;
 
   if (e.key === "a") {
     keyboard.LEFT = true;
@@ -138,7 +145,11 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "f") {
     keyboard.THROW = true;
   }
+  if (e.key === "m") {
+    world.muteButton.toggleImage();
+  }
 });
+
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "a") {

@@ -148,7 +148,8 @@ class StartScreen {
           <li><b>Jump:</b> Press <b>Space</b></li>
           <li><b>Super Jump:</b> Jump on an enemy's head and press <b>Space</b></li>
           <li><b>Shoot:</b> Press <b>F</b></li>
-          <li><b>Mute:</b> Press <b>M</b></li>
+          <li><b>Mute:</b> Press <b>M</b> to toggle sound</li>
+          <li><b>Pause:</b> Press <b>P</b> to pause or resume the game</li>
           <li><b>Objective:</b> Collect all coins to spawn the boss</li>
         </ul>
         <img id="closeHelp" src="img/11_buttons/close.png" alt="Close Help" style="
@@ -161,5 +162,6 @@ class StartScreen {
       </div>
     `;
   }
+  
 }
 

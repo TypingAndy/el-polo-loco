@@ -28,6 +28,8 @@ class World {
     this.respawnBottles();
     this.startBottleRespawnInterval();
     this.startStatusUpdateInterval();
+    this.muteButton = new MuteButton();
+    this.pauseButton = new PauseButton();
   }
 
   setWorld() {

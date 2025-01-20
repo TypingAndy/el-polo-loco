@@ -7,5 +7,6 @@ DOWN = false;
 SPACE = false;
 THROW = false;
 ENTER = false;
-
+MUTE = false;
+PAUSE = false;
 }
