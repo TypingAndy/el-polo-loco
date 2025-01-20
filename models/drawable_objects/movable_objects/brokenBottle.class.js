@@ -39,6 +39,20 @@ class BrokenBottle extends MovableObject {
     }
   }
 
+  startSplashAnimation() {
+    if (!this.splashTimeout) { // Verhindert mehrfaches Starten
+      this.splashInterval = setInterval(() => {
+        this.playAnimation(this.IMAGES_SPLASH);
+      }, 100);
+  
+      this.splashTimeout = setTimeout(() => {
+        this.stopSplashAnimation();
+        this.removeBottle();
+      }, 600);
+    }
+  }
+  
+
   stopAllAnimations() {
     this.stopSplashAnimation();
   }

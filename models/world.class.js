@@ -205,12 +205,6 @@ class World {
     this.statusLifebar.setPercentageOfLifeBar(this.character.energy);
   }
 
-  hurtEndbossAnimation(enemy) {
-    enemy.playHurtAnimation(); // Hurt-Animation
-    soundManager.stopSound("endbossHurt");
-    soundManager.playSound("endbossHurt");
-  }
-
   changeThrownToBrokenBottle(bottle, bottleIndex) {
     let brokenBottle = new BrokenBottle(bottle.x, bottle.y);
     this.throwableObjects.splice(bottleIndex, 1); // Entferne die geworfene Flasche

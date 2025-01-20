@@ -54,8 +54,13 @@ class CollisionChecker {
           if (enemy instanceof Endboss) {
             enemy.health -= 1;
 
+            if (enemy.health === 3 && !enemy.isAlert) {
+              console.log("Endboss health is 3, starting alert animation");
+              enemy.playAlertAnimation();
+            }
+
             if (enemy.health > 0) {
-              this.world.hurtEndbossAnimation(enemy);
+              enemy.playHurtAnimation();
             } else {
               enemy.animateDefeat();
             }

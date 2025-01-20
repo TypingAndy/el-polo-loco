@@ -82,6 +82,13 @@ function resumeGame() {
       if (enemy.startIntervals) {
         enemy.startIntervals();
       }
+      // Endboss spezifisch behandeln
+      if (enemy instanceof Endboss && !enemy.isDefeated) {
+        enemy.startWalkingAnimation(); // Walking-Animation neu starten
+        if (enemy.isHurt) {
+          enemy.playHurtAnimation(); // Hurt-Animation neu starten, falls aktiv
+        }
+      }
     });
     world.throwableObjects.forEach((throwable) => {
       if (throwable.startAllAnimations) {
@@ -92,6 +99,7 @@ function resumeGame() {
     isPaused = false; // Spiel fortsetzen
   }
 }
+
 
 function pauseGame() {
   if (!isPaused) {

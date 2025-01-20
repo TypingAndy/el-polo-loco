@@ -93,7 +93,7 @@ class ThrowableObject extends MovableObject {
     }
 
     // Starte Gravitation erneut
-    this.applyGravity();
+    this.applyGravityForBottles();
     console.log("Alle Animationen des ThrowableObject erneut gestartet");
   }
 }
