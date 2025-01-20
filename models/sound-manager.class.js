@@ -21,12 +21,14 @@ class SoundManager {
       endbossHurt: new Audio("audio/hit_chicken1.wav"),
     };
     this.activeSounds = {}; // Verfolgt den Status aktiver Sounds
+    this.isMuted = false; // Globaler Stummschaltungsstatus
   }
 
   playSound(name, volume = 1, loop = false) {
+    if (this.isMuted) return; // Keine Sounds abspielen, wenn stummgeschaltet
+
     if (this.sounds[name]) {
       if (this.activeSounds[name]) return; // Sound spielt bereits
-      this.sounds[name].currentTime = 0; // Zurücksetzen
       this.sounds[name].volume = volume;
       this.sounds[name].loop = loop;
       this.sounds[name].play();
@@ -36,29 +38,53 @@ class SoundManager {
 
   stopSound(name) {
     if (this.sounds[name] && this.activeSounds[name]) {
-      this.sounds[name].pause();
-      this.sounds[name].currentTime = 0;
+      this.sounds[name].pause(); // Pause statt `currentTime` zurückzusetzen
       this.activeSounds[name] = false; // Markiere Sound als gestoppt
     }
   }
+
+  stopAllSounds() {
+    this.isMuted = true; // Aktiviert den globalen Stummschaltungsmodus
+    Object.keys(this.sounds).forEach((name) => {
+      if (this.sounds[name]) {
+        this.sounds[name].pause(); // Nur pausieren, nicht zurücksetzen
+        this.activeSounds[name] = false;
+      }
+    });
+  }
+
+  resumeAllSounds() {
+    this.isMuted = false; // Deaktiviert den globalen Stummschaltungsmodus
+  
+    // Nur Sounds, die zur Hintergrundmusik gehören, wieder aufnehmen
+    const backgroundSounds = ["gameMusic", "ambient"];
+    backgroundSounds.forEach((name) => {
+      if (this.sounds[name] && !this.activeSounds[name]) {
+        this.sounds[name].play(); // Spielt von der letzten `currentTime` weiter
+        this.activeSounds[name] = true;
+      }
+    });
+  }
+  
 
   isSoundPlaying(name) {
     return !!this.activeSounds[name];
   }
 
   initializeGameMusic() {
-    let startMusic = () => {
-      soundManager.playSound("gameMusic", 0.4, true); // Game-Musik mit Schleife
-      soundManager.playSound("ambient", 0.3, true); // Ambient-Sound mit Schleife
+    if (!this.isSoundPlaying("gameMusic")) {
+      this.sounds["gameMusic"].volume = 0.4;
+      this.sounds["gameMusic"].loop = true;
+      this.sounds["gameMusic"].play(); // Spielt von der aktuellen Position weiter
+      this.activeSounds["gameMusic"] = true;
+    }
 
-      // Entferne den Event-Listener, nachdem die Musik gestartet wurde
-      document.removeEventListener("click", startMusic);
-      document.removeEventListener("keydown", startMusic);
-    };
-
-    // Füge Event-Listener hinzu, um auf Benutzerinteraktion zu warten
-    document.addEventListener("click", startMusic);
-    document.addEventListener("keydown", startMusic);
+    if (!this.isSoundPlaying("ambient")) {
+      this.sounds["ambient"].volume = 0.3;
+      this.sounds["ambient"].loop = true;
+      this.sounds["ambient"].play(); // Spielt von der aktuellen Position weiter
+      this.activeSounds["ambient"] = true;
+    }
   }
 }
 

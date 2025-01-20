@@ -3,7 +3,8 @@ class World {
   statusLifebar = new StatusLifebar();
   statusCoinbar = new StatusCoinbar();
   statusBottlebar = new StatusBottlebar();
-
+  pauseButton = new PauseButton();
+  muteButton = new MuteButton();
   throwableObjects = [];
 
   level = level1;
@@ -96,6 +97,8 @@ class World {
     this.addToMap(this.statusLifebar);
     this.addToMap(this.statusCoinbar);
     this.addToMap(this.statusBottlebar);
+    this.addToMap(this.pauseButton);
+    this.addToMap(this.muteButton);
     this.context.translate(this.camera_x, 0);
   }
 
@@ -116,7 +119,7 @@ class World {
       this.flipImage(mo);
     }
     mo.draw(this.context);
-      if (mo.otherDirection) {
+    if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
   }
@@ -134,7 +137,6 @@ class World {
   }
 
   //bottles
-
 
   respawnBottles() {
     if (this.level.bottles.length < 7) {
@@ -212,6 +214,4 @@ class World {
     this.throwableObjects.splice(bottleIndex, 1); // Entferne die geworfene Flasche
     this.throwableObjects.push(brokenBottle); // Füge die zerbrochene Flasche hinzu
   }
-
-
 }
