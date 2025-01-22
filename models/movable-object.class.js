@@ -90,7 +90,16 @@ class MovableObject extends DrawableObject {
       this.world.level.coins.splice(index, 1);
       soundManager.stopSound("collectCoin");
       soundManager.playSound("collectCoin", 1);
+      if (this.world.statusCoinbar.coinsCollected + 1 === this.world.statusCoinbar.levelCoinAmount) {
+        this.world.level.enemies.push(new Endboss (this.world.character.x + 400, 8, this.world.level))
+      }
     }
+  }
+
+  showWorld() {
+    console.log(this.world);
+    console.log(this.world.character.x);
+    console.log(this.world.level.enemies);
   }
 
   collectBottle(bottle) {

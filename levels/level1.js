@@ -1,7 +1,7 @@
 let level1;
 function initLevel1() {
   level1 = new Level(
-    [new Endboss(300, 8)],
+    [],
 
     [new Clouds()],
 

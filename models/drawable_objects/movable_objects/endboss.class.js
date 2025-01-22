@@ -37,11 +37,12 @@ class Endboss extends MovableObject {
     defeat: ["img/4_enemie_boss_chicken/5_dead/G24.png", "img/4_enemie_boss_chicken/5_dead/G25.png", "img/4_enemie_boss_chicken/5_dead/G26.png"],
   };
 
-  constructor(x, health) {
+  constructor(x, health, level) {
     super().loadImage(this.IMAGES.walking[0]);
     Object.keys(this.IMAGES).forEach((type) => this.loadImages(this.IMAGES[type]));
     this.x = x;
     this.health = health;
+    this.level = level;
     this.isDefeated = false;
     this.isHurt = false;
     this.isAlert = false;
@@ -81,29 +82,78 @@ class Endboss extends MovableObject {
   }
 
   startCanonAnimation() {
+    // Wiederholte Überprüfung, ob die Canon-Aktion starten soll
     this.canonInterval = setInterval(() => {
-      if (this.health <= 3 && !this.isDefeated) {
-        this.isPlayingCanon = true;
-        this.stopWalkingAnimation();
-
-        let canonFrame = 0;
-        const canonDuration = this.IMAGES.canon.length * 200; // 200ms per frame
-
-        const canonAnimationInterval = setInterval(() => {
-          this.playAnimation(this.IMAGES.canon);
-          canonFrame++;
-          if (canonFrame >= this.IMAGES.canon.length) {
-            clearInterval(canonAnimationInterval);
-            this.isPlayingCanon = false;
-            this.resumeAnimations();
-          }
-        }, 200);
-
-        setTimeout(() => {
-          clearInterval(canonAnimationInterval);
-        }, canonDuration);
+      if (this.shouldStartCanonAction()) {
+        this.startCanonAction();
       }
-    }, 7000 + this.IMAGES.canon.length * 200); // Delay based on canon animation duration
+    }, this.getCanonAnimationDelay());
+  }
+
+  // Überprüft, ob die Canon-Aktion gestartet werden soll
+  shouldStartCanonAction() {
+    return this.health <= 3 && !this.isDefeated;
+  }
+
+  // Startet die Canon-Aktion
+  startCanonAction() {
+    this.isPlayingCanon = true;
+    this.stopWalkingAnimation();
+    this.shootChickCanon();
+    this.playCanonAnimation();
+  }
+
+  // Berechnet die Verzögerung für die Canon-Aktion basierend auf der Animation
+  getCanonAnimationDelay() {
+    return 5000 + this.IMAGES.canon.length * 200;
+  }
+
+  // Führt die Canon-Animation aus
+  playCanonAnimation() {
+    let canonFrame = 0;
+
+    const canonAnimationInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES.canon);
+      canonFrame++;
+
+      // Beendet die Animation nach dem letzten Frame
+      if (canonFrame >= this.IMAGES.canon.length) {
+        clearInterval(canonAnimationInterval);
+        this.isPlayingCanon = false;
+        this.resumeAnimations();
+      }
+    }, 200);
+
+    // Stellt sicher, dass das Intervall gestoppt wird
+    this.stopCanonInterval(canonAnimationInterval);
+  }
+
+  // Schießt Chick-Canons mit einer Verzögerung
+  shootChickCanon() {
+    console.log(this.level);
+    
+    setTimeout(() => {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const chickCanon = new ChickCanon(this.x, 1);
+          this.level.enemies.push(chickCanon); // Füge das Objekt zur Spielwelt hinzu
+        }, i * 300); // 300ms Abstand zwischen jedem Schuss
+      }
+    }, 1200); // 1,2 Sekunden Verzögerung vor dem Schießen
+  }
+
+  // Optionale Methode, falls du Intervall-Management brauchst
+  stopCanonInterval(canonAnimationInterval) {
+    setTimeout(() => {
+      clearInterval(canonAnimationInterval);
+    }, this.IMAGES.canon.length * 200); // Stoppt das Intervall nach der Animation
+  }
+
+  stopCanonInterval(canonAnimationInterval) {
+    const canonDuration = this.IMAGES.canon.length * 200;
+    setTimeout(() => {
+      clearInterval(canonAnimationInterval);
+    }, canonDuration);
   }
 
   playHurtAnimation() {
