@@ -11,133 +11,134 @@ class Endboss extends MovableObject {
   health;
   hurtInterval;
 
-  IMAGES_WALKING = ["img/4_enemie_boss_chicken/1_walk/G1.png", "img/4_enemie_boss_chicken/1_walk/G2.png", "img/4_enemie_boss_chicken/1_walk/G3.png", "img/4_enemie_boss_chicken/1_walk/G4.png"];
-
-  IMAGES_ALERT = [
-    "img/4_enemie_boss_chicken/2_alert/G5.png",
-    "img/4_enemie_boss_chicken/2_alert/G6.png",
-    "img/4_enemie_boss_chicken/2_alert/G7.png",
-    "img/4_enemie_boss_chicken/2_alert/G8.png",
-    "img/4_enemie_boss_chicken/2_alert/G9.png",
-    "img/4_enemie_boss_chicken/2_alert/G10.png",
-    "img/4_enemie_boss_chicken/2_alert/G11.png",
-    "img/4_enemie_boss_chicken/2_alert/G12.png",
-  ];
-
-  IMAGES_CANON = [
-    "img/4_enemie_boss_chicken/3_attack/G13.png",
-    "img/4_enemie_boss_chicken/3_attack/G14.png",
-    "img/4_enemie_boss_chicken/3_attack/G15.png",
-    "img/4_enemie_boss_chicken/3_attack/G16.png",
-    "img/4_enemie_boss_chicken/3_attack/G17.png",
-    "img/4_enemie_boss_chicken/3_attack/G18.png",
-    "img/4_enemie_boss_chicken/3_attack/G19.png",
-    "img/4_enemie_boss_chicken/3_attack/G20.png",
-  ];
-
-  IMAGES_HURT = ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"];
-
-  IMAGES_DEFEATED = ["img/4_enemie_boss_chicken/5_dead/G24.png", "img/4_enemie_boss_chicken/5_dead/G25.png", "img/4_enemie_boss_chicken/5_dead/G26.png", "img/4_enemie_boss_chicken/5_dead/G26.png"];
+  IMAGES = {
+    walking: ["img/4_enemie_boss_chicken/1_walk/G1.png", "img/4_enemie_boss_chicken/1_walk/G2.png", "img/4_enemie_boss_chicken/1_walk/G3.png", "img/4_enemie_boss_chicken/1_walk/G4.png"],
+    alert: [
+      "img/4_enemie_boss_chicken/2_alert/G5.png",
+      "img/4_enemie_boss_chicken/2_alert/G6.png",
+      "img/4_enemie_boss_chicken/2_alert/G7.png",
+      "img/4_enemie_boss_chicken/2_alert/G8.png",
+      "img/4_enemie_boss_chicken/2_alert/G9.png",
+      "img/4_enemie_boss_chicken/2_alert/G10.png",
+      "img/4_enemie_boss_chicken/2_alert/G11.png",
+      "img/4_enemie_boss_chicken/2_alert/G12.png",
+    ],
+    canon: [
+      "img/4_enemie_boss_chicken/3_attack/G13.png",
+      "img/4_enemie_boss_chicken/3_attack/G14.png",
+      "img/4_enemie_boss_chicken/3_attack/G15.png",
+      "img/4_enemie_boss_chicken/3_attack/G16.png",
+      "img/4_enemie_boss_chicken/3_attack/G17.png",
+      "img/4_enemie_boss_chicken/3_attack/G18.png",
+      "img/4_enemie_boss_chicken/3_attack/G19.png",
+      "img/4_enemie_boss_chicken/3_attack/G20.png",
+    ],
+    hurt: ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"],
+    defeat: ["img/4_enemie_boss_chicken/5_dead/G24.png", "img/4_enemie_boss_chicken/5_dead/G25.png", "img/4_enemie_boss_chicken/5_dead/G26.png"],
+  };
 
   constructor(x, health) {
-    super().loadImage(this.IMAGES_WALKING[0]);
-    this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_ALERT);
-    this.loadImages(this.IMAGES_CANON);
-    this.loadImages(this.IMAGES_HURT);
-    this.loadImages(this.IMAGES_DEFEATED);
+    super().loadImage(this.IMAGES.walking[0]);
+    Object.keys(this.IMAGES).forEach((type) => this.loadImages(this.IMAGES[type]));
     this.x = x;
     this.health = health;
-    this.isDefeated = false; // Status für Besiegt setzen
-    this.isHurt = false; // Status für Hurt setzen
-    this.isAlert = false; // Status für Hurt setzen
-    this.isCanon = false; // Status für Hurt setzen
+    this.isDefeated = false;
+    this.isHurt = false;
+    this.isAlert = false;
+    this.isPlayingCanon = false;
     this.startWalkingAnimation();
+    this.startCanonAnimation();
   }
 
   startWalkingAnimation() {
-    let direction = 1; // 1 für vorwärts, -1 für rückwärts
-    let maxDistance = 300; // Maximale Distanz in Pixeln
-    let startX = this.x; // Startposition speichern
-    let changeDirectionChance = 0.05; // 5% Chance pro Frame, die Richtung abrupt zu ändern
-    let speed = 5; // Startgeschwindigkeit
-  
+    this.direction = 1;
+    this.startX = this.x;
+    this.maxDistance = 300;
+    this.changeDirectionChance = 0.05;
+    this.speed = 5;
     this.walkingInterval = setInterval(() => {
-      if (!this.isAlert && !this.isHurt) {
-        this.playAnimation(this.IMAGES_WALKING);
-  
-        // Bewegung implementieren
-        this.x += direction * speed; // Bewegung mit aktueller Geschwindigkeit
-  
-        // Richtung ändern, wenn maximale Distanz erreicht ist
-        if (this.x >= startX + maxDistance || this.x <= startX) {
-          direction *= -1; // Richtung umkehren
-          speed = this.getRandomSpeed(); // Geschwindigkeit anpassen
-          console.log(`Grenze erreicht, neue Geschwindigkeit: ${speed}`);
-        }
-  
-        // Gelegentlich die Richtung abrupt ändern
-        if (Math.random() < changeDirectionChance) {
-          direction *= -1; // Zufällige Richtungsumkehr
-          speed = this.getRandomSpeed(); // Geschwindigkeit anpassen
-          console.log(`Abrupter Richtungswechsel! Neue Geschwindigkeit: ${speed}`);
-        }
-  
-        console.log(`Boss position: ${this.x}, direction: ${direction}, speed: ${speed}`);
+      if (!this.isAlert && !this.isHurt && !this.isPlayingCanon) {
+        this.playAnimation(this.IMAGES.walking);
+        this.switchBossSpeed();
       }
-    }, 150); // Animation alle 150ms
+    }, 150);
   }
-  
-  // Hilfsmethode, um eine zufällige Geschwindigkeit zu generieren
+
+  switchBossSpeed() {
+    if (this.x >= this.startX + this.maxDistance || this.x <= this.startX) {
+      this.direction *= -1;
+      this.speed = this.getRandomSpeed();
+    }
+    if (Math.random() < this.changeDirectionChance) {
+      this.direction *= -1;
+      this.speed = this.getRandomSpeed();
+    }
+    this.x += this.direction * this.speed;
+  }
+
   getRandomSpeed() {
-    return Math.floor(Math.random() * 8) + 6; // Zufällige Geschwindigkeit zwischen 2 und 5
+    return Math.floor(Math.random() * 8) + 6;
   }
-  
-  
-  
+
+  startCanonAnimation() {
+    this.canonInterval = setInterval(() => {
+      if (this.health <= 3 && !this.isDefeated) {
+        this.isPlayingCanon = true;
+        this.stopWalkingAnimation();
+
+        let canonFrame = 0;
+        const canonDuration = this.IMAGES.canon.length * 200; // 200ms per frame
+
+        const canonAnimationInterval = setInterval(() => {
+          this.playAnimation(this.IMAGES.canon);
+          canonFrame++;
+          if (canonFrame >= this.IMAGES.canon.length) {
+            clearInterval(canonAnimationInterval);
+            this.isPlayingCanon = false;
+            this.resumeAnimations();
+          }
+        }, 200);
+
+        setTimeout(() => {
+          clearInterval(canonAnimationInterval);
+        }, canonDuration);
+      }
+    }, 7000 + this.IMAGES.canon.length * 200); // Delay based on canon animation duration
+  }
 
   playHurtAnimation() {
-    if (!this.isHurt && !this.isDefeated && !this.isAlert) {
-      this.isHurt = true; // Verhindert mehrfaches Abspielen
+    if (!this.isHurt && !this.isDefeated && !this.isAlert && !this.isPlayingCanon) {
+      this.isHurt = true;
       this.hurtInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_HURT);
+        this.playAnimation(this.IMAGES.hurt);
         soundManager.stopSound("endbossHurt");
         soundManager.playSound("endbossHurt");
-        console.log("is hurt");
       }, 200);
-
       setTimeout(() => {
         this.stopHurtAnimation();
         this.isHurt = false;
-      }, 600); // Hurt-Animation läuft 1 Sekunde
+      }, 600);
     }
   }
 
   playAlertAnimation() {
-    console.log("playAlertAnimation called, health:", this.health);
-    if (this.health > 2 && !this.isDefeated && !this.isAlert) {
-      console.log("Starting alert animation");
-      this.isAlert = true; // Verhindert mehrfaches Abspielen
-      this.alertInterval = setInterval(() => {
-        this.playAnimation(this.IMAGES_ALERT);
-        console.log("is alert");
-      }, 200);
+    if (this.health <= 2 || this.isDefeated || this.isAlert) return;
+    this.isAlert = true;
+    this.alertInterval = setInterval(() => {
+      this.health = 3;
+      this.playAnimation(this.IMAGES.alert);
+    }, 200);
 
-      setTimeout(() => {
-        this.stopAlertAnimation();
-        this.isAlert = false;
-        console.log("Alert animation stopped");
-      }, 5000); // Alert-Animation läuft 1 Sekunde
-    } else {
-      console.log("Alert animation conditions not met");
-    }
+    setTimeout(() => {
+      this.stopAlertAnimation();
+      this.isAlert = false;
+    }, 4000);
   }
 
   stopAlertAnimation() {
     if (this.alertInterval) {
       clearInterval(this.alertInterval);
-      this.alertInterval = null; // Zurücksetzen, um Wiederverwendung zu ermöglichen
-      console.log("Alert-Animation des Endbosses gestoppt");
+      this.alertInterval = null;
     }
   }
 
@@ -147,11 +148,8 @@ class Endboss extends MovableObject {
 
     let defeatedFrame = 0;
     this.defeatedInterval = setInterval(() => {
-      this.playDefeatFrames(defeatedFrame);
-      defeatedFrame++;
-      if (defeatedFrame >= this.IMAGES_DEFEATED.length) {
-        this.stopDefeatAnimation();
-      }
+      this.playDefeatFrames(defeatedFrame++);
+      if (defeatedFrame >= this.IMAGES.defeat.length) this.stopDefeatAnimation();
     }, 250);
   }
 
@@ -162,48 +160,38 @@ class Endboss extends MovableObject {
   }
 
   playDefeatFrames(defeatedFrame) {
-    this.playAnimation(this.IMAGES_DEFEATED);
+    this.playAnimation(this.IMAGES.defeat);
   }
 
   finalizeDefeatAnimation() {
-    console.log("Endboss besiegt und bleibt im letzten Bild der Animation!");
-    this.img = this.imageCache[this.IMAGES_DEFEATED[this.IMAGES_DEFEATED.length - 1]];
+    this.img = this.imageCache[this.IMAGES.defeat[this.IMAGES.defeat.length - 1]];
   }
 
   stopAllAnimations() {
-    this.stopWalkingAnimation();
-    if (this.hurtInterval) {
-      this.stopHurtAnimation();
-    }
-    if (this.defeatedInterval) {
-      this.stopDefeatAnimation();
-    }
-    console.log("Alle Animationen des Endbosses gestoppt");
+    ["stopWalkingAnimation", "stopHurtAnimation", "stopDefeatAnimation"].forEach((method) => {
+      if (this[method]) {
+        this[method]();
+      }
+    });
   }
 
   stopWalkingAnimation() {
     clearInterval(this.walkingInterval);
-    console.log("Walking-Animation des Endbosses gestoppt");
-  }
-
-  stopHurtAnimation() {
-    clearInterval(this.hurtInterval);
-    this.isHurt = false;
-    console.log("Hurt-Animation des Endbosses gestoppt");
   }
 
   stopDefeatAnimation() {
     clearInterval(this.defeatedInterval);
     this.finalizeDefeatAnimation();
-    console.log("Defeat-Animation des Endbosses gestoppt");
+  }
+
+  stopHurtAnimation() {
+    clearInterval(this.hurtInterval);
+    this.isHurt = false;
   }
 
   resumeAnimations() {
-    if (!this.isDefeated) {
-      this.startWalkingAnimation();
-      if (this.isHurt) {
-        this.playHurtAnimation();
-      }
-    }
+    if (this.isDefeated) return;
+    this.startWalkingAnimation();
+    if (this.isHurt) this.playHurtAnimation();
   }
 }
