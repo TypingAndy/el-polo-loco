@@ -4,6 +4,7 @@ class MovableObject extends DrawableObject {
   acceleration = 2.5;
   otherDirection = false;
   fallingDown = false;
+  hurtSoundPlaying = false; // Flag, ob der Hurt-Sound derzeit abgespielt wird
   lastHit = 0;
   currentImage = 0;
   energy = 100;
@@ -63,21 +64,38 @@ class MovableObject extends DrawableObject {
   hit() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;
+  
     if (timepassed > 1) {
+      // Reduziere Energie
       this.energy -= 19;
-    }
-
-    if (this.energy < 0) {
-      this.energy = 0;
-    } else {
+  
+      // Verhindere negative Energie
+      if (this.energy < 0) {
+        this.energy = 0;
+      }
+  
+      // Hurt-Sound abspielen
+      const hurtSound = this.getRandomHurtSound();
+      soundManager.playSound(hurtSound, 0.5, false);
+  
+      // Aktualisiere den letzten Trefferzeitpunkt
       this.lastHit = new Date().getTime();
     }
   }
+  
 
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;
     return timepassed < 1;
+  }
+  
+  
+  
+  getRandomHurtSound() {
+    const hurtSounds = ["hurt1", "hurt2", "hurt3", "hurt4", "hurt5"];
+    const randomIndex = Math.floor(Math.random() * hurtSounds.length);
+    return hurtSounds[randomIndex];
   }
 
   isDead() {

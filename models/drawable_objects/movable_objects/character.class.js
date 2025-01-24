@@ -237,41 +237,43 @@ class Character extends MovableObject {
 
   playJumpAnimation() {
     if (this.isAboveGround() && !this.isHurt() && !this.isDead()) {
-        if (this.speedY > 0) { // Jumping up
-            if (this.currentAnimation !== "jumpUp") {
-                this.currentImage = 0;
-                this.currentAnimation = "jumpUp";
-            }
-            this.playAnimation(this.IMAGES_JUMPINGUP);
-
-            // Hold at the last frame of jump up
-            if (this.currentImage === this.IMAGES_JUMPINGUP.length - 1) {
-                this.stopAnimation(); // Stop changing frames
-            }
-        } else { // Falling down
-            if (this.currentAnimation !== "fallingDown") {
-                this.currentImage = 0;
-                this.currentAnimation = "fallingDown";
-            }
-            this.playAnimation(this.IMAGES_FALLINGDOWN);
-
-            // Hold at the last frame of falling down
-            if (this.currentImage === this.IMAGES_FALLINGDOWN.length - 1) {
-                this.stopAnimation();
-            }
+      if (this.speedY > 0) {
+        // Jumping up
+        if (this.currentAnimation !== "jumpUp") {
+          this.currentImage = 0;
+          this.currentAnimation = "jumpUp";
         }
-    } 
-}
+        this.playAnimation(this.IMAGES_JUMPINGUP);
 
-isMovingHorizontally() {
-  return this.speedX !== 0;
-}
+        // Hold at the last frame of jump up
+        if (this.currentImage === this.IMAGES_JUMPINGUP.length - 1) {
+          this.stopAnimation(); // Stop changing frames
+        }
+      } else {
+        // Falling down
+        if (this.currentAnimation !== "fallingDown") {
+          this.currentImage = 0;
+          this.currentAnimation = "fallingDown";
+        }
+        this.playAnimation(this.IMAGES_FALLINGDOWN);
 
-// Helper function to stop animation
-stopAnimation() {
-  // Stops the current frame from advancing
-  this.currentImage = Math.min(this.currentImage, this.IMAGES_JUMPINGUP.length - 1); // Adjust as needed for other states
-}
+        // Hold at the last frame of falling down
+        if (this.currentImage === this.IMAGES_FALLINGDOWN.length - 1) {
+          this.stopAnimation();
+        }
+      }
+    }
+  }
+
+  isMovingHorizontally() {
+    return this.speedX !== 0;
+  }
+
+  // Helper function to stop animation
+  stopAnimation() {
+    // Stops the current frame from advancing
+    this.currentImage = Math.min(this.currentImage, this.IMAGES_JUMPINGUP.length - 1); // Adjust as needed for other states
+  }
 
   shouldPlayJumpAnimation() {
     return (this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead());

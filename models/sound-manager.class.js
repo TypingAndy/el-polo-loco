@@ -26,7 +26,7 @@ class SoundManager {
 
   playSound(name, volume = 1, loop = false) {
     if (this.isMuted) return; // Keine Sounds abspielen, wenn stummgeschaltet
-
+  
     if (this.sounds[name]) {
       if (this.activeSounds[name]) return; // Sound spielt bereits
       this.sounds[name].volume = volume;
@@ -35,6 +35,9 @@ class SoundManager {
       this.activeSounds[name] = true; // Markiere Sound als aktiv
     }
   }
+  
+
+
 
   stopSound(name) {
     if (this.sounds[name] && this.activeSounds[name]) {
