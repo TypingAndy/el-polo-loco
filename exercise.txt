@@ -1,11 +1,12 @@
 Aufgaben:
 
-+ Start Screen
-+ Musik + sounds
-+ bottle splash
-+ Game over Screeen
-+ Fullscreen
-+ Help Funciton
++ Start Screen/Impressum
++ Musik + sounds/polish
+
++ Game over Screeen/button polish
++ Fullscreen/console
++ hurt polish
+level design
 
 
 
@@ -13,3 +14,7 @@ licence
 
 background picture
 Foto von Walid Ahmad: https://www.pexels.com/de-de/foto/wuste-wahrend-der-nacht-847402/
+
+
+
+<a target="_blank" href="https://icons8.com/icon/WfGqqUka72or/full-screen">Vollbild</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a>

@@ -1,13 +1,22 @@
 let world;
 let keyboard = new Keyboard();
 let isPaused = false;
-
+let wasMutedBeforePause = false; // Neue Variable zum Speichern des Mute-Status vor der Pause
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 let startScreen = new StartScreen(canvas, context);
 
 function init() {
   showStartScreen();
+}
+
+function checkMuteStatusBeforeStart() {
+  const isMuted = soundManager.loadMuteSetting();
+  if (isMuted) {
+    soundManager.stopAllSounds();
+  } else {
+    soundManager.resumeAllSounds();
+  }
 }
 
 function showStartScreen() {
@@ -18,13 +27,11 @@ function startLevel() {
   initLevel1();
   world = new World(canvas, keyboard);
   world.statusCoinbar.levelCoinAmount = level1.coins.length;
+  checkMuteStatusBeforeStart();
 }
 
 function selectLevel(level) {
   switch (level) {
-    case 0:
-      selectLevel0();
-      break;
     case 1:
       initLevel1();
       resetCharacterStats();
@@ -40,14 +47,6 @@ function selectLevel(level) {
       world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
       break;
   }
-}
-
-function selectLevel0() {
-  initLevel0();
-  resetCharacterStats();
-  world.level = level0;
-  world.statusCoinbar.levelCoinAmount = level0.coins.length;
-  world.collisionChecker = new CollisionChecker(world, world.level, world.character, world.statusCoinbar, world.statusBottlebar, world.throwableObjects);
 }
 
 function selectLevel1() {
@@ -74,34 +73,15 @@ function resetCharacterStats() {
   world.statusCoinbar.setCoinAmount(0);
 }
 
-function resumeGame() {
-  if (isPaused) {
-    // Animationen und Bewegungen neu starten
-    world.character.startIntervals();
-    world.level.enemies.forEach((enemy) => {
-      if (enemy.startIntervals) {
-        enemy.startIntervals();
-      }
-      // Endboss spezifisch behandeln
-      if (enemy instanceof Endboss && !enemy.isDefeated) {
-        enemy.startWalkingAnimation(); // Walking-Animation neu starten
-        if (enemy.isHurt) {
-          enemy.playHurtAnimation(); // Hurt-Animation neu starten, falls aktiv
-        }
-      }
-    });
-    world.throwableObjects.forEach((throwable) => {
-      if (throwable.startAllAnimations) {
-        throwable.startAllAnimations();
-      }
-    });
-
-    isPaused = false; // Spiel fortsetzen
-  }
-}
-
-
 function pauseGame() {
+  wasMutedBeforePause = soundManager.isMuted; // Speichere, ob der Ton vor der Pause gemutet war
+  soundManager.stopAllSounds();
+
+  if (world && world.muteButton) {
+    world.muteButton.currentButton = world.muteButton.IMAGE_MUTEBUTTON; // Setze das Bild auf "Ton aus"
+    world.muteButton.loadImage(world.muteButton.currentButton);
+  }
+
   if (!isPaused) {
     // Animationen und Bewegungen pausieren
     world.level.enemies.forEach((enemy) => {
@@ -119,6 +99,40 @@ function pauseGame() {
     world.character.stopIntervals();
 
     isPaused = true; // Spiel pausieren
+  }
+}
+
+function resumeGame() {
+  if (!wasMutedBeforePause) {
+    soundManager.resumeAllSounds(); // Nur wieder aktivieren, wenn vor der Pause nicht gemutet war
+    if (world && world.muteButton) {
+      world.muteButton.currentButton = world.muteButton.IMAGE_SOUNDBUTTON; // Setze das Bild auf "Sound aktiv"
+      world.muteButton.loadImage(world.muteButton.currentButton);
+    }
+  }
+
+  if (isPaused) {
+    // Animationen und Bewegungen neu starten
+    world.character.startIntervals();
+    world.level.enemies.forEach((enemy) => {
+      if (enemy.startIntervals) {
+        enemy.startIntervals();
+      }
+      // Endboss spezifisch behandeln
+      if (enemy instanceof Endboss && !enemy.isDefeated) {
+        enemy.startWalkingAnimation();
+        if (enemy.isHurt) {
+          enemy.playHurtAnimation();
+        }
+      }
+    });
+    world.throwableObjects.forEach((throwable) => {
+      if (throwable.startAllAnimations) {
+        throwable.startAllAnimations();
+      }
+    });
+
+    isPaused = false; // Spiel fortsetzen
   }
 }
 

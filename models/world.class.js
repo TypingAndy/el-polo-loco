@@ -5,6 +5,7 @@ class World {
   statusBottlebar = new StatusBottlebar();
   pauseButton = new PauseButton();
   muteButton = new MuteButton();
+  fullScreenButton = new FullScreenButton();
   throwableObjects = [];
 
   level = level1;
@@ -30,6 +31,7 @@ class World {
     this.startStatusUpdateInterval();
     this.muteButton = new MuteButton();
     this.pauseButton = new PauseButton();
+    this.fullScreenButton = new FullScreenButton();
   }
 
   setWorld() {
@@ -101,6 +103,7 @@ class World {
     this.addToMap(this.statusBottlebar);
     this.addToMap(this.pauseButton);
     this.addToMap(this.muteButton);
+    this.addToMap(this.fullScreenButton);
     this.context.translate(this.camera_x, 0);
   }
 
@@ -109,6 +112,17 @@ class World {
       this.draw();
     });
   }
+
+  deleteCanvas() {
+    // Entferne das Canvas aus dem DOM
+    if (this.canvas) {
+      this.canvas.parentNode.removeChild(this.canvas);
+    }
+    // Stoppe alle laufenden Animationen und Spielintervalle, wenn nötig
+    cancelAnimationFrame(this.animationFrameId); // Vorausgesetzt, `this.animationFrameId` speichert `requestAnimationFrame`-IDs
+    // Entferne zusätzliche Spielkomponenten, falls vorhanden
+  }
+  
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {

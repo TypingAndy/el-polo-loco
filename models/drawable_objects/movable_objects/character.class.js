@@ -43,17 +43,11 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
-  IMAGES_JUMPING = [
-    "img/2_character_pepe/3_jump/J-31.png",
-    "img/2_character_pepe/3_jump/J-32.png",
-    "img/2_character_pepe/3_jump/J-33.png",
-    "img/2_character_pepe/3_jump/J-34.png",
-    "img/2_character_pepe/3_jump/J-35.png",
-    "img/2_character_pepe/3_jump/J-36.png",
-    "img/2_character_pepe/3_jump/J-37.png",
-    "img/2_character_pepe/3_jump/J-38.png",
-    "img/2_character_pepe/3_jump/J-39.png",
-  ];
+  IMAGES_JUMPINGUP = ["img/2_character_pepe/3_jump/J-34.png"];
+
+  IMAGES_FALLINGDOWN = ["img/2_character_pepe/3_jump/J-35.png", "img/2_character_pepe/3_jump/J-36.png", "img/2_character_pepe/3_jump/J-37.png"];
+
+  IMAGES_LANDING = ["img/2_character_pepe/3_jump/J-38.png", "img/2_character_pepe/3_jump/J-39.png"];
 
   IMAGES_DEAD = [
     "img/2_character_pepe/5_dead/D-51.png",
@@ -74,7 +68,9 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONGIDLE);
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_JUMPING);
+    this.loadImages(this.IMAGES_JUMPINGUP);
+    this.loadImages(this.IMAGES_FALLINGDOWN);
+    this.loadImages(this.IMAGES_LANDING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
 
@@ -194,7 +190,22 @@ class Character extends MovableObject {
 
   playDieAnimation() {
     if (this.isDead()) {
-      this.playAnimation(this.IMAGES_DEAD);
+      if (this.currentAnimation !== "dead") {
+        this.currentAnimation = "dead";
+        this.currentImage = 0; // Start animation from the first image
+      }
+
+      if (this.currentImage < this.IMAGES_DEAD.length) {
+        this.playAnimation(this.IMAGES_DEAD);
+      }
+
+      if (this.currentImage === this.IMAGES_DEAD.length - 1) {
+        this.stopIntervals(); // Stop character animations
+        pauseGame(); // Pause the game
+        setTimeout(() => {
+          new LosingScreen(); // Show LosingScreen
+        }, 500); // Short delay to ensure animation completes smoothly
+      }
     }
   }
 
@@ -225,18 +236,42 @@ class Character extends MovableObject {
   }
 
   playJumpAnimation() {
-    if (this.shouldPlayJumpAnimation()) {
-      if (this.currentAnimation !== "jump") {
-        this.currentImage = 0;
-        this.currentAnimation = "jump";
-      }
-      this.playAnimation(this.IMAGES_JUMPING);
-    } else {
-      if (this.currentAnimation === "jump") {
-        this.currentAnimation = null;
-      }
-    }
-  }
+    if (this.isAboveGround() && !this.isHurt() && !this.isDead()) {
+        if (this.speedY > 0) { // Jumping up
+            if (this.currentAnimation !== "jumpUp") {
+                this.currentImage = 0;
+                this.currentAnimation = "jumpUp";
+            }
+            this.playAnimation(this.IMAGES_JUMPINGUP);
+
+            // Hold at the last frame of jump up
+            if (this.currentImage === this.IMAGES_JUMPINGUP.length - 1) {
+                this.stopAnimation(); // Stop changing frames
+            }
+        } else { // Falling down
+            if (this.currentAnimation !== "fallingDown") {
+                this.currentImage = 0;
+                this.currentAnimation = "fallingDown";
+            }
+            this.playAnimation(this.IMAGES_FALLINGDOWN);
+
+            // Hold at the last frame of falling down
+            if (this.currentImage === this.IMAGES_FALLINGDOWN.length - 1) {
+                this.stopAnimation();
+            }
+        }
+    } 
+}
+
+isMovingHorizontally() {
+  return this.speedX !== 0;
+}
+
+// Helper function to stop animation
+stopAnimation() {
+  // Stops the current frame from advancing
+  this.currentImage = Math.min(this.currentImage, this.IMAGES_JUMPINGUP.length - 1); // Adjust as needed for other states
+}
 
   shouldPlayJumpAnimation() {
     return (this.isAboveGround() && !this.isHurt() && !this.isDead()) || (this.speedY > 0 && !this.isHurt() && !this.isDead());

@@ -21,7 +21,7 @@ class SoundManager {
       endbossHurt: new Audio("audio/hit_chicken1.wav"),
     };
     this.activeSounds = {}; // Verfolgt den Status aktiver Sounds
-    this.isMuted = false; // Globaler Stummschaltungsstatus
+    this.isMuted = this.loadMuteSetting(); // Globaler Stummschaltungsstatus
   }
 
   playSound(name, volume = 1, loop = false) {
@@ -45,6 +45,8 @@ class SoundManager {
 
   stopAllSounds() {
     this.isMuted = true; // Aktiviert den globalen Stummschaltungsmodus
+    this.saveMuteSetting(); // Speichert die Einstellung
+    this.logMuteStatus(); // Logge den aktuellen Mute-Status
     Object.keys(this.sounds).forEach((name) => {
       if (this.sounds[name]) {
         this.sounds[name].pause(); // Nur pausieren, nicht zurücksetzen
@@ -55,7 +57,9 @@ class SoundManager {
 
   resumeAllSounds() {
     this.isMuted = false; // Deaktiviert den globalen Stummschaltungsmodus
-  
+    this.saveMuteSetting(); // Speichert die Einstellung
+    this.logMuteStatus(); // Logge den aktuellen Mute-Status
+
     // Nur Sounds, die zur Hintergrundmusik gehören, wieder aufnehmen
     const backgroundSounds = ["gameMusic", "ambient"];
     backgroundSounds.forEach((name) => {
@@ -65,7 +69,6 @@ class SoundManager {
       }
     });
   }
-  
 
   isSoundPlaying(name) {
     return !!this.activeSounds[name];
@@ -85,6 +88,22 @@ class SoundManager {
       this.sounds["ambient"].play(); // Spielt von der aktuellen Position weiter
       this.activeSounds["ambient"] = true;
     }
+  }
+
+  // Methode zum Laden der Mute-Einstellung aus localStorage
+  loadMuteSetting() {
+    const muteSetting = localStorage.getItem('isMuted');
+    return muteSetting === 'true'; // Konvertiert den String-Wert zu einem Boolean
+  }
+
+  // Methode zum Speichern der Mute-Einstellung in localStorage
+  saveMuteSetting() {
+    localStorage.setItem('isMuted', this.isMuted);
+  }
+
+  // Logge den aktuellen Mute-Status
+  logMuteStatus() {
+    console.log(`Mute status is now: ${this.isMuted}`);
   }
 }
 

@@ -11,7 +11,17 @@ class MuteButton extends DrawableObject {
     this.width = 38;
     this.height = 38;
 
+    this.setInitialMuteState(); // Neue Methode zum Initialisieren des Buttons
     this.addClickEvent();
+  }
+
+  setInitialMuteState() {
+    if (soundManager.isMuted) {
+      this.currentButton = this.IMAGE_MUTEBUTTON;
+    } else {
+      this.currentButton = this.IMAGE_SOUNDBUTTON;
+    }
+    this.loadImage(this.currentButton);
   }
 
   addClickEvent() {
@@ -39,7 +49,7 @@ class MuteButton extends DrawableObject {
       soundManager.resumeAllSounds(); // Nur relevante Sounds fortsetzen
       soundManager.initializeGameMusic(); // Sicherstellen, dass Musik aktiv bleibt
     }
-  
+
     this.loadImage(this.currentButton);
   }
 }

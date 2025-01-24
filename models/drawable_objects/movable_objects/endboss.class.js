@@ -49,6 +49,25 @@ class Endboss extends MovableObject {
     this.isPlayingCanon = false;
     this.startWalkingAnimation();
     this.startCanonAnimation();
+    this.checkBossDefeat();
+  }
+
+  checkBossDefeat() {
+    const intervalId = setInterval(() => {
+      if (this.isDefeated) {
+        // Aktionen, wenn der Boss besiegt ist
+        setTimeout(() => {
+          pauseGame();
+        }, 1000);
+
+        setTimeout(() => {
+          new WinningScreen();
+        }, 2000);
+
+        // Intervall beenden
+        clearInterval(intervalId);
+      }
+    }, 200);
   }
 
   startWalkingAnimation() {
@@ -82,7 +101,6 @@ class Endboss extends MovableObject {
   }
 
   startCanonAnimation() {
-    // Wiederholte Überprüfung, ob die Canon-Aktion starten soll
     this.canonInterval = setInterval(() => {
       if (this.shouldStartCanonAction()) {
         this.startCanonAction();
@@ -90,12 +108,10 @@ class Endboss extends MovableObject {
     }, this.getCanonAnimationDelay());
   }
 
-  // Überprüft, ob die Canon-Aktion gestartet werden soll
   shouldStartCanonAction() {
     return this.health <= 3 && !this.isDefeated;
   }
 
-  // Startet die Canon-Aktion
   startCanonAction() {
     this.isPlayingCanon = true;
     this.stopWalkingAnimation();
@@ -103,12 +119,10 @@ class Endboss extends MovableObject {
     this.playCanonAnimation();
   }
 
-  // Berechnet die Verzögerung für die Canon-Aktion basierend auf der Animation
   getCanonAnimationDelay() {
     return 5000 + this.IMAGES.canon.length * 200;
   }
 
-  // Führt die Canon-Animation aus
   playCanonAnimation() {
     let canonFrame = 0;
 
@@ -116,7 +130,6 @@ class Endboss extends MovableObject {
       this.playAnimation(this.IMAGES.canon);
       canonFrame++;
 
-      // Beendet die Animation nach dem letzten Frame
       if (canonFrame >= this.IMAGES.canon.length) {
         clearInterval(canonAnimationInterval);
         this.isPlayingCanon = false;
@@ -124,36 +137,26 @@ class Endboss extends MovableObject {
       }
     }, 200);
 
-    // Stellt sicher, dass das Intervall gestoppt wird
     this.stopCanonInterval(canonAnimationInterval);
   }
 
-  // Schießt Chick-Canons mit einer Verzögerung
   shootChickCanon() {
     console.log(this.level);
-    
+
     setTimeout(() => {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           const chickCanon = new ChickCanon(this.x, 1);
-          this.level.enemies.push(chickCanon); // Füge das Objekt zur Spielwelt hinzu
-        }, i * 300); // 300ms Abstand zwischen jedem Schuss
+          this.level.enemies.push(chickCanon);
+        }, i * 300);
       }
-    }, 1200); // 1,2 Sekunden Verzögerung vor dem Schießen
-  }
-
-  // Optionale Methode, falls du Intervall-Management brauchst
-  stopCanonInterval(canonAnimationInterval) {
-    setTimeout(() => {
-      clearInterval(canonAnimationInterval);
-    }, this.IMAGES.canon.length * 200); // Stoppt das Intervall nach der Animation
+    }, 1200);
   }
 
   stopCanonInterval(canonAnimationInterval) {
-    const canonDuration = this.IMAGES.canon.length * 200;
     setTimeout(() => {
       clearInterval(canonAnimationInterval);
-    }, canonDuration);
+    }, this.IMAGES.canon.length * 200);
   }
 
   playHurtAnimation() {
@@ -218,11 +221,11 @@ class Endboss extends MovableObject {
   }
 
   stopAllAnimations() {
-    ["stopWalkingAnimation", "stopHurtAnimation", "stopDefeatAnimation"].forEach((method) => {
-      if (this[method]) {
-        this[method]();
-      }
-    });
+    this.stopWalkingAnimation();
+    this.stopDefeatAnimation();
+    this.stopHurtAnimation();
+    this.stopAlertAnimation();
+    this.stopCanonInterval();
   }
 
   stopWalkingAnimation() {
