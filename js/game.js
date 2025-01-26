@@ -180,6 +180,46 @@ function resumeThrowables() {
 }
 
 
+document.getElementById('buttonLeft').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.LEFT = true;
+})
+
+document.getElementById('buttonLeft').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.LEFT = false;
+})
+
+document.getElementById('buttonRight').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.RIGHT = true;
+})
+
+document.getElementById('buttonRight').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.RIGHT = false;
+})
+
+document.getElementById('buttonJump').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.SPACE = true;
+})
+
+document.getElementById('buttonJump').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.SPACE = false;
+})
+
+document.getElementById('buttonShoot').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.THROW = true;
+})
+
+document.getElementById('buttonShoot').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.THROW = false;
+})
+
 // Tastenereignisse mit Pause-Check
 document.addEventListener("keydown", (e) => {
   if (e.key === "p") {
