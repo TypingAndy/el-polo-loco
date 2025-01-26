@@ -287,6 +287,8 @@ function checkOrientation() {
   }
 }
 
+
+
 window.addEventListener('resize', checkOrientation);
 document.addEventListener('DOMContentLoaded', () => {
   checkOrientation();

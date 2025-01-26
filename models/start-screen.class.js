@@ -8,6 +8,9 @@ class StartScreen extends DrawableObject {
     this.height = canvas.height;
     this.x = 0;
     this.y = 0;
+
+    // Listener hinzufügen, um die Buttons bei Größenänderung neu zu platzieren
+    window.addEventListener("resize", () => this.adjustButtonPositions());
   }
 
   drawScreen() {
@@ -22,52 +25,97 @@ class StartScreen extends DrawableObject {
   }
 
   createStartButton() {
-    const startButton = document.createElement("img");
-    startButton.src = "img/11_buttons/start_game.png";
-    startButton.alt = "Start Game";
-    startButton.style.position = "absolute";
-    startButton.style.width = "100px";
-    startButton.style.height = "50px";
-    startButton.style.left = `${this.canvas.offsetLeft + 200}px`;
-    startButton.style.top = `${this.canvas.offsetTop + 50}px`;
-    startButton.style.cursor = "pointer";
-    startButton.addEventListener("click", () => {
+    this.startButton = document.createElement("img");
+    this.startButton.src = "img/11_buttons/start_game.png";
+    this.startButton.alt = "Start Game";
+    this.startButton.style.position = "absolute";
+    this.startButton.style.cursor = "pointer";
+    document.body.appendChild(this.startButton);
+    this.positionStartButton();
+
+    this.startButton.addEventListener("click", () => {
       this.startGame();
     });
-    document.body.appendChild(startButton);
   }
 
   createHelpButton() {
-    const helpButton = document.createElement("img");
-    helpButton.src = "img/11_buttons/help.png";
-    helpButton.alt = "Help";
-    helpButton.style.position = "absolute";
-    helpButton.style.width = "100px";
-    helpButton.style.height = "50px";
-    helpButton.style.left = `${this.canvas.offsetLeft + 400}px`;
-    helpButton.style.top = `${this.canvas.offsetTop + 50}px`;
-    helpButton.style.cursor = "pointer";
-    helpButton.addEventListener("click", () => {
+    this.helpButton = document.createElement("img");
+    this.helpButton.src = "img/11_buttons/help.png";
+    this.helpButton.alt = "Help";
+    this.helpButton.style.position = "absolute";
+    this.helpButton.style.cursor = "pointer";
+    document.body.appendChild(this.helpButton);
+    this.positionHelpButton();
+
+    this.helpButton.addEventListener("click", () => {
       this.showHelpText();
     });
-    document.body.appendChild(helpButton);
   }
 
   createImpressumButton() {
-    const impressumButton = document.createElement("img");
-    impressumButton.src = "img/11_buttons/impressum.png";
-    impressumButton.alt = "Impressum";
-    impressumButton.style.position = "absolute";
-    impressumButton.style.width = "80px";
-    impressumButton.style.height = "40px";
-    impressumButton.style.left = `${this.canvas.offsetLeft + 20}px`;
-    impressumButton.style.top = `${this.canvas.offsetTop + this.canvas.height - 50}px`;
-    impressumButton.style.cursor = "pointer";
-    impressumButton.addEventListener("click", () => {
+    this.impressumButton = document.createElement("img");
+    this.impressumButton.src = "img/11_buttons/impressum.png";
+    this.impressumButton.alt = "Impressum";
+    this.impressumButton.style.position = "absolute";
+    this.impressumButton.style.cursor = "pointer";
+    document.body.appendChild(this.impressumButton);
+    this.positionImpressumButton();
+
+    this.impressumButton.addEventListener("click", () => {
       this.showImpressumText();
     });
-    document.body.appendChild(impressumButton);
   }
+
+  positionStartButton() {
+    const scale = this.canvas.width / 720; // Referenzbreite
+    this.startButton.style.width = `${100 * scale}px`;
+    this.startButton.style.height = `${50 * scale}px`;
+    this.startButton.style.left = `${this.canvas.offsetLeft + 200 * scale}px`;
+    this.startButton.style.top = `${this.canvas.offsetTop + 50 * scale}px`;
+  }
+
+  positionHelpButton() {
+    const scale = this.canvas.width / 720; // Referenzbreite
+    this.helpButton.style.width = `${100 * scale}px`;
+    this.helpButton.style.height = `${50 * scale}px`;
+    this.helpButton.style.left = `${this.canvas.offsetLeft + 400 * scale}px`;
+    this.helpButton.style.top = `${this.canvas.offsetTop + 50 * scale}px`;
+  }
+
+  positionImpressumButton() {
+    const scale = this.canvas.width / 720; // Referenzbreite
+    this.impressumButton.style.width = `${80 * scale}px`;
+    this.impressumButton.style.height = `${40 * scale}px`;
+    this.impressumButton.style.left = `${this.canvas.offsetLeft + 20 * scale}px`;
+    this.impressumButton.style.top = `${this.canvas.offsetTop + this.canvas.height - 50 * scale}px`;
+  }
+
+  adjustButtonPositions() {
+    const rect = this.canvas.getBoundingClientRect(); // Erhalte die tatsächlichen Maße des Canvas
+    const scale = rect.width / 720; // Verwende die visuelle Breite als Referenzmaß
+  
+    if (this.startButton) {
+      this.startButton.style.width = `${100 * scale}px`;
+      this.startButton.style.height = `${50 * scale}px`;
+      this.startButton.style.left = `${rect.left + 200 * scale}px`;
+      this.startButton.style.top = `${rect.top + 50 * scale}px`;
+    }
+  
+    if (this.helpButton) {
+      this.helpButton.style.width = `${100 * scale}px`;
+      this.helpButton.style.height = `${50 * scale}px`;
+      this.helpButton.style.left = `${rect.left + 400 * scale}px`;
+      this.helpButton.style.top = `${rect.top + 50 * scale}px`;
+    }
+  
+    if (this.impressumButton) {
+      this.impressumButton.style.width = `${80 * scale}px`;
+      this.impressumButton.style.height = `${40 * scale}px`;
+      this.impressumButton.style.left = `${rect.left + 20 * scale}px`;
+      this.impressumButton.style.top = `${rect.top + rect.height - 50 * scale}px`;
+    }
+  }
+  
 
   startGame() {
     // Entferne den Startscreen und beginne das Spiel
