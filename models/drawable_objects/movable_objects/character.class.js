@@ -97,9 +97,6 @@ class Character extends MovableObject {
     this.intervals.playDieAnimation = setInterval(() => this.playDieAnimation(), 250);
     this.intervals.playIdleAnimation = setInterval(() => this.playIdleAnimationLogic(), 300);
     this.applyGravityForCharacter();
-    // Schwerkraft anwenden
-
-    console.log("Alle Charakter-Intervalle wurden gestartet");
   }
 
   playIdleAnimationLogic() {
@@ -118,7 +115,6 @@ class Character extends MovableObject {
       clearInterval(this.intervals[key]);
     }
     this.intervals = {}; // Leert das Intervallobjekt
-    console.log("Alle Charakter-Intervalle wurden gestoppt");
   }
 
   moveCharacter() {

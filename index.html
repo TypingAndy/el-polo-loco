@@ -36,8 +36,8 @@
     <script src="models/collision-checker.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
-
-  
+    
+    <script src="levels/level0.js"></script>
     <script src="levels/level1.js"></script>
     <script src="levels/level2.js"></script>
 
@@ -49,11 +49,22 @@
     <link rel="icon" type="image/x-icon" href="img/6_salsa_bottle/1_salsa_bottle_on_ground.png" />
   </head>
   <body onload="init()">
-    <div class="button-container">
-       <button class="level-button" onclick="selectLevel(1)">Level 1</button>
-      <button class="level-button" onclick="selectLevel(2)">Level 2</button>
+    <canvas id="canvas" width="720" height="480"></canvas>
+
+    <div id="orientation-warning">
+      <p>Bitte drehen Sie Ihr Gerät, um das Spiel zu spielen.</p>
     </div>
 
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <div class="mobile-controls">
+      <div class="left-controls"> 
+        <div class="playButtons"> < </div>
+        <div class="playButtons"> > </div>
+      </div>
+      <div class="right-controls">
+        <div class="playButtons"> J </div>
+        <div class="playButtons"> S </div>
+      </div>
+    </div>
+
   </body>
 </html>

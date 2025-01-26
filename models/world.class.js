@@ -113,17 +113,6 @@ class World {
     });
   }
 
-  deleteCanvas() {
-    // Entferne das Canvas aus dem DOM
-    if (this.canvas) {
-      this.canvas.parentNode.removeChild(this.canvas);
-    }
-    // Stoppe alle laufenden Animationen und Spielintervalle, wenn nötig
-    cancelAnimationFrame(this.animationFrameId); // Vorausgesetzt, `this.animationFrameId` speichert `requestAnimationFrame`-IDs
-    // Entferne zusätzliche Spielkomponenten, falls vorhanden
-  }
-  
-
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);

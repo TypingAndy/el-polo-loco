@@ -14,7 +14,69 @@ body {
 
 canvas {
   background-color: black;
+  display: block;
   border: 4px solid rgb(0, 0, 0);
 }
 
+/* Smartphones -----------------*/
+@media only screen and (max-width: 720px) {
+  canvas {
+    width: 100%;
+  }
+}
 
+/* Smartphones -----------------*/
+@media only screen and (max-height: 480px) {
+  canvas {
+    width: 100vh;
+  }
+}
+
+#orientation-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+#orientation-warning p {
+  font-size: 24px;
+  text-align: center;
+}
+
+.mobile-controls {
+  display: flex;
+  background-color: #ffcb1a;
+  justify-content: space-between;
+  width: 720px;
+  height: 80px;
+  border: 4px solid rgb(0, 0, 0);
+}
+
+.right-controls,
+.left-controls {
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px;
+}
+
+.playButtons {
+  background-color: #a0220a;
+  width: 60px;
+  height: 60px;
+  color: white;
+  font-size: 30px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+}

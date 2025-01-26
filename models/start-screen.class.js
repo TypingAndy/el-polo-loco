@@ -1,119 +1,90 @@
-class StartScreen {
-  canvas;
-  context;
-  startButton;
-  helpButton;
-
+class StartScreen extends DrawableObject {
   constructor(canvas, context) {
+    super();
     this.canvas = canvas;
     this.context = context;
+    this.loadImage("img/9_intro_outro_screens/start/startscreen_1.png");
+    this.width = canvas.width; // Passe die Größe an die Canvas-Größe an
+    this.height = canvas.height;
+    this.x = 0;
+    this.y = 0;
   }
 
-  draw(imageSrc) {
-    let image = new Image();
-    image.src = imageSrc;
-    image.onload = () => {
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
+  drawScreen() {
+    // Zeichne den Hintergrund
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.draw(this.context);
 
-      // Create buttons when the image is loaded
-      this.createStartButton();
-      this.createHelpButton();
-
-      // Adjust buttons on resize
-      window.addEventListener("resize", () => this.adjustButtonPositions());
-    };
+    // Zeichne die Buttons
+    this.createStartButton();
+    this.createHelpButton();
+    this.createImpressumButton();
   }
 
   createStartButton() {
-    this.startButton = document.createElement("img");
-    this.startButton.src = "img/11_buttons/start_game.png";
-    this.startButton.alt = "Start Game";
-    this.startButton.style.position = "absolute";
-    this.startButton.style.width = `${100}px`;
-    this.startButton.style.height = `${50}px`;
-    this.startButton.style.cursor = "pointer";
-    this.startButton.style.transition = "transform 0.3s"; // Smooth transition for scaling
-    document.body.appendChild(this.startButton);
-
-    // Set initial position
-    this.setPosition(this.startButton, 200, 50);
-
-    // Add hover effect
-    this.startButton.addEventListener("mouseover", () => {
-      this.startButton.style.transform = "scale(1.1)";
+    const startButton = document.createElement("img");
+    startButton.src = "img/11_buttons/start_game.png";
+    startButton.alt = "Start Game";
+    startButton.style.position = "absolute";
+    startButton.style.width = "100px";
+    startButton.style.height = "50px";
+    startButton.style.left = `${this.canvas.offsetLeft + 200}px`;
+    startButton.style.top = `${this.canvas.offsetTop + 50}px`;
+    startButton.style.cursor = "pointer";
+    startButton.addEventListener("click", () => {
+      this.startGame();
     });
-    this.startButton.addEventListener("mouseout", () => {
-      this.startButton.style.transform = "scale(1)";
-    });
-
-    this.startButton.addEventListener("click", () => this.clickStartButton());
+    document.body.appendChild(startButton);
   }
 
   createHelpButton() {
-    this.helpButton = document.createElement("img");
-    this.helpButton.src = "img/11_buttons/help.png";
-    this.helpButton.alt = "Help";
-    this.helpButton.style.position = "absolute";
-    this.helpButton.style.width = `${100}px`;
-    this.helpButton.style.height = `${50}px`;
-    this.helpButton.style.cursor = "pointer";
-    this.helpButton.style.transition = "transform 0.3s"; // Smooth transition for scaling
-    document.body.appendChild(this.helpButton);
-
-    // Set initial position
-    this.setPosition(this.helpButton, 400, 50);
-
-    // Add hover effect
-    this.helpButton.addEventListener("mouseover", () => {
-      this.helpButton.style.transform = "scale(1.1)";
-    });
-    this.helpButton.addEventListener("mouseout", () => {
-      this.helpButton.style.transform = "scale(1)";
-    });
-
-    this.helpButton.addEventListener("click", () => {
+    const helpButton = document.createElement("img");
+    helpButton.src = "img/11_buttons/help.png";
+    helpButton.alt = "Help";
+    helpButton.style.position = "absolute";
+    helpButton.style.width = "100px";
+    helpButton.style.height = "50px";
+    helpButton.style.left = `${this.canvas.offsetLeft + 400}px`;
+    helpButton.style.top = `${this.canvas.offsetTop + 50}px`;
+    helpButton.style.cursor = "pointer";
+    helpButton.addEventListener("click", () => {
       this.showHelpText();
     });
+    document.body.appendChild(helpButton);
   }
 
-  setPosition(button, offsetX, offsetY) {
-    button.style.left = `${this.canvas.offsetLeft + offsetX}px`;
-    button.style.top = `${this.canvas.offsetTop + offsetY}px`;
+  createImpressumButton() {
+    const impressumButton = document.createElement("img");
+    impressumButton.src = "img/11_buttons/impressum.png";
+    impressumButton.alt = "Impressum";
+    impressumButton.style.position = "absolute";
+    impressumButton.style.width = "80px";
+    impressumButton.style.height = "40px";
+    impressumButton.style.left = `${this.canvas.offsetLeft + 20}px`;
+    impressumButton.style.top = `${this.canvas.offsetTop + this.canvas.height - 50}px`;
+    impressumButton.style.cursor = "pointer";
+    impressumButton.addEventListener("click", () => {
+      this.showImpressumText();
+    });
+    document.body.appendChild(impressumButton);
   }
 
-  adjustButtonPositions() {
-    if (this.startButton) this.setPosition(this.startButton, 200, 50);
-    if (this.helpButton) this.setPosition(this.helpButton, 400, 50);
-  }
-
-  clickStartButton() {
-    // Remove start screen and buttons
-    this.clearScreen();
-    startLevel(1); // Start Level 1
-  }
-
-  clearScreen() {
-    // Remove start screen
+  startGame() {
+    // Entferne den Startscreen und beginne das Spiel
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Remove buttons
-    if (this.startButton) this.startButton.remove();
-    if (this.helpButton) this.helpButton.remove();
-
-    // Remove resize listener
-    window.removeEventListener("resize", () => this.adjustButtonPositions());
+    document.querySelectorAll("img").forEach((btn) => btn.remove()); // Entferne Buttons
+    startLevel(1); // Startlevel aufrufen
   }
 
   showHelpText() {
-    let helpOverlay = document.createElement("div");
+    const helpOverlay = document.createElement("div");
     helpOverlay.style.position = "fixed";
     helpOverlay.style.top = "0";
     helpOverlay.style.left = "0";
     helpOverlay.style.width = "100%";
     helpOverlay.style.height = "100%";
     helpOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-    helpOverlay.style.display = "flex"; // Flexbox for centering
+    helpOverlay.style.display = "flex";
     helpOverlay.style.flexDirection = "column";
     helpOverlay.style.alignItems = "center";
     helpOverlay.style.justifyContent = "center";
@@ -124,22 +95,7 @@ class StartScreen {
     helpOverlay.style.zIndex = "1000";
     helpOverlay.style.overflowY = "auto";
 
-    // Use helpTemplate to set innerHTML
-    helpOverlay.innerHTML = this.helpTemplate();
-
-    document.body.appendChild(helpOverlay);
-
-    // Close button behavior
-    const closeButton = document.getElementById("closeHelp");
-    if (closeButton) {
-      closeButton.addEventListener("click", () => {
-        helpOverlay.remove();
-      });
-    }
-  }
-
-  helpTemplate() {
-    return `
+    helpOverlay.innerHTML = `
       <div style="text-align: center;">
         <h1 style="margin-bottom: 20px;">Game Help</h1>
         <ul style="list-style: none; padding: 0;">
@@ -161,7 +117,62 @@ class StartScreen {
         " />
       </div>
     `;
-  }
-  
-}
 
+    document.body.appendChild(helpOverlay);
+
+    const closeButton = document.getElementById("closeHelp");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        helpOverlay.remove();
+      });
+    }
+  }
+
+  showImpressumText() {
+    const impressumOverlay = document.createElement("div");
+    impressumOverlay.style.position = "fixed";
+    impressumOverlay.style.top = "0";
+    impressumOverlay.style.left = "0";
+    impressumOverlay.style.width = "100%";
+    impressumOverlay.style.height = "100%";
+    impressumOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    impressumOverlay.style.display = "flex";
+    impressumOverlay.style.flexDirection = "column";
+    impressumOverlay.style.alignItems = "center";
+    impressumOverlay.style.justifyContent = "center";
+    impressumOverlay.style.color = "white";
+    impressumOverlay.style.fontSize = "20px";
+    impressumOverlay.style.fontFamily = "'Comic Sans MS', cursive, sans-serif";
+    impressumOverlay.style.padding = "20px";
+    impressumOverlay.style.zIndex = "1000";
+    impressumOverlay.style.overflowY = "auto";
+
+    impressumOverlay.innerHTML = `
+      <div style="text-align: center;">
+        <h1 style="margin-bottom: 20px;">Impressum</h1>
+        <p><b>Angaben gemäß § 5 TMG</b></p>
+        <p>Musterfirma GmbH<br>Musterstraße 123<br>12345 Musterstadt</p>
+        <p><b>Vertreten durch</b></p>
+        <p>Andreas Traar, Geschäftsführer</p>
+        <p><b>Kontakt</b></p>
+        <p>Telefon: +49 (0) 123 456 789<br>E-Mail: andreas.georg@outlook.com</p>
+        <img id="closeImpressum" src="img/11_buttons/close.png" alt="Close Impressum" style="
+          display: block;
+          margin: 20px auto;
+          width: 100px;
+          height: 50px;
+          cursor: pointer;
+        " />
+      </div>
+    `;
+
+    document.body.appendChild(impressumOverlay);
+
+    const closeButton = document.getElementById("closeImpressum");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        impressumOverlay.remove();
+      });
+    }
+  }
+}

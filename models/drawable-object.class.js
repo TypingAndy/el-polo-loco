@@ -2,6 +2,9 @@ class DrawableObject {
   img;
   imageCache = {};
   x = 0;
+  y = 0;
+  width = 0;
+  height = 0;
 
   loadImage(path) {
     this.img = new Image();
@@ -17,24 +20,8 @@ class DrawableObject {
   }
 
   draw(context) {
-    context.drawImage(this.img, this.x, this.y, this.width, this.height);
+    if (this.img) {
+      context.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
   }
-
-//   drawFrame(context) {
-//     if (
-//       this instanceof Character ||
-//       this instanceof Chicken ||
-//       this instanceof Endboss ||
-//       this instanceof Chick ||
-//       this instanceof Coin ||
-//       this instanceof ThrowableObject ||
-//       this instanceof CollectableBottle
-//     ) {
-//       context.beginPath();
-//       context.lineWidth = "2";
-//       context.strokeStyle = this.color;
-//       context.rect(this.x + this.hitBoxX, this.y + this.hitBoxY, this.hitBoxWidth, this.hitBoxHeight);
-//       context.stroke();
-//     }
-//   }
 }

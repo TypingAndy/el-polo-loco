@@ -47,7 +47,6 @@ class ThrowableObject extends MovableObject {
 
   stopAnimation() {
     clearInterval(this.throwingAnimationInterval);
-    console.log("Wurf-Animation gestoppt");
   }
 
   startSplashAnimation() {
@@ -58,7 +57,6 @@ class ThrowableObject extends MovableObject {
 
   stopSplashAnimation() {
     clearInterval(this.splashAnimationInterval);
-    console.log("Splash-Animation gestoppt");
   }
 
   throw(x, y) {
@@ -80,7 +78,6 @@ class ThrowableObject extends MovableObject {
     if (this.applyGravityInterval) {
       clearInterval(this.applyGravityInterval);
     }
-    console.log("Alle Animationen des ThrowableObject gestoppt");
   }
 
   startAllAnimations() {
@@ -94,6 +91,5 @@ class ThrowableObject extends MovableObject {
 
     // Starte Gravitation erneut
     this.applyGravityForBottles();
-    console.log("Alle Animationen des ThrowableObject erneut gestartet");
   }
 }

@@ -44,37 +44,4 @@ class StatusCoinbar extends DrawableObject {
       return 0;
     }
   }
-
-//   spawnNewEnemies() {
-//     // Bestimme das Statusbar-Level basierend auf dem Prozentsatz
-//     if (this.collectedCoinAmountIndex() == 5) {
-//       world.level.enemies.push(new Endboss(3000, 5));
-//       setInterval(() => {
-//         world.level.enemies.push(new Chicken(3000, 1));
-//       }, 3000);
-//       setInterval(() => {
-//         world.level.enemies.push(new Chick(3090, 1));
-//       }, 2700);
-//     } else if (this.collectedCoinAmountIndex() == 4) {
-//       world.level.enemies.push(new Chick(3800, 1));
-//       world.level.enemies.push(new Chicken(3900, 1));
-//       world.level.enemies.push(new Chick(4200, 1));
-//       world.level.enemies.push(new Chick(4500, 1));
-//       return 4; // Mehr als 80% gesammelt
-//     } else if (this.collectedCoinAmountIndex() == 3) {
-//       world.level.enemies.push(new Chick(3500, 1));
-//       world.level.enemies.push(new Chicken(3600, 1));
-//       world.level.enemies.push(new Chick(3700, 1));
-//       return 3; // Mehr als 60% gesammelt
-//     } else if (this.collectedCoinAmountIndex() == 2) {
-//       world.level.enemies.push(new Chick(3500, 1));
-//       world.level.enemies.push(new Chicken(3600, 1));
-//       return 2; // Mehr als 40% gesammelt
-//     } else if (this.collectedCoinAmountIndex() == 1) {
-//       world.level.enemies.push(new Chick(3500, 1));
-//       return 1; // Mehr als 20% gesammelt
-//     } else {
-//       return 0; // Weniger als 20% gesammelt
-//     }
-//   }
 }

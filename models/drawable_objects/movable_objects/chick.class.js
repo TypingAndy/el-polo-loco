@@ -49,6 +49,6 @@ class Chick extends MovableObject {
   stopAllAnimations() {
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);
-    console.log("Alle Intervalle für Chick gestoppt");
+
   }
 }

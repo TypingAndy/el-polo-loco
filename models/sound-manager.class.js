@@ -26,7 +26,7 @@ class SoundManager {
 
   playSound(name, volume = 1, loop = false) {
     if (this.isMuted) return; // Keine Sounds abspielen, wenn stummgeschaltet
-  
+
     if (this.sounds[name]) {
       if (this.activeSounds[name]) return; // Sound spielt bereits
       this.sounds[name].volume = volume;
@@ -35,9 +35,6 @@ class SoundManager {
       this.activeSounds[name] = true; // Markiere Sound als aktiv
     }
   }
-  
-
-
 
   stopSound(name) {
     if (this.sounds[name] && this.activeSounds[name]) {
@@ -49,7 +46,6 @@ class SoundManager {
   stopAllSounds() {
     this.isMuted = true; // Aktiviert den globalen Stummschaltungsmodus
     this.saveMuteSetting(); // Speichert die Einstellung
-    this.logMuteStatus(); // Logge den aktuellen Mute-Status
     Object.keys(this.sounds).forEach((name) => {
       if (this.sounds[name]) {
         this.sounds[name].pause(); // Nur pausieren, nicht zurücksetzen
@@ -61,7 +57,6 @@ class SoundManager {
   resumeAllSounds() {
     this.isMuted = false; // Deaktiviert den globalen Stummschaltungsmodus
     this.saveMuteSetting(); // Speichert die Einstellung
-    this.logMuteStatus(); // Logge den aktuellen Mute-Status
 
     // Nur Sounds, die zur Hintergrundmusik gehören, wieder aufnehmen
     const backgroundSounds = ["gameMusic", "ambient"];
@@ -95,18 +90,13 @@ class SoundManager {
 
   // Methode zum Laden der Mute-Einstellung aus localStorage
   loadMuteSetting() {
-    const muteSetting = localStorage.getItem('isMuted');
-    return muteSetting === 'true'; // Konvertiert den String-Wert zu einem Boolean
+    const muteSetting = localStorage.getItem("isMuted");
+    return muteSetting === "true"; // Konvertiert den String-Wert zu einem Boolean
   }
 
   // Methode zum Speichern der Mute-Einstellung in localStorage
   saveMuteSetting() {
-    localStorage.setItem('isMuted', this.isMuted);
-  }
-
-  // Logge den aktuellen Mute-Status
-  logMuteStatus() {
-    console.log(`Mute status is now: ${this.isMuted}`);
+    localStorage.setItem("isMuted", this.isMuted);
   }
 }
 

@@ -71,6 +71,7 @@ class Endboss extends MovableObject {
   }
 
   startWalkingAnimation() {
+    this.startChickenSpawn();
     this.direction = 1;
     this.startX = this.x;
     this.maxDistance = 300;
@@ -82,6 +83,18 @@ class Endboss extends MovableObject {
         this.switchBossSpeed();
       }
     }, 150);
+  }
+
+  startChickenSpawn() {
+    // Intervall zum Spawnen von Chickens alle 3 Sekunden
+    this.chickenSpawnInterval = setInterval(() => {
+      if (this.isDefeated) {
+        clearInterval(this.chickenSpawnInterval); // Stoppe das Spawnen, wenn der Boss besiegt ist
+        return;
+      }
+      const chicken = new Chicken(this.x, 1); // Position des Bosses als Spawn-Position
+      this.level.enemies.push(chicken); // Füge das neue ChickCanon-Objekt zur Level-Feindesliste hinzu
+    }, 3000); // Alle 3 Sekunden ein Chicken spawnen
   }
 
   switchBossSpeed() {
@@ -125,7 +138,6 @@ class Endboss extends MovableObject {
 
   playCanonAnimation() {
     let canonFrame = 0;
-
     const canonAnimationInterval = setInterval(() => {
       this.playAnimation(this.IMAGES.canon);
       canonFrame++;
@@ -136,13 +148,10 @@ class Endboss extends MovableObject {
         this.resumeAnimations();
       }
     }, 200);
-
     this.stopCanonInterval(canonAnimationInterval);
   }
 
   shootChickCanon() {
-    console.log(this.level);
-
     setTimeout(() => {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
@@ -226,6 +235,11 @@ class Endboss extends MovableObject {
     this.stopHurtAnimation();
     this.stopAlertAnimation();
     this.stopCanonInterval();
+
+    // Stoppe auch das Chicken-Spawning
+    if (this.chickenSpawnInterval) {
+      clearInterval(this.chickenSpawnInterval);
+    }
   }
 
   stopWalkingAnimation() {

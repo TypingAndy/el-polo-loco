@@ -50,7 +50,7 @@ class LosingScreen extends DrawableObject {
       restartButton.style.left = '50%';
       restartButton.style.transform = 'translateX(-50%)'; // Center horizontally
       restartButton.style.cursor = 'pointer';
-      restartButton.style.width = '200px'; // Adjust the size of the button if needed
+      restartButton.style.width = '150px'; // Adjust the size of the button if needed
       restartButton.style.height = 'auto';
       restartButton.addEventListener('click', () => {
         this.restartLevel();

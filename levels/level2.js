@@ -1,7 +1,26 @@
 let level2;
 function initLevel2() {
   level2 = new Level(
-    [new Chicken((x = 400), 1)],
+    [
+      new ChickJumping((x = 320), 1, 10),
+      new Chicken(700, 1),
+      new ChickJumping((x = 940), 1, 16),
+      new Chicken(1250, 1),
+      new Chicken(1200, 1),
+      new ChickJumping((x = 1320), 1, 12),
+      new Chicken(1600, 1),
+      new Chicken(1700, 1),
+      new Chicken(1750, 1),
+      new Chicken(1850, 1),
+
+      new ChickJumping((x = 1900), 1, 19),
+      new ChickJumping((x = 2100), 1, 5),
+   
+
+      new Chicken(2500, 1),
+      new Chicken(2600, 1),
+      new Chicken(2700, 1),
+    ],
 
     [new Clouds()],
 
@@ -42,15 +61,35 @@ function initLevel2() {
       new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719 * 7, 0.3),
       new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719 * 7, 0.7),
       new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719 * 7, 1),
+      new BackgroundObjects("img/5_background/layers/air.png", 719 * 8, 0.05),
+      new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719 * 8, 0.3),
+      new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719 * 8, 0.7),
+      new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719 * 8, 1),
     ],
 
     [
-      new Coin(200, 110),
-      new Coin(250, 110),
-      new Coin(300, 110),
-      new Coin(350, 110),
-      new Coin(400, 110),
-      new Coin(450, 110),
+      new Coin(200, 180),
+      new Coin(250, 160),
+      new Coin(300, 160),
+      new Coin(350, 180),
+
+      new Coin(800, 340),
+      new Coin(850, 340),
+      new Coin(950, 340),
+      new Coin(1000, 340),
+
+      new Coin(1200, 130),
+      new Coin(1250, 110),
+      new Coin(1300, 110),
+      new Coin(1350, 130),
+
+      new Coin(1950, 300),
+      new Coin(2000, 260),
+      new Coin(2050, 220),
+
+      new Coin(2500, 340),
+      new Coin(2550, 340),
+      new Coin(2600, 340),
     ],
 
     [

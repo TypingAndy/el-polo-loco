@@ -90,6 +90,5 @@ class ChickJumping extends MovableObject {
     clearInterval(this.animationInterval);
     clearInterval(this.intervals?.applyGravity);
     clearInterval(this.jumpInterval); // Clear the jump interval on stop
-    console.log("Alle Intervalle für Chick gestoppt");
   }
 }

@@ -62,26 +62,31 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
-    let timepassed = new Date().getTime() - this.lastHit;
-    timepassed = timepassed / 1000;
-  
-    if (timepassed > 1) {
-      // Reduziere Energie
-      this.energy -= 19;
-  
-      // Verhindere negative Energie
-      if (this.energy < 0) {
-        this.energy = 0;
-      }
-  
-      // Hurt-Sound abspielen
-      const hurtSound = this.getRandomHurtSound();
-      soundManager.playSound(hurtSound, 0.5, false);
-  
-      // Aktualisiere den letzten Trefferzeitpunkt
-      this.lastHit = new Date().getTime();
+    if (this.canTakeDamage()) {
+      this.reduceEnergy(19);
+      this.playHurtSound();
+      this.updateLastHitTime();
     }
   }
+  
+  canTakeDamage() {
+    const timePassed = (new Date().getTime() - this.lastHit) / 1000;
+    return timePassed > 1;
+  }
+  
+  reduceEnergy(amount) {
+    this.energy = Math.max(this.energy - amount, 0); // Verhindert negative Energie
+  }
+  
+  playHurtSound() {
+    const hurtSound = this.getRandomHurtSound();
+    soundManager.playSound(hurtSound, 0.5, false);
+  }
+  
+  updateLastHitTime() {
+    this.lastHit = new Date().getTime();
+  }
+  
   
 
   isHurt() {
@@ -114,11 +119,6 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  showWorld() {
-    console.log(this.world);
-    console.log(this.world.character.x);
-    console.log(this.world.level.enemies);
-  }
 
   collectBottle(bottle) {
     let index = this.world.level.bottles.indexOf(bottle);

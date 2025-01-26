@@ -50,6 +50,5 @@ class Chicken extends MovableObject {
   stopAllAnimations() {
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);
-    console.log("Alle Intervalle für Chicken gestoppt");
   }
 }

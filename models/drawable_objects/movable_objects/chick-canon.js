@@ -20,7 +20,7 @@ class ChickCanon extends MovableObject {
     "img/3_enemies_chicken/chicken_small/4_canon/3_c.png",
     "img/3_enemies_chicken/chicken_small/4_canon/2_c.png",
     "img/3_enemies_chicken/chicken_small/4_canon/1_c.png",
-]
+  ];
 
   IMAGE_DEAD = "img/3_enemies_chicken/chicken_small/2_dead/dead.png";
 
@@ -53,6 +53,5 @@ class ChickCanon extends MovableObject {
   stopAllAnimations() {
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);
-    console.log("Alle Intervalle für Chick gestoppt");
   }
 }
