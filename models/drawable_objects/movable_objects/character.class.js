@@ -199,7 +199,7 @@ class Character extends MovableObject {
         this.stopIntervals(); // Stop character animations
         pauseGame(); // Pause the game
         setTimeout(() => {
-          new LosingScreen(); // Show LosingScreen
+          displayShow('losingscreenContainer'); // Show LosingScreen
         }, 500); // Short delay to ensure animation completes smoothly
       }
     }

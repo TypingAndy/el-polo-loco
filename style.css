@@ -1,4 +1,5 @@
 body {
+  font-family: "Comic Sans MS", cursive, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,6 +11,7 @@ body {
   height: 100vh; /* Setzt die Höhe des Bodys auf die volle Höhe des Bildschirms */
   margin: 0; /* Entfernt Standardabstände */
   overflow: hidden; /* Verhindert Scrollen, falls etwas überläuft */
+  position: relative;
 }
 
 canvas {
@@ -18,7 +20,106 @@ canvas {
   border: 4px solid rgb(0, 0, 0);
 }
 
+.startscreenContainer,
+.winningscreenContainer,
+.losingscreenContainer,
+.textContainer {
+  width: 720px; /* Breite des Containers */
+  height: 480px; /* Höhe des Containers */
+  position: absolute;
+  top: 50%; /* Positioniert den Container vertikal in der Mitte */
+  left: 50%; /* Positioniert den Container horizontal in der Mitte */
+  transform: translate(-50%, -50%); /* Verschiebt den Container, damit er genau zentriert ist */
+  background-color: rgba(0, 0, 0, 0.74);
+}
 
+
+.commonScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat; /* Wiederholung des Hintergrunds vermeiden */
+  background-size: contain; /* Passt das Bild proportional an, um es vollständig sichtbar zu machen */
+  background-position: center; /* Zentriert das Bild innerhalb des Containers */
+  display: flex;
+  flex-direction: column;
+}
+
+.startscreenImage {
+  background-image: url("img/9_intro_outro_screens/start/startscreen_2.png");
+}
+
+.winningscreenImage {
+  background-image: url("img/9_intro_outro_screens/win/win_2.png");
+}
+
+.losingscreenImage {
+  background-image: url("img/9_intro_outro_screens/game_over/game\ over.png");
+}
+
+
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 40px;
+  padding: 60px;
+}
+
+.closeButtonBox {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+
+}
+
+/* Gemeinsame Basis-Klasse für alle Buttons */
+.commonButton {
+  width: 100px;
+  height: 36px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.commonButton:hover {
+  box-shadow: 1px 1px 10px 1px #a0220a;
+  transition: box-shadow 0.3s ease; /* Smooth transition for the effect */
+}
+
+/* Spezifische Hintergrundbilder für individuelle Buttons */
+.startButton {
+  background-image: url("img/11_buttons/start_game.png");
+}
+
+.introductionsButton {
+  background-image: url("img/11_buttons/introduction.png");
+}
+
+.impressumButton {
+  background-image: url("img/11_buttons/impressum.png");
+}
+
+.controlsButton {
+  background-image: url("img/11_buttons/controls.png");
+}
+
+.restartButton {
+  background-image: url("img/11_buttons/restart.png");
+}
+
+.homeButton {
+  background-image: url("img/11_buttons/startscreen.png");
+}
+
+.closeButton {
+  background-image: url("img/11_buttons/close.png");
+}
+
+.nextLevelButton {
+  background-image: url('img/11_buttons/next_level.png');
+}
 
 #orientation-warning {
   position: fixed;
@@ -69,7 +170,6 @@ canvas {
   border-radius: 100%;
 }
 
-
 /* Smartphones -----------------*/
 @media only screen and (max-width: 1000px) {
   canvas {
@@ -85,4 +185,8 @@ canvas {
   canvas {
     width: 100vh;
   }
+}
+
+.displayNone {
+  display: none;
 }

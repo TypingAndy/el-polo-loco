@@ -1,8 +1,8 @@
 class SoundManager {
   constructor() {
     this.sounds = {
-      gameMusic: new Audio("audio/game_music1.wav"),
-      ambient: new Audio("audio/ambi.wav"),
+      gameMusic: new Audio("audio/game_music1.mp3"),
+      ambient: new Audio("audio/ambi.mp3"),
       collectCoin: new Audio("audio/pickupCoin.wav"),
       collectBottle: new Audio("audio/pickupBottle.wav"),
       walking: new Audio("audio/run.wav"),

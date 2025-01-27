@@ -4,14 +4,8 @@ let isPaused = false;
 let wasMutedBeforePause = false; // Neue Variable zum Speichern des Mute-Status vor der Pause
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
-let startScreen = new StartScreen(canvas, context);
-let selectedLevel;
 
-function init() {
-  resetGameState(); // Alles zurücksetzen
-  const startScreen = new StartScreen(canvas, context);
-  startScreen.drawScreen();
-}
+let selectedLevel;
 
 function checkMuteStatusBeforeStart() {
   const isMuted = soundManager.loadMuteSetting();
@@ -22,52 +16,45 @@ function checkMuteStatusBeforeStart() {
   }
 }
 
-function resetGameState() {
-  // Entferne das Canvas aus dem DOM oder leere es
-  const canvas = document.getElementById("canvas");
-  const context = canvas.getContext("2d");
-  context.clearRect(0, 0, canvas.width, canvas.height); // Leere das Canvas
-
-  // Entferne das Overlay des WinningScreens
-  const winningOverlay = document.getElementById("winning-overlay");
-  if (winningOverlay) {
-    winningOverlay.remove();
-  }
-
-  // Entferne Buttons oder Event-Listener, falls vorhanden
-  document.querySelectorAll("img").forEach((btn) => btn.remove());
-
-  // Deinitialisiere die Welt
-  if (window.world) {
-    window.world.deleteCanvas();
-    window.world = null;
-  }
-}
-
-
-function startLevel() {
+function startGame() {
   initLevel1();
   selectedLevel = 1;
   world = new World(canvas, keyboard);
   world.statusCoinbar.levelCoinAmount = level1.coins.length;
   checkMuteStatusBeforeStart();
+  resumeAnimations();
+  isPaused = false;
 }
 
-function selectLevel(level) {
-  switch (level) {
+function restartLevel() {
 
+  switch (selectedLevel) {
     case 1:
-      startLevel1()
+      startLevel1();
       break;
     case 2:
-      startLevel2()
+      startLevel2();
+      break;
+  }
+}
+
+function selectLevel() {
+  selectedLevel++;
+  switch (selectedLevel) {
+    case 1:
+      startLevel1();
+      break;
+    case 2:
+      startLevel2();
       break;
   }
 }
 
 function startLevel1() {
-  initLevel1();
   resetCharacterStats();
+  initLevel1();
+  resumeAnimations();
+  isPaused = false;
   selectedLevel = 1;
   world.level = level1;
   world.statusCoinbar.levelCoinAmount = level1.coins.length;
@@ -75,8 +62,10 @@ function startLevel1() {
 }
 
 function startLevel2() {
-  initLevel2();
   resetCharacterStats();
+  initLevel2();
+  resumeAnimations();
+  isPaused = false;
   selectedLevel = 2;
   world.level = level2;
   world.statusCoinbar.levelCoinAmount = level2.coins.length;
@@ -131,7 +120,6 @@ function pauseThrowables() {
   world.throwableObjects.forEach((throwable) => throwable.stopAllAnimations?.());
 }
 
-
 function resumeGame() {
   if (!wasMutedBeforePause) {
     resumeSounds();
@@ -179,46 +167,45 @@ function resumeThrowables() {
   world.throwableObjects.forEach((throwable) => throwable.startAllAnimations?.());
 }
 
-
-document.getElementById('buttonLeft').addEventListener('touchstart', (e) => {
+document.getElementById("buttonLeft").addEventListener("touchstart", (e) => {
   e.preventDefault();
   keyboard.LEFT = true;
-})
+});
 
-document.getElementById('buttonLeft').addEventListener('touchend', (e) => {
+document.getElementById("buttonLeft").addEventListener("touchend", (e) => {
   e.preventDefault();
   keyboard.LEFT = false;
-})
+});
 
-document.getElementById('buttonRight').addEventListener('touchstart', (e) => {
+document.getElementById("buttonRight").addEventListener("touchstart", (e) => {
   e.preventDefault();
   keyboard.RIGHT = true;
-})
+});
 
-document.getElementById('buttonRight').addEventListener('touchend', (e) => {
+document.getElementById("buttonRight").addEventListener("touchend", (e) => {
   e.preventDefault();
   keyboard.RIGHT = false;
-})
+});
 
-document.getElementById('buttonJump').addEventListener('touchstart', (e) => {
+document.getElementById("buttonJump").addEventListener("touchstart", (e) => {
   e.preventDefault();
   keyboard.SPACE = true;
-})
+});
 
-document.getElementById('buttonJump').addEventListener('touchend', (e) => {
+document.getElementById("buttonJump").addEventListener("touchend", (e) => {
   e.preventDefault();
   keyboard.SPACE = false;
-})
+});
 
-document.getElementById('buttonShoot').addEventListener('touchstart', (e) => {
+document.getElementById("buttonShoot").addEventListener("touchstart", (e) => {
   e.preventDefault();
   keyboard.THROW = true;
-})
+});
 
-document.getElementById('buttonShoot').addEventListener('touchend', (e) => {
+document.getElementById("buttonShoot").addEventListener("touchend", (e) => {
   e.preventDefault();
   keyboard.THROW = false;
-})
+});
 
 // Tastenereignisse mit Pause-Check
 document.addEventListener("keydown", (e) => {
@@ -277,27 +264,23 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
-
 function checkOrientation() {
-  const warning = document.getElementById('orientation-warning');
+  const warning = document.getElementById("orientation-warning");
   if (window.innerWidth < window.innerHeight) {
-    warning.style.display = 'flex';
+    warning.style.display = "flex";
   } else {
-    warning.style.display = 'none';
+    warning.style.display = "none";
   }
 }
 
-
-
-window.addEventListener('resize', checkOrientation);
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("resize", checkOrientation);
+document.addEventListener("DOMContentLoaded", () => {
   checkOrientation();
 });
 
-
 function adjustMobileControls() {
-  const canvas = document.getElementById('canvas');
-  const mobileControls = document.querySelector('.mobile-controls');
+  const canvas = document.getElementById("canvas");
+  const mobileControls = document.querySelector(".mobile-controls");
 
   if (canvas && mobileControls) {
     const rect = canvas.getBoundingClientRect(); // Sichtbare Abmessungen des Canvas
@@ -306,7 +289,5 @@ function adjustMobileControls() {
 }
 
 // Event-Listener für Änderungen an der Fenstergröße
-window.addEventListener('resize', adjustMobileControls);
-document.addEventListener('DOMContentLoaded', adjustMobileControls);
-
-
+window.addEventListener("resize", adjustMobileControls);
+document.addEventListener("DOMContentLoaded", adjustMobileControls);

@@ -8,8 +8,6 @@
     <script src="models/sound-manager.class.js"></script>
     <script src="models/movable-object.class.js"></script>
 
-    <script src="models/start-screen.class.js"></script>
-
     <script src="models/drawable_objects/movable_objects/character.class.js"></script>
     <script src="models/drawable_objects/movable_objects/chicken.class.js"></script>
     <script src="models/drawable_objects/movable_objects/chick.class.js"></script>
@@ -27,8 +25,6 @@
     <script src="models/drawable_objects/user_interface/pause-button.class.js"></script>
     <script src="models/drawable_objects/user_interface/mute-button.class.js"></script>
     <script src="models/drawable_objects/user_interface/fullscreen-button.class.js"></script>
-    <script src="models/drawable_objects/user_interface/losing-screen.class.js"></script>
-    <script src="models/drawable_objects/user_interface/winning-screen.class.js"></script>
 
     <script src="models/drawable_objects/movable_objects/collectable_objects/coin.class.js"></script>
     <script src="models/drawable_objects/movable_objects/collectable_objects/collectableBottle.class.js"></script>
@@ -36,11 +32,12 @@
     <script src="models/collision-checker.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
-    
-    <script src="levels/level0.js"></script>
+
     <script src="levels/level1.js"></script>
     <script src="levels/level2.js"></script>
 
+    <script src="js/templates.js" defer></script>
+    <script src="js/menuControll.js" defer></script>
     <script src="js/game.js" defer></script>
 
     <link rel="stylesheet" href="style.css" />
@@ -48,23 +45,63 @@
     <title>El Polo Loco</title>
     <link rel="icon" type="image/x-icon" href="img/6_salsa_bottle/1_salsa_bottle_on_ground.png" />
   </head>
-  <body onload="init()">
-    <canvas id="canvas" width="720" height="480"></canvas>
+  <body>
+    <canvas id="canvas" width="720" height="480"> </canvas>
+
+    <div id="startscreenContainer" class="startscreenContainer">
+      <div class="commonScreen startscreenImage">
+        <div class="buttonRow">
+          <div class="commonButton startButton" onclick="startGame(), displayNone('startscreenContainer')"></div>
+          <div class="commonButton introductionsButton" onclick="displayShow('textContainer'), renderText('introductionsTemplate')"></div>
+          <div class="commonButton impressumButton" onclick="displayShow('textContainer'), renderText('impressumTemplate')"></div>
+          <div class="commonButton controlsButton" onclick="displayShow('textContainer'), renderText('controlTemplate')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- text area -->
+    <div id="textContainer" class="textContainer displayNone">
+      <div class="commonScreen">
+        <div id="templateContent" style="text-align: center; max-height: 90%; color: white"></div>
+        <div class="closeButtonBox">
+          <div class="commonButton closeButton" onclick="displayNone('textContainer')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--ingame screens-->
+
+    <div id="winningscreenContainer" class="winningscreenContainer displayNone">
+      <div class="commonScreen winningscreenImage">
+        <div class="buttonRow">
+          <div id="nextLevelButton" class="commonButton nextLevelButton" onclick="displayNone('winningscreenContainer'), selectLevel()"></div>
+          <div class="commonButton homeButton" onclick="displayNone('winningscreenContainer'), displayShow('startscreenContainer')"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="losingscreenContainer" class="losingscreenContainer displayNone">
+      <div class="commonScreen losingscreenImage">
+        <div class="buttonRow">
+          <div class="commonButton restartButton" onclick="displayNone('losingscreenContainer'), restartLevel()"></div>
+          <div class="commonButton homeButton" onclick="displayNone('losingscreenContainer'), displayShow('startscreenContainer')"></div>
+        </div>
+      </div>
+    </div>
 
     <div id="orientation-warning">
       <p>Bitte drehen Sie Ihr Gerät, um das Spiel zu spielen.</p>
     </div>
 
     <div class="mobile-controls">
-      <div class="left-controls"> 
-        <div id="buttonLeft" class="playButtons"> < </div>
-        <div id="buttonRight" class="playButtons"> > </div>
+      <div class="left-controls">
+        <div id="buttonLeft" class="playButtons"><</div>
+        <div id="buttonRight" class="playButtons">></div>
       </div>
       <div class="right-controls">
-        <div id="buttonJump" class="playButtons"> J </div>
-        <div id="buttonShoot" class="playButtons"> S </div>
+        <div id="buttonJump" class="playButtons">J</div>
+        <div id="buttonShoot" class="playButtons">S</div>
       </div>
     </div>
-
   </body>
 </html>
