@@ -293,3 +293,20 @@ window.addEventListener('resize', checkOrientation);
 document.addEventListener('DOMContentLoaded', () => {
   checkOrientation();
 });
+
+
+function adjustMobileControls() {
+  const canvas = document.getElementById('canvas');
+  const mobileControls = document.querySelector('.mobile-controls');
+
+  if (canvas && mobileControls) {
+    const rect = canvas.getBoundingClientRect(); // Sichtbare Abmessungen des Canvas
+    mobileControls.style.width = `${rect.width}px`; // Breite der mobile-controls anpassen
+  }
+}
+
+// Event-Listener für Änderungen an der Fenstergröße
+window.addEventListener('resize', adjustMobileControls);
+document.addEventListener('DOMContentLoaded', adjustMobileControls);
+
+
