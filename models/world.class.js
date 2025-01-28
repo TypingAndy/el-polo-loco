@@ -3,9 +3,7 @@ class World {
   statusLifebar = new StatusLifebar();
   statusCoinbar = new StatusCoinbar();
   statusBottlebar = new StatusBottlebar();
-  pauseButton = new PauseButton();
-  muteButton = new MuteButton();
-  fullScreenButton = new FullScreenButton();
+
   throwableObjects = [];
 
   level = level1;
@@ -29,9 +27,6 @@ class World {
     this.respawnBottles();
     this.startBottleRespawnInterval();
     this.startStatusUpdateInterval();
-    this.muteButton = new MuteButton();
-    this.pauseButton = new PauseButton();
-    this.fullScreenButton = new FullScreenButton();
   }
 
   setWorld() {
@@ -101,9 +96,7 @@ class World {
     this.addToMap(this.statusLifebar);
     this.addToMap(this.statusCoinbar);
     this.addToMap(this.statusBottlebar);
-    this.addToMap(this.pauseButton);
-    this.addToMap(this.muteButton);
-    this.addToMap(this.fullScreenButton);
+
     this.context.translate(this.camera_x, 0);
   }
 

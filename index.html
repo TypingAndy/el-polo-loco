@@ -22,9 +22,6 @@
     <script src="models/drawable_objects/user_interface/status-lifebar.class.js"></script>
     <script src="models/drawable_objects/user_interface/status-coinbar.class.js"></script>
     <script src="models/drawable_objects/user_interface/status-bottlebar.class.js"></script>
-    <script src="models/drawable_objects/user_interface/pause-button.class.js"></script>
-    <script src="models/drawable_objects/user_interface/mute-button.class.js"></script>
-    <script src="models/drawable_objects/user_interface/fullscreen-button.class.js"></script>
 
     <script src="models/drawable_objects/movable_objects/collectable_objects/coin.class.js"></script>
     <script src="models/drawable_objects/movable_objects/collectable_objects/collectableBottle.class.js"></script>
@@ -38,6 +35,9 @@
 
     <script src="js/templates.js" defer></script>
     <script src="js/menuControll.js" defer></script>
+    <script src="js/sound-config.js" defer></script>
+    <script src="js/pause-config.js" defer></script>
+    <script src="js/keybindings.js" defer></script>
     <script src="js/game.js" defer></script>
 
     <link rel="stylesheet" href="style.css" />
@@ -48,14 +48,26 @@
   <body>
     <canvas id="canvas" width="720" height="480"> </canvas>
 
+    <!-- startscreen area -->
     <div id="startscreenContainer" class="startscreenContainer">
       <div class="commonScreen startscreenImage">
         <div class="buttonRow">
-          <div class="commonButton startButton" onclick="startGame(), displayNone('startscreenContainer')"></div>
+          <div class="commonButton startButton" onclick="startGame(), displayNone('startscreenContainer'), displayShow('ingameFullCanvasButtonContainer')"></div>
           <div class="commonButton introductionsButton" onclick="displayShow('textContainer'), renderText('introductionsTemplate')"></div>
           <div class="commonButton impressumButton" onclick="displayShow('textContainer'), renderText('impressumTemplate')"></div>
           <div class="commonButton controlsButton" onclick="displayShow('textContainer'), renderText('controlTemplate')"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ingame button area -->
+    <div id="ingameFullCanvasButtonContainer" class="ingameFullCanvasButtonContainer displayNone">
+      <div class="ingameButtonContainer">
+        <div id="mutedButton" class="mutedButton ingameButton displayNone" onclick="resumeSounds()"></div>
+        <div id="soundOnButton" class="soundOnButton ingameButton" onclick="muteAllSounds()"></div>
+        <div id="pauseButton" class="pauseButton ingameButton" onclick="pauseGame()"></div>
+        <div id="playButton" class="playButton ingameButton displayNone" onclick="resumeGame()"></div>
+        <div id="fullscreenButton" class="fullscreenButton ingameButton" onclick="toggleFullscreen()"></div>
       </div>
     </div>
 
@@ -70,12 +82,11 @@
     </div>
 
     <!--ingame screens-->
-
     <div id="winningscreenContainer" class="winningscreenContainer displayNone">
       <div class="commonScreen winningscreenImage">
         <div class="buttonRow">
           <div id="nextLevelButton" class="commonButton nextLevelButton" onclick="displayNone('winningscreenContainer'), selectLevel()"></div>
-          <div class="commonButton homeButton" onclick="displayNone('winningscreenContainer'), displayShow('startscreenContainer')"></div>
+          <div class="commonButton homeButton" onclick="displayNone('winningscreenContainer'), displayShow('startscreenContainer'), displayNone('ingameFullCanvasButtonContainer')"></div>
         </div>
       </div>
     </div>
@@ -84,14 +95,14 @@
       <div class="commonScreen losingscreenImage">
         <div class="buttonRow">
           <div class="commonButton restartButton" onclick="displayNone('losingscreenContainer'), restartLevel()"></div>
-          <div class="commonButton homeButton" onclick="displayNone('losingscreenContainer'), displayShow('startscreenContainer')"></div>
+          <div class="commonButton homeButton" onclick="displayNone('losingscreenContainer'), displayShow('startscreenContainer'), displayNone('ingameFullCanvasButtonContainer')"></div>
         </div>
       </div>
     </div>
 
-    <div id="orientation-warning">
+    <!-- <div id="orientation-warning">
       <p>Bitte drehen Sie Ihr Gerät, um das Spiel zu spielen.</p>
-    </div>
+    </div> -->
 
     <div class="mobile-controls">
       <div class="left-controls">

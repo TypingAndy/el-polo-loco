@@ -200,6 +200,7 @@ class Character extends MovableObject {
         pauseGame(); // Pause the game
         setTimeout(() => {
           displayShow('losingscreenContainer'); // Show LosingScreen
+          displayNone('ingameFullCanvasButtonContainer')
         }, 500); // Short delay to ensure animation completes smoothly
       }
     }

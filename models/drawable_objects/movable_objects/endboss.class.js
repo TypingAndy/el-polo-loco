@@ -62,6 +62,7 @@ class Endboss extends MovableObject {
 
         setTimeout(() => {
           displayShow('winningscreenContainer');
+          displayNone('ingameFullCanvasButtonContainer')
         }, 2000);
 
         // Intervall beenden
