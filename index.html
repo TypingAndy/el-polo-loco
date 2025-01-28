@@ -33,6 +33,7 @@
     <script src="levels/level1.js"></script>
     <script src="levels/level2.js"></script>
 
+    <script src="js/character-image-arrays.js" defer></script>
     <script src="js/templates.js" defer></script>
     <script src="js/menuControll.js" defer></script>
     <script src="js/sound-config.js" defer></script>
@@ -47,6 +48,17 @@
   </head>
   <body>
     <canvas id="canvas" width="720" height="480"> </canvas>
+
+    <div id="mobile-controls" class="mobile-controls displayNone">
+      <div class="left-controls">
+        <div id="buttonLeft" class="playButtons"><</div>
+        <div id="buttonRight" class="playButtons">></div>
+      </div>
+      <div class="right-controls">
+        <div id="buttonJump" class="playButtons">J</div>
+        <div id="buttonShoot" class="playButtons">S</div>
+      </div>
+    </div>
 
     <!-- startscreen area -->
     <div id="startscreenContainer" class="startscreenContainer">
@@ -95,24 +107,14 @@
       <div class="commonScreen losingscreenImage">
         <div class="buttonRow">
           <div class="commonButton restartButton" onclick="displayNone('losingscreenContainer'), restartLevel()"></div>
-          <div class="commonButton homeButton" onclick="displayNone('losingscreenContainer'), displayShow('startscreenContainer'), displayNone('ingameFullCanvasButtonContainer')"></div>
+          <div
+            class="commonButton homeButton"
+            onclick="displayNone('losingscreenContainer'), displayShow('startscreenContainer'), displayNone('ingameFullCanvasButtonContainer'),   displayNone('mobile-controls')"
+          ></div>
         </div>
       </div>
     </div>
 
-    <!-- <div id="orientation-warning">
-      <p>Bitte drehen Sie Ihr Gerät, um das Spiel zu spielen.</p>
-    </div> -->
-
-    <div class="mobile-controls">
-      <div class="left-controls">
-        <div id="buttonLeft" class="playButtons"><</div>
-        <div id="buttonRight" class="playButtons">></div>
-      </div>
-      <div class="right-controls">
-        <div id="buttonJump" class="playButtons">J</div>
-        <div id="buttonShoot" class="playButtons">S</div>
-      </div>
-    </div>
+    <div id="orientationWarning" class="orientationWarning displayNone">Bitte drehen Sie Ihr Gerät, um das Spiel im Querformat zu spielen.</div>
   </body>
 </html>

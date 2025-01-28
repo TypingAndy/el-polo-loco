@@ -19,6 +19,9 @@ class BrokenBottle extends MovableObject {
     this.startSplashAnimation();
   }
 
+  /**
+   * Starts the splash animation by cycling through splash images and stops it after a timeout.
+   */
   startSplashAnimation() {
     this.splashInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
@@ -30,6 +33,9 @@ class BrokenBottle extends MovableObject {
     }, 600);
   }
 
+  /**
+   * Stops the splash animation by clearing the interval and timeout.
+   */
   stopSplashAnimation() {
     if (this.splashInterval) {
       clearInterval(this.splashInterval);
@@ -39,24 +45,32 @@ class BrokenBottle extends MovableObject {
     }
   }
 
+  /**
+   * Starts the splash animation if it is not already running.
+   */
   startSplashAnimation() {
-    if (!this.splashTimeout) { // Verhindert mehrfaches Starten
+    if (!this.splashTimeout) {
       this.splashInterval = setInterval(() => {
         this.playAnimation(this.IMAGES_SPLASH);
       }, 100);
-  
+
       this.splashTimeout = setTimeout(() => {
         this.stopSplashAnimation();
         this.removeBottle();
       }, 600);
     }
   }
-  
 
+  /**
+   * Stops all animations related to this object.
+   */
   stopAllAnimations() {
     this.stopSplashAnimation();
   }
 
+  /**
+   * Removes the bottle object from the list of throwable objects in the game world.
+   */
   removeBottle() {
     const index = world.throwableObjects.indexOf(this);
     if (index > -1) {

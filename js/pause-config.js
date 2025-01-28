@@ -1,10 +1,6 @@
 let isPaused = false;
 
 function pauseGame() {
-  saveMuteStatus();
-  muteAllSounds();
-  displayNone("soundOnButton");
-  displayShow("mutedButton");
   displayNone("pauseButton");
   displayShow("playButton");
 
@@ -17,12 +13,6 @@ function pauseGame() {
 function resumeGame() {
   displayShow("pauseButton");
   displayNone("playButton");
-
-  if (!wasMutedBeforePause) {
-    resumeSounds();
-    displayShow("soundOnButton");
-    displayNone("mutedButton");
-  }
 
   if (isPaused) {
     resumeAnimations();

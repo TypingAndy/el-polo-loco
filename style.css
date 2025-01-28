@@ -4,20 +4,35 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url(img/10_background_screen/desert_comic.jpg);
+  background-image: url("img/10_background_screen/desert_comic.jpg");
   background-size: cover; /* Wichtig: Passt das Bild an, sodass es den gesamten Bildschirm abdeckt */
   background-position: center; /* Zentriert das Bild */
-  background-repeat: no-repeat; /* Verhindert, dass das Bild wiederholt wird */
+
   height: 100vh; /* Setzt die Höhe des Bodys auf die volle Höhe des Bildschirms */
   margin: 0; /* Entfernt Standardabstände */
   overflow: hidden; /* Verhindert Scrollen, falls etwas überläuft */
-  position: relative;
 }
 
 canvas {
-  background-color: black;
   display: block;
   border: 4px solid rgb(0, 0, 0);
+}
+
+.orientationWarning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 20px;
 }
 
 /* ingame button section*/
@@ -31,7 +46,6 @@ canvas {
   transform: translate(-50%, -50%); /* Verschiebt den Container, damit er genau zentriert ist */
   display: flex;
   justify-content: right;
- 
 }
 
 .ingameButtonContainer {
@@ -54,23 +68,23 @@ canvas {
 }
 
 .mutedButton {
-  background-image: url('img/11_buttons/muted.png');
+  background-image: url("img/11_buttons/muted.png");
 }
 
 .soundOnButton {
-  background-image: url('img/11_buttons/sound.png');
+  background-image: url("img/11_buttons/sound.png");
 }
 
 .pauseButton {
-  background-image: url('img/11_buttons/pause.png');
+  background-image: url("img/11_buttons/pause.png");
 }
 
 .playButton {
-  background-image: url('img/11_buttons/resume.png');
+  background-image: url("img/11_buttons/resume.png");
 }
 
 .fullscreenButton {
-  background-image: url('img/11_buttons/fullscreen.png');
+  background-image: url("img/11_buttons/fullscreen.png");
 }
 
 /* text window section section*/
@@ -82,7 +96,7 @@ canvas {
   width: 720px; /* Breite des Containers */
   height: 480px; /* Höhe des Containers */
   position: absolute;
-  top: 50%; /* Positioniert den Container vertikal in der Mitte */
+  top: calc(50%); /* Positioniert den Container vertikal in der Mitte */
   left: 50%; /* Positioniert den Container horizontal in der Mitte */
   transform: translate(-50%, -50%); /* Verschiebt den Container, damit er genau zentriert ist */
   background-color: rgba(0, 0, 0, 0.74);
@@ -174,14 +188,18 @@ canvas {
   background-image: url("img/11_buttons/next_level.png");
 }
 
-
 .mobile-controls {
-  display: flex;
+  display: none !important;
   background-color: #ffcb1a;
-  justify-content: space-between;
-  height: 60px; /* Höhe bleibt fixiert */
+  width: 100%;
+  max-width: 720px;
+  height: 60px;
+
   border: 4px solid rgb(0, 0, 0);
-  display: none;
+
+  display: flex;
+  justify-content: space-between;
+  z-index: 10000;
 }
 
 .right-controls,
@@ -202,25 +220,176 @@ canvas {
   align-items: center;
   justify-content: center;
   border-radius: 100%;
+  border: black 2px solid;
 }
 
-/* Smartphones -----------------*/
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width: 900px), (max-height: 900px) {
   canvas {
-    max-width: 720px;
-
-    width: 100%;
+    width: 600px;
   }
+  .textContainer {
+    width: 600px;
+    height: 340px;
+    font-size: 12px;
+    
+  }
+
+  .startscreenContainer {
+    width: 600px;
+    height: 470px;
+  }
+
+.buttonRow {
+  padding-top: 100px;
+}
+
   .mobile-controls {
-    display: flex;
+    display: flex !important;
+    width: 600px;
+  }
+
+  .ingameButtonContainer {
+    margin-top: 30px;
+    margin-right: 50px;
   }
 }
 
 /* Smartphones -----------------*/
-@media only screen and (max-height: 480px) {
+@media only screen and (max-width: 800px), (max-height: 600px) {
   canvas {
-    max-height: 480px;
-    width: 100vh;
+    width: 600px;
+  }
+
+  .startscreenContainer {
+    width: 600px;
+    height: 340px;
+  }
+
+  .textContainer {
+    width: 600px;
+  }
+
+
+
+  .mobile-controls {
+ 
+    width: 600px;
+  }
+
+  .ingameButtonContainer {
+    margin-top: 30px;
+    margin-right: 50px;
+  }
+}
+
+
+/* Smartphones -----------------*/
+@media only screen and (max-width: 720px), (max-height: 600px) {
+  canvas {
+    width: 520px;
+  }
+
+  .startscreenContainer {
+    width: 520px;
+    height: 420px;
+  }
+
+  .textContainer {
+    width: 520px;
+  }
+
+
+
+  .mobile-controls {
+    display: flex !important;
+    width: 520px;
+  }
+
+  .ingameButtonContainer {
+    margin-top: 50px;
+    margin-right: 80px;
+  }
+
+  .ingameButton {
+    width: 32px;
+    height: 32px;
+    background-size: contain; /* Wichtig: Passt das Bild an, sodass es den gesamten Bildschirm abdeckt */
+    background-position: center; /* Zentriert das Bild */
+    background-repeat: no-repeat; /* Verhindert, dass das Bild wiederholt wird */
+  }
+}
+
+@media only screen and (max-width: 660px), (max-height: 540px) {
+  canvas {
+    width: 480px;
+  }
+
+  .startscreenContainer {
+    width: 480px;
+    height: 390px;
+  }
+
+  .textContainer {
+    width: 480px;
+  }
+
+
+
+  .mobile-controls {
+    display: flex !important;
+    width: 480px;
+  }
+
+  .ingameButtonContainer {
+    margin-top: 50px;
+    margin-right: 80px;
+  }
+
+  .ingameButton {
+    width: 32px;
+    height: 32px;
+    background-size: contain; /* Wichtig: Passt das Bild an, sodass es den gesamten Bildschirm abdeckt */
+    background-position: center; /* Zentriert das Bild */
+    background-repeat: no-repeat; /* Verhindert, dass das Bild wiederholt wird */
+  }
+}
+
+@media only screen and (max-width: 600px), (max-height: 480px) {
+  canvas {
+    width: 400px;
+  }
+
+  .textContainer {
+    width: 400px;
+  
+  }
+
+  .startscreenContainer {
+    width: 400px;
+    height: 340px;
+  }
+
+  .buttonRow {
+    padding-top: 80px;
+  }
+
+
+  .mobile-controls {
+    display: flex !important;
+    width: 400px;
+  }
+
+  .ingameButtonContainer {
+    margin-top: 80px;
+    margin-right: 120px;
+  }
+
+  .ingameButton {
+    width: 32px;
+    height: 32px;
+    background-size: contain; /* Wichtig: Passt das Bild an, sodass es den gesamten Bildschirm abdeckt */
+    background-position: center; /* Zentriert das Bild */
+    background-repeat: no-repeat; /* Verhindert, dass das Bild wiederholt wird */
   }
 }
 

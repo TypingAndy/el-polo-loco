@@ -9,10 +9,10 @@ class ChickJumping extends MovableObject {
   y = 373;
 
   health;
-  isDead = false; // Eigenschaft, um den Zustand des Chicks zu speichern
+  isDead = false;
   speedY = 0;
-  acceleration = 0.5; // Gravity effect
-  jumpHeight = 8; // Default jump height
+  acceleration = 0.5;
+  jumpHeight = 8;
 
   IMAGES_JUMPING = [
     "img/3_enemies_chicken/chicken_small/3_jump/1_j.png",
@@ -41,25 +41,34 @@ class ChickJumping extends MovableObject {
     this.applyGravityForChickJumping(); // Ensure gravity starts
   }
 
+  /**
+   * Starts intervals for applying gravity, jumping, and animations.
+   * Executes actions only if the character is not dead.
+   */
   startIntervals() {
     this.applyGravityForChickJumping();
+
     this.jumpInterval = setInterval(() => {
       if (!this.isDead && !this.isJumping) {
-        this.jump();
+        this.jump(); // Perform jump if the character is not dead or already jumping
       }
     }, 1000);
 
     this.animationInterval = setInterval(() => {
       if (!this.isDead) {
         if (this.isJumping) {
-          this.playAnimation(this.IMAGES_JUMPING); // Animation for jumping
+          this.playAnimation(this.IMAGES_JUMPING); // Play jumping animation
         } else {
-          this.playAnimation(this.IMAGES_STAYONGROUND); // Animation for standing still
+          this.playAnimation(this.IMAGES_STAYONGROUND); // Play standing animation
         }
       }
     }, 100);
   }
 
+  /**
+   * Makes the character jump if it is not already jumping.
+   * Sets the vertical speed to the defined jump height.
+   */
   jump() {
     if (!this.isJumping) {
       this.isJumping = true;
@@ -67,25 +76,37 @@ class ChickJumping extends MovableObject {
     }
   }
 
+  /**
+   * Applies gravity to the character for smooth jumping and landing.
+   * Ensures only one gravity interval runs at a time.
+   */
   applyGravityForChickJumping() {
-    clearInterval(this.intervals?.applyGravity); // Avoid duplicate gravity intervals
+    clearInterval(this.intervals?.applyGravity);
     this.intervals = this.intervals || {};
     this.intervals.applyGravity = setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       } else {
-        this.y = 373; // Ensure it lands on the ground
+        this.y = 373;
         this.speedY = 0;
         this.isJumping = false;
       }
-    }, 1000 / 60); // Smooth gravity effect
+    }, 1000 / 60);
   }
 
+  /**
+   * Checks if the character is above the ground level.
+   * @returns {boolean} True if the character's Y position is above 373, false otherwise.
+   */
   isAboveGround() {
     return this.y < 373;
   }
 
+  /**
+   * Stops all running animations and intervals related to the character.
+   * Clears animation, gravity, and jump intervals.
+   */
   stopAllAnimations() {
     clearInterval(this.animationInterval);
     clearInterval(this.intervals?.applyGravity);

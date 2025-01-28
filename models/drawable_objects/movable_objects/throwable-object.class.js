@@ -39,35 +39,56 @@ class ThrowableObject extends MovableObject {
     }
   }
 
+  /**
+   * Starts the throwing animation by periodically cycling through the throwing images.
+   */
   startAnimation() {
     this.throwingAnimationInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_THROWING);
     }, 90);
   }
 
+  /**
+   * Stops the throwing animation by clearing the throwing animation interval.
+   */
   stopAnimation() {
     clearInterval(this.throwingAnimationInterval);
   }
 
+  /**
+   * Starts the splash animation by periodically cycling through the splash images.
+   */
   startSplashAnimation() {
     this.splashAnimationInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
     }, 100);
   }
 
+  /**
+   * Stops the splash animation by clearing the splash animation interval.
+   */
   stopSplashAnimation() {
     clearInterval(this.splashAnimationInterval);
   }
 
+  /**
+   * Throws the object to the specified position and applies gravity.
+   * Sets initial vertical and horizontal speed, then plays a shooting sound.
+   * @param {number} x - The target x-coordinate for the throw.
+   * @param {number} y - The target y-coordinate for the throw.
+   */
   throw(x, y) {
     this.x = x;
     this.y = y;
-    this.speedY = 25; // Initiale Wurfhöhe
-    this.speedX = 10; // Horizontale Bewegung
+    this.speedY = 25;
+    this.speedX = 10;
     this.applyGravityForBottles();
     soundManager.playSound("shooting", 0.8);
   }
 
+  /**
+   * Stops all running animations and intervals, including throwing, splash, and gravity intervals.
+   */
   stopAllAnimations() {
     if (this.throwingAnimationInterval) {
       clearInterval(this.throwingAnimationInterval);
@@ -80,16 +101,16 @@ class ThrowableObject extends MovableObject {
     }
   }
 
+  /**
+   * Starts all relevant animations and processes, including the throwing animation, splash animation (if active), and gravity.
+   */
   startAllAnimations() {
-    // Starte Wurfanimation erneut
     this.startAnimation();
 
-    // Starte Splash-Animation erneut, falls aktiv
     if (this.splashAnimationInterval) {
       this.startSplashAnimation();
     }
 
-    // Starte Gravitation erneut
     this.applyGravityForBottles();
   }
 }

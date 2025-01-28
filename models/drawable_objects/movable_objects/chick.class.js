@@ -9,7 +9,7 @@ class Chick extends MovableObject {
   y = 373;
 
   health;
-  isDead = false; // Eigenschaft, um den Zustand des Chicks zu speichern
+  isDead = false;
 
   IMAGES_WALKING = ["img/3_enemies_chicken/chicken_small/1_walk/1_w.png", "img/3_enemies_chicken/chicken_small/1_walk/2_w.png", "img/3_enemies_chicken/chicken_small/1_walk/3_w.png"];
 
@@ -28,27 +28,34 @@ class Chick extends MovableObject {
     }
 
     this.health = health;
- 
+
     this.startIntervals();
   }
 
+  /**
+   * Starts intervals for movement and animation.
+   * Movement and animation occur only if the character is not dead.
+   */
   startIntervals() {
     this.moveInterval = setInterval(() => {
       if (!this.isDead) {
-        this.moveLeft(); // Bewegung nur, wenn das Chick nicht tot ist
+        this.moveLeft();
       }
     }, 1000 / 60);
 
     this.animationInterval = setInterval(() => {
       if (!this.isDead) {
-        this.playAnimation(this.IMAGES_WALKING); // Animation nur, wenn das Chick nicht tot ist
+        this.playAnimation(this.IMAGES_WALKING);
       }
     }, 100);
   }
 
+  /**
+   * Stops all running animations and movement intervals.
+   * Clears both the move and animation intervals.
+   */
   stopAllAnimations() {
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);
-
   }
 }

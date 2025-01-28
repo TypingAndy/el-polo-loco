@@ -20,27 +20,37 @@ class StatusBottlebar extends DrawableObject {
     this.setBottleAmount(0);
   }
 
-  setBottleAmount(bottlesCollected) {
-    this.bottlesCollected = bottlesCollected;
-    let path = this.IMAGES_BOTTLEBAR[this.collectedBottleAmountIndex()];
-    this.img = this.imageCache[path];
-  }
+/**
+ * Sets the amount of collected bottles and updates the bottle bar image.
+ * @param {number} bottlesCollected - The number of bottles collected.
+ */
+setBottleAmount(bottlesCollected) {
+  this.bottlesCollected = bottlesCollected;
+  let path = this.IMAGES_BOTTLEBAR[this.collectedBottleAmountIndex()];
+  this.img = this.imageCache[path];
+}
 
-  collectedBottleAmountIndex() {
-    let percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
 
-    if (percentageCollected >= 100) {
-      return 5;
-    } else if (percentageCollected >= 80) {
-      return 4;
-    } else if (percentageCollected >= 60) {
-      return 3;
-    } else if (percentageCollected >= 40) {
-      return 2;
-    } else if (percentageCollected >= 20) {
-      return 1;
-    } else {
-      return 0;
-    }
+/**
+ * Calculates the index for the collected bottle amount based on the percentage of bottles collected.
+ * @returns {number} The index corresponding to the current collected bottle percentage.
+ */
+collectedBottleAmountIndex() {
+  let percentageCollected = (this.bottlesCollected / this.levelBottleAmount) * 100;
+
+  if (percentageCollected >= 100) {
+    return 5;
+  } else if (percentageCollected >= 80) {
+    return 4;
+  } else if (percentageCollected >= 60) {
+    return 3;
+  } else if (percentageCollected >= 40) {
+    return 2;
+  } else if (percentageCollected >= 20) {
+    return 1;
+  } else {
+    return 0;
   }
+}
+
 }

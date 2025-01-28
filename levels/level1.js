@@ -1,7 +1,7 @@
 let level1;
 function initLevel1() {
   level1 = new Level(
-    [],
+    [ new ChickJumping((x = 1050), 1000, 10),   new Chicken(700, 1), new ChickJumping((x = 620), 1000, 10),  new Chicken(1400, 1),new ChickJumping((x = 1440), 1000, 18)],
 
     [new Clouds()],
 
@@ -44,7 +44,9 @@ function initLevel1() {
       new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719 * 7, 1),
     ],
 
-    [new Coin(0, 110)],
+    [new Coin(200, 110), new Coin(250, 110), new Coin(500, 110), new Coin(550, 90), new Coin(600, 90), new Coin(650, 110), new Coin(1000, 50),new Coin(1000, 100),new Coin(1000, 150)
+      ,new Coin(1300, 340),new Coin(1350, 340),new Coin(1450, 340),new Coin(1500, 340)
+    ],
 
     [
       new CollectableBottle(0),
@@ -57,9 +59,9 @@ function initLevel1() {
       new CollectableBottle(0),
     ],
 
-    //bottle Placeholder "collectedBottles"
+ 
     [],
-    //bottle Placeholder "thrownBottles"
+
     []
   );
 }

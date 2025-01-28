@@ -1,3 +1,7 @@
+/**
+ * Returns the HTML template for the game controls.
+ * @returns {string} The HTML string for the controls template.
+ */
 function controlTemplate() {
   return /*html*/ `
           <h1>Controls</h1>
@@ -10,10 +14,13 @@ function controlTemplate() {
             <li><b>Mute:</b> Press <b>M</b> to toggle sound</li>
             <li><b>Pause:</b> Press <b>P</b> to pause or resume the game</li><br>
           </ul>
-   
     `;
 }
 
+/**
+ * Returns the HTML template for the game help section.
+ * @returns {string} The HTML string for the introductions template.
+ */
 function introductionsTemplate() {
   return /*html*/ `
           <h1>Game Help</h1>
@@ -22,10 +29,13 @@ function introductionsTemplate() {
             <li><b>Boss:</b> The boss has two phases. During the transition, it is invulnerable. In the second phase, it shoots small chickens.</li><br>
             <li><b>Bottles:</b> If your bottles are empty, they will respawn in the front half of the level.</li><br>
           </ul>
-     
     `;
 }
 
+/**
+ * Returns the HTML template for the impressum (legal notice) section.
+ * @returns {string} The HTML string for the impressum template.
+ */
 function impressumTemplate() {
   return /*html*/ `
           <h1>Impressum</h1>
@@ -37,7 +47,3 @@ function impressumTemplate() {
           <p>Telefon: +49 (0) 123 456 789<br />E-Mail: andreas.georg@outlook.com</p><br>
     `;
 }
-
-// Funktion, um den Template-Inhalt in die div einzufügen
-
-

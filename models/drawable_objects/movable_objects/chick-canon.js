@@ -36,20 +36,27 @@ class ChickCanon extends MovableObject {
     this.startIntervals();
   }
 
+  /**
+   * Starts intervals for movement and animation.
+   * Movement and animation are executed only if the character is not dead.
+   */
   startIntervals() {
     this.moveInterval = setInterval(() => {
       if (!this.isDead) {
-        this.moveLeft(); // Bewegung nur, wenn das Chick nicht tot ist
+        this.moveLeft();
       }
     }, 1000 / 60);
 
     this.animationInterval = setInterval(() => {
       if (!this.isDead) {
-        this.playAnimation(this.IMAGES_ROLLING); // Animation nur, wenn das Chick nicht tot ist
+        this.playAnimation(this.IMAGES_ROLLING);
       }
     }, 100);
   }
 
+  /**
+   * Stops all running animations by clearing the associated intervals.
+   */
   stopAllAnimations() {
     clearInterval(this.moveInterval);
     clearInterval(this.animationInterval);

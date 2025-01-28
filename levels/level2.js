@@ -2,19 +2,19 @@ let level2;
 function initLevel2() {
   level2 = new Level(
     [
-      new ChickJumping((x = 320), 1, 10),
+      new ChickJumping((x = 320), 1000, 10),
       new Chicken(700, 1),
-      new ChickJumping((x = 940), 1, 16),
+      new ChickJumping((x = 940), 1000, 16),
       new Chicken(1250, 1),
       new Chicken(1200, 1),
-      new ChickJumping((x = 1320), 1, 12),
+      new ChickJumping((x = 1320), 1000, 12),
       new Chicken(1600, 1),
       new Chicken(1700, 1),
       new Chicken(1750, 1),
       new Chicken(1850, 1),
 
-      new ChickJumping((x = 1900), 1, 19),
-      new ChickJumping((x = 2100), 1, 5),
+      new ChickJumping((x = 1900), 1000, 19),
+      new ChickJumping((x = 2100), 1000, 5),
    
 
       new Chicken(2500, 1),
@@ -103,9 +103,9 @@ function initLevel2() {
       new CollectableBottle(2350),
     ],
 
-    //bottle Placeholder "collectedBottles"
+ 
     [],
-    //bottle Placeholder "thrownBottles"
+   
     []
   );
 }

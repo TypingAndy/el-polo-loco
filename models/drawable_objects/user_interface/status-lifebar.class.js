@@ -20,12 +20,20 @@ class StatusLifebar extends DrawableObject {
     this.setPercentageOfLifeBar(100);
   }
 
+  /**
+   * Sets the percentage of the life bar and updates the life bar image.
+   * @param {number} percentage - The percentage of the life bar to set.
+   */
   setPercentageOfLifeBar(percentage) {
     this.percentage = percentage;
     let path = this.IMAGES_LIFEBAR[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Resolves the image index for the life bar based on the percentage.
+   * @returns {number} The index corresponding to the current life bar percentage.
+   */
   resolveImageIndex() {
     if (this.percentage >= 100) {
       return 5;

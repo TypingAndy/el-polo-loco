@@ -52,25 +52,32 @@ class Endboss extends MovableObject {
     this.checkBossDefeat();
   }
 
+  /**
+   * Periodically checks if the boss is defeated and triggers the appropriate actions.
+   * Pauses the game and displays the winning screen when the boss is defeated.
+   */
   checkBossDefeat() {
     const intervalId = setInterval(() => {
       if (this.isDefeated) {
-        // Aktionen, wenn der Boss besiegt ist
         setTimeout(() => {
           pauseGame();
         }, 1000);
 
         setTimeout(() => {
-          displayShow('winningscreenContainer');
-          displayNone('ingameFullCanvasButtonContainer')
+          displayShow("winningscreenContainer");
+          displayNone("ingameFullCanvasButtonContainer");
+          displayNone("mobile-controls");
         }, 2000);
 
-        // Intervall beenden
         clearInterval(intervalId);
       }
     }, 200);
   }
 
+  /**
+   * Starts the walking animation for the boss character.
+   * Handles direction, speed, and animation playback while avoiding actions when the boss is alert, hurt, or playing a canon animation.
+   */
   startWalkingAnimation() {
     this.startChickenSpawn();
     this.direction = 1;
@@ -78,6 +85,7 @@ class Endboss extends MovableObject {
     this.maxDistance = 300;
     this.changeDirectionChance = 0.05;
     this.speed = 5;
+
     this.walkingInterval = setInterval(() => {
       if (!this.isAlert && !this.isHurt && !this.isPlayingCanon) {
         this.playAnimation(this.IMAGES.walking);
@@ -86,18 +94,25 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Starts spawning chickens at regular intervals.
+   * Stops spawning when the boss is defeated.
+   */
   startChickenSpawn() {
-    // Intervall zum Spawnen von Chickens alle 3 Sekunden
     this.chickenSpawnInterval = setInterval(() => {
       if (this.isDefeated) {
-        clearInterval(this.chickenSpawnInterval); // Stoppe das Spawnen, wenn der Boss besiegt ist
+        clearInterval(this.chickenSpawnInterval);
         return;
       }
-      const chicken = new Chicken(this.x, 1); // Position des Bosses als Spawn-Position
-      this.level.enemies.push(chicken); // Füge das neue ChickCanon-Objekt zur Level-Feindesliste hinzu
-    }, 3000); // Alle 3 Sekunden ein Chicken spawnen
+      const chicken = new Chicken(this.x, 1);
+      this.level.enemies.push(chicken);
+    }, 3000);
   }
 
+  /**
+   * Switches the boss's speed and direction based on its position and random chance.
+   * Ensures the boss stays within the maximum distance and occasionally changes direction randomly.
+   */
   switchBossSpeed() {
     if (this.x >= this.startX + this.maxDistance || this.x <= this.startX) {
       this.direction *= -1;
@@ -110,10 +125,18 @@ class Endboss extends MovableObject {
     this.x += this.direction * this.speed;
   }
 
+  /**
+   * Generates a random speed for the boss within a predefined range.
+   * @returns {number} A random speed between 6 and 13 (inclusive).
+   */
   getRandomSpeed() {
     return Math.floor(Math.random() * 8) + 6;
   }
 
+  /**
+   * Starts the cannon animation at regular intervals.
+   * Checks if the cannon action should be initiated and triggers it accordingly.
+   */
   startCanonAnimation() {
     this.canonInterval = setInterval(() => {
       if (this.shouldStartCanonAction()) {
@@ -122,10 +145,18 @@ class Endboss extends MovableObject {
     }, this.getCanonAnimationDelay());
   }
 
+  /**
+   * Determines if the cannon action should start based on the boss's health and defeat status.
+   * @returns {boolean} True if the boss's health is 3 or less and it is not defeated, false otherwise.
+   */
   shouldStartCanonAction() {
     return this.health <= 3 && !this.isDefeated;
   }
 
+  /**
+   * Initiates the cannon action by stopping the walking animation, shooting chickens, and playing the cannon animation.
+   * Sets the state to indicate the cannon action is in progress.
+   */
   startCanonAction() {
     this.isPlayingCanon = true;
     this.stopWalkingAnimation();
@@ -133,10 +164,18 @@ class Endboss extends MovableObject {
     this.playCanonAnimation();
   }
 
+  /**
+   * Calculates the delay for the cannon animation based on a base delay and the length of the cannon images array.
+   * @returns {number} The calculated delay in milliseconds.
+   */
   getCanonAnimationDelay() {
     return 5000 + this.IMAGES.canon.length * 200;
   }
 
+  /**
+   * Plays the cannon animation by cycling through the cannon image frames.
+   * Stops the animation when all frames have been played and resumes other animations.
+   */
   playCanonAnimation() {
     let canonFrame = 0;
     const canonAnimationInterval = setInterval(() => {
@@ -152,6 +191,10 @@ class Endboss extends MovableObject {
     this.stopCanonInterval(canonAnimationInterval);
   }
 
+  /**
+   * Shoots chickens from the cannon by spawning three ChickCanon objects in sequence.
+   * Each chicken is spawned with a delay between them.
+   */
   shootChickCanon() {
     setTimeout(() => {
       for (let i = 0; i < 3; i++) {
@@ -163,12 +206,20 @@ class Endboss extends MovableObject {
     }, 1200);
   }
 
+  /**
+   * Stops the cannon animation interval after the animation duration has completed.
+   * @param {number} canonAnimationInterval - The interval ID for the cannon animation.
+   */
   stopCanonInterval(canonAnimationInterval) {
     setTimeout(() => {
       clearInterval(canonAnimationInterval);
     }, this.IMAGES.canon.length * 200);
   }
 
+  /**
+   * Plays the hurt animation if the character is not already hurt, defeated, alert, or performing a cannon action.
+   * Temporarily sets the hurt state and manages sound and animation intervals.
+   */
   playHurtAnimation() {
     if (!this.isHurt && !this.isDefeated && !this.isAlert && !this.isPlayingCanon) {
       this.isHurt = true;
@@ -184,8 +235,13 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Plays the alert animation if the character is not already in an alert state, defeated, or critically low on health.
+   * Temporarily sets the alert state, adjusts health, and manages animation intervals.
+   */
   playAlertAnimation() {
     if (this.health <= 2 || this.isDefeated || this.isAlert) return;
+
     this.isAlert = true;
     this.alertInterval = setInterval(() => {
       this.health = 3;
@@ -198,6 +254,10 @@ class Endboss extends MovableObject {
     }, 4000);
   }
 
+  /**
+   * Stops the alert animation by clearing the alert interval.
+   * Resets the interval reference to null.
+   */
   stopAlertAnimation() {
     if (this.alertInterval) {
       clearInterval(this.alertInterval);
@@ -205,6 +265,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Starts the defeat animation, marking the character as defeated and stopping the walking animation.
+   * Cycles through the defeat animation frames and stops the animation once all frames are played.
+   */
   startDefeatAnimation() {
     this.isDefeated = true;
     this.stopWalkingAnimation();
@@ -212,24 +276,40 @@ class Endboss extends MovableObject {
     let defeatedFrame = 0;
     this.defeatedInterval = setInterval(() => {
       this.playDefeatFrames(defeatedFrame++);
-      if (defeatedFrame >= this.IMAGES.defeat.length) this.stopDefeatAnimation();
+      if (defeatedFrame >= this.IMAGES.defeat.length) {
+        this.stopDefeatAnimation();
+      }
     }, 250);
   }
 
+  /**
+   * Initiates the defeat animation if the character is not already marked as defeated.
+   */
   animateDefeat() {
     if (!this.isDefeated) {
       this.startDefeatAnimation();
     }
   }
 
+  /**
+   * Plays the defeat animation frames.
+   * @param {number} defeatedFrame - The current frame index of the defeat animation.
+   */
   playDefeatFrames(defeatedFrame) {
     this.playAnimation(this.IMAGES.defeat);
   }
 
+  /**
+   * Finalizes the defeat animation by setting the character's image to the last frame of the defeat animation.
+   */
   finalizeDefeatAnimation() {
     this.img = this.imageCache[this.IMAGES.defeat[this.IMAGES.defeat.length - 1]];
   }
 
+  /**
+   * Stops all running animations and intervals associated with the character.
+   * Includes walking, defeat, hurt, alert, cannon, and chicken spawn intervals.
+   */
   stopAllAnimations() {
     this.stopWalkingAnimation();
     this.stopDefeatAnimation();
@@ -237,26 +317,40 @@ class Endboss extends MovableObject {
     this.stopAlertAnimation();
     this.stopCanonInterval();
 
-    // Stoppe auch das Chicken-Spawning
     if (this.chickenSpawnInterval) {
       clearInterval(this.chickenSpawnInterval);
     }
   }
 
+  /**
+   * Stops the walking animation by clearing the walking interval.
+   */
   stopWalkingAnimation() {
     clearInterval(this.walkingInterval);
   }
 
+  /**
+   * Stops the defeat animation by clearing the defeat interval.
+   * Finalizes the animation by setting the character's image to the last frame.
+   */
   stopDefeatAnimation() {
     clearInterval(this.defeatedInterval);
     this.finalizeDefeatAnimation();
   }
 
+  /**
+   * Stops the hurt animation by clearing the hurt interval.
+   * Resets the hurt state to false.
+   */
   stopHurtAnimation() {
     clearInterval(this.hurtInterval);
     this.isHurt = false;
   }
 
+  /**
+   * Resumes animations for the character unless it is defeated.
+   * Restarts the walking animation and plays the hurt animation if the character is in a hurt state.
+   */
   resumeAnimations() {
     if (this.isDefeated) return;
     this.startWalkingAnimation();
