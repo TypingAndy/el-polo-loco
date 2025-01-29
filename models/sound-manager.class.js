@@ -30,15 +30,26 @@ class SoundManager {
    * @param {number} [volume=1] - The volume level of the sound (default is 1).
    * @param {boolean} [loop=false] - Whether the sound should loop (default is false).
    */
-  playSound(name, volume = 1, loop = false) {
+  async playSound(name, volume = 1, loop = false) {
     if (this.isMuted) return;
-
     if (this.sounds[name]) {
       if (this.activeSounds[name]) return;
+
+      if (!this.sounds[name].paused) {
+        await this.stopSound(name);
+      }
+
       this.sounds[name].volume = volume;
       this.sounds[name].loop = loop;
-      this.sounds[name].play();
-      this.activeSounds[name] = true;
+
+      console.log("Playsound is about to be triggered");
+
+      try {
+        await this.sounds[name].play();
+        this.activeSounds[name] = true;
+      } catch (error) {
+        console.error("Fehler beim Abspielen des Sounds:", error);
+      }
     }
   }
 
@@ -46,9 +57,13 @@ class SoundManager {
    * Stops the currently playing sound by pausing it and marking it as inactive.
    * @param {string} name - The name of the sound to stop.
    */
-  stopSound(name) {
+  async stopSound(name) {
     if (this.sounds[name] && this.activeSounds[name]) {
+      console.log("Play is about to be paused");
+
       this.sounds[name].pause();
+      this.sounds[name].currentTime = 0;
+
       this.activeSounds[name] = false;
     }
   }
@@ -62,6 +77,7 @@ class SoundManager {
     this.saveMuteSetting();
     Object.keys(this.sounds).forEach((name) => {
       if (this.sounds[name]) {
+        console.log("stopall sounds is about to be triggered");
         this.sounds[name].pause();
         this.activeSounds[name] = false;
       }
@@ -79,6 +95,7 @@ class SoundManager {
     const backgroundSounds = ["gameMusic", "ambient"];
     backgroundSounds.forEach((name) => {
       if (this.sounds[name] && !this.activeSounds[name]) {
+        console.log("Resume all sounds is about to be triggered");
         this.sounds[name].play();
         this.activeSounds[name] = true;
       }
@@ -102,6 +119,7 @@ class SoundManager {
     if (!this.isSoundPlaying("gameMusic")) {
       this.sounds["gameMusic"].volume = 0.4;
       this.sounds["gameMusic"].loop = true;
+      console.log("initGamesound is about to be triggered");
       this.sounds["gameMusic"].play();
       this.activeSounds["gameMusic"] = true;
     }
@@ -109,6 +127,7 @@ class SoundManager {
     if (!this.isSoundPlaying("ambient")) {
       this.sounds["ambient"].volume = 0.3;
       this.sounds["ambient"].loop = true;
+      console.log("ambient is about to be triggered");
       this.sounds["ambient"].play();
       this.activeSounds["ambient"] = true;
     }

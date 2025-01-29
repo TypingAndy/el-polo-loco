@@ -223,7 +223,7 @@ canvas {
   border: black 2px solid;
 }
 
-@media only screen and (max-width: 900px), (max-height: 900px) {
+@media only screen and (max-width: 900px), (max-height: 1025px) {
   canvas {
     width: 600px;
   }
